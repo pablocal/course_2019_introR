@@ -1,0 +1,45 @@
+---
+title: "Curso de Introducción a R (Opción B)"
+author: "Pablo Cabrera Álvarez"
+date: "17/6/2019"
+output: pdf_document
+---
+
+## Objetivos
+
+Este curso tiene como objetivo presentar una introducción al universo de `R`, así como `Rcommander`, una interfaz que facilita el trabajo con `R`. En este curso se darán unas nociones básicas de cómo funciona la manipulación y análisis de datos con `R` y las posibilidades del entorno. Al final del curso, las investigadoras podrán realizar un manejo básico de los datos a través de una interfaz, en este caso `Rcommander`.
+
+`Rcommander` es un programa que permite realizar a través de menús y ventanas las funciones básicas de transformación y análisis de datos.
+
+## Estructura
+
+El curso consta de dos sesiones, una de tipo más general e introductoria al panorama de `R` y de otra centrada exclusivamente en `Rcommander`.
+
+### Introducción a `R`
+
+- ¿Por qué `R`?
+- Oportunidades que ofrece `R`
+- El fujo de trabajo en `R`
+- Trabajar con `R-Studio`
+- Cómo pedir ayuda  `help()`, `?` y otras fuentes
+- Aspectos básicos del lenguaje orientado a objetos
+- El *workspace* en `R`
+- Tipos de objetos en `R`
+
+*Práctica*: Generación e interacción con los diferentes tipos de objetos en R. Búsqueda de ayuda y lectura de la documentación.
+
+### Rcommander: una aproximación GUI a R    
+
+- Instalar `Rcommander`
+- Importar datos
+- Recodificar, computar y seleccionar casos 
+- Análisis: tablas de contingencia
+- Exportar outputs
+
+*Práctica*: Hacer una práctica de transformación y análisis con `Rcommander`.
+
+
+## Metodología
+
+Cada sesión tendrá una duración aproximada de cuatro horas. Cada sesión tendrá una práctica que consistirá en un cuadernillo de actividades y las soluciones de cada ejercicio.
+

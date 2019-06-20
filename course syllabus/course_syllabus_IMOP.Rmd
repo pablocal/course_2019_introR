@@ -11,10 +11,10 @@ Este curso tiene como objetivo introducir la dinámica de trabajo en `R` para in
 
 ## Estructura
 
-El curso consta de cinco módulos básicos (MB) en los que se expondrán los principios generales del lenguaje `R` y cinco modulos optativos (MO) que son útiles para profundizar en diferentes posibilidades que ofrece el programa. Cada módulo tiene una duración de 4 horas e incluyen aproximadamente una hora y media de exposición y dos horas de práctica.
+El curso consta de cinco módulos básicos (MB) en los que se expondrán los principios generales del lenguaje `R` y cinco modulos optativos (MO) para profundizar en diferentes posibilidades que ofrece el programa. Se recomienda realizar todos los módulos básicos y añadir los optativos que se consideren necesarios. Cada módulo tiene una duración de 4 horas e incluyen aproximadamente una hora y media de exposición y dos horas de práctica.
 
 
-#### Introducción a `R` (MB)
+### Introducción a `R` (MB)
 *Paquetes*: base
 *Datos*: mtcars
 
@@ -27,7 +27,7 @@ El curso consta de cinco módulos básicos (MB) en los que se expondrán los pri
 
 *Práctica*: Generación e interacción con los diferentes tipos de objetos en R. Búsqueda de ayuda y lectura de la documentación.
 
-#### Operaciones básicas con `R` (MB)
+### Operaciones básicas con `R` (MB)
 *Paquetes*: base, forcats, lubridate, hms, stringr
 *Datos*: mtcars, titanic
 
@@ -40,7 +40,7 @@ El curso consta de cinco módulos básicos (MB) en los que se expondrán los pri
 
 *Práctica*: 
 
-#### Manipulación de datos I (MB)
+### Manipulación de datos I (MB)
 *Paquetes*: base, haven, readr, dplyr, tidyr
 *Datos*: mtcars, iris, Barómetro CIS
 
@@ -54,7 +54,7 @@ El curso consta de cinco módulos básicos (MB) en los que se expondrán los pri
 
 *Práctica*: Manipular un conjunto de datos de encuesta.
 
-#### Manipulación de datos II (MB)
+### Manipulación de datos II (MB)
 *Paquetes*: base, dplyr, tidyr
 *Datos*: Base de datos electorales, Barómetro CIS, iris
 
@@ -66,9 +66,9 @@ El curso consta de cinco módulos básicos (MB) en los que se expondrán los pri
 - Cambiar de formato largo a ancho `spread()`
 - Cambiar de formato ancho a largo `gather()`
 
-*Práctica*: Manipular varios conjuntos de datos para crear una base de datos conjunta
+*Práctica*: Manipular varios conjuntos de datos para crear una base de datos conjunta.
 
-#### Tabulaciones y descriptivos (MB)
+### Tabulaciones y descriptivos (MB)
 *Paquetes*: base, dplyr, tidyr, readr, haven, sjmisc, expss
 *Datos*: Barómetro CIS
 
@@ -79,7 +79,7 @@ El curso consta de cinco módulos básicos (MB) en los que se expondrán los pri
 - Tablas personalizadas `tab_*()`
 - Exportar resultados `openxlsx`
 
-*Práctica*: Crear tabulaciones para análisis y tablas para ser exportadas
+*Práctica*: Crear tabulaciones para análisis y tablas para ser exportadas.
 
 ### Informes integrados en `R` (MO)
 *Paquetes*: base, tidyverse, rmarkdown, kable
@@ -92,11 +92,11 @@ El curso consta de cinco módulos básicos (MB) en los que se expondrán los pri
 - Documentos interactivos
 - Generar documentos
 
-*Práctica*: Generar un informe en rmarkdown que incluya manipulación de los datos y análisis
+*Práctica*: Generar un informe en rmarkdown que incluya manipulación de los datos y análisis.
 
 ### Visualización de datos con `ggplot2` (MO)
 *Paquetes*: base, tidyverse
-*Datos*: mtcars, titanic
+*Datos*: mtcars, barómetro CIS
 
 - Introducción a la gramática de gráficos
 - Preparación de datos `ggplot()` y `aes()`
@@ -104,7 +104,7 @@ El curso consta de cinco módulos básicos (MB) en los que se expondrán los pri
 - Gráficos de estadísticas `stat_*()`
 - Gráficos múltiples y aspectos estéticos `facet_grid()`, `facet_wrap()` y `theme()`
 
-*Práctica*: Generar diferentes representaciones gráficas a partir de diversos conjuntos de datos
+*Práctica*: Generar diferentes representaciones gráficas a partir de diversos conjuntos de datos.
 
 ### Análisis de datos de encuesta (MO)
 *Paquetes*: base, tidyverse, survey
@@ -116,7 +116,7 @@ El curso consta de cinco módulos básicos (MB) en los que se expondrán los pri
 - Tests de asociación `svytable()` y `svychisq()`
 - Modelos estadísticos con dieño complejo `svyglm()`
 
-*Práctica*: Declarar un diseño de datos complejos y utilizarlo para analizar la Encuesta Social Europea (ESE)
+*Práctica*: Declarar un diseño de datos complejos y utilizarlo para analizar la Encuesta Social Europea (ESE).
 
 ### Muestreo y ponderaciones (MO)
 *Paquetes*: base, tidyverse, sampling, survey
@@ -127,21 +127,21 @@ El curso consta de cinco módulos básicos (MB) en los que se expondrán los pri
 - Muestreo complejo: conglomerados
 - Computación de coeficientes de ponderación `postStratify()` y `calibrate()` 
 
-*Práctica*: Realizar un muestreo desde una base de datos de registros electorales y ajustar una encuesta con datos electorales
+*Práctica*: Realizar un muestreo desde una base de datos de registros electorales y ajustar una encuesta con datos electorales.
 
 ### Modelos estadísticos (MO)
 *Paquetes*: base, tidyverse, stats
-*Datos*: mtcars, iris, 
+*Datos*: mtcars, iris, barómetro CIS
 
 - Regresión lineal `lm()`
 - Regresión logística `glm()`
 - Modelos de clasificación `kmeans()`
 - Análisis factorial `princomp()` y `princomp()`
 
-*Práctica*: Realizar los diferentes tipos de modelos
+*Práctica*: Realizar los diferentes tipos de modelos.
 
 ## Metodología
-Cada sesión tendrá una duración aproximada de cuatro horas y serán de carácter práctico. Las explicaciones irán mostrando código que se podrá ir aplicando por parte de las investigadoras. Cada sesión tendrá una práctica que conssitirá en un cuadernillo, un script comentado y un script con las soluciones de cada ejercicio.
+Cada sesión tendrá una duración aproximada de cuatro horas y serán de carácter práctico. Las explicaciones irán mostrando código que se podrá ir ejecutando por parte de las investigadoras. Cada sesión tendrá una práctica que consistirá en un cuadernillo, un script comentado y un script con las soluciones de cada ejercicio.
 
 ## Bibliografía básica
 
