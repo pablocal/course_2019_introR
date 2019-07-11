@@ -7,30 +7,18 @@ output: pdf_document
 
 ## Objetivos
 
-Este curso tiene como objetivo **introducir la dinámica de trabajo en `R`** para investigadoras que previamente usaban programas de tipo GUI, como SPSS o Stata. Este curso está pensado para hacer una transición hacia trabajar con código y escribir *scripts* básicos en `R`. Al final de este curos se conocerá el funcionamiento básico de `R` con el que se podrá hacer manipulaciones sencillas de datos y tabulaciones.
+Este curso tiene como objetivo **introducir la dinámica de trabajo en `R`** para investigadoras que previamente usaban programas de tipo GUI, como SPSS o Stata. Este curso está pensado para hacer una transición hacia trabajar con código y escribir *scripts* básicos en `R`. Al final de este curos se conocerá el funcionamiento básico de `R` con el que se podrán manipular datos y computar tabulaciones.
 
 ## Estructura
 
 El curso consta de **cinco módulos básicos** (MB) en los que se expondrán los principios generales del lenguaje `R`. Existe la posibilidad de ampliar los módulos básicos con otros optativos (MO) de carácter más específico sobre temas como la visualización de datos o el trabajo con datos de encuestas. Cada módulo tiene una **duración de 4 horas** e incluyen aproximadamente una hora y media de exposición y dos horas de práctica.
 
-### Introducción: si yo vivía bien con SPSS... (MB)
-*Paquetes*: base         
-*Datos*: mtcars
-
-- ¿Por qué `R`?
-- Cómo funciona `R`
-- `R-Studio` o cómo evitar que la gente salga corriendo
-- Cómo evitar la frustración: pedir ayuda `help()`, `?` y otras fuentes
-- El lenguaje orientado a objetos `IMOP <- c("Ana", "Sara")`
-- ¿Dónde se almacenan los objetos? El *workspace* en `R`
-- ¿Qué tipos de objetos hay en `R`?
-
-*Práctica*: Generación e interacción con los diferentes tipos de objetos en R. Búsqueda de ayuda y lectura de la documentación.
-
 ### Operaciones básicas o cómo sobrevivir a una pelea con `R` (MB)    
 *Paquetes*: base, forcats, lubridate, hms, stringr      
 *Datos*: mtcars, titanic
 
+- Dinámicas de trabajo con `R`
+- Los objetos en `R`
 - El poder de transformar objetos `class()` y `as.*()` 
 - Además de sumar, ¿qué puedo hacer en `R`? Los operadores 
 - Sí, pero en las encuestas hay códigos y etiquetas: factores `factor()`, `levels()`, `ordered()` y `fct_relevel()` 
@@ -75,7 +63,7 @@ El curso consta de **cinco módulos básicos** (MB) en los que se expondrán los
 - Tablas de frecuencias `frq()`
 - Estadísticos descriptivos `descr()`
 - Tablas de contingencia `crosstab()`
-- tablas para preguntas de respuesta múltiple `tab_cells()`
+- Tablas para preguntas de respuesta múltiple `tab_cells()`
 - Tablas personalizadas `tab_*()`
 - Exportar resultados `openxlsx`
 
@@ -85,3 +73,6 @@ El curso consta de **cinco módulos básicos** (MB) en los que se expondrán los
 
 Cada sesión tendrá una duración aproximada de cuatro horas y serán de carácter práctico. Las explicaciones irán mostrando código que se podrá ir ejecutando en paralelo. Cada sesión tendrá asociada una práctica que consistirá en utilizar las funciones en casos prácticos, un *script* comentado para facilitar la resolución de los ejercicios y otro *script* con las soluciones.
 
+## Presupuesto
+
+El presupuesto de las cuatros sesiones es de 1.200 euros brutos.
