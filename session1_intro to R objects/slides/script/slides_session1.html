@@ -81,22 +81,36 @@ class: center, middle, inverse, title-slide
 - 
 
 ---
+# Directorio de trabajo
+
+La primera opción es utilizar un proyecto de `RStudio`, que fijará el directorio de trabajo en la carpeta escogida:
+
+`File` `\(\to\)` `New projecjt...` `\(\to\)` `New directory`
+
+La segunda opción consiste en fijar manualmente el directorio de trabajo:
+
+
+```r
+setwd("c:/user/pablo/documentos/mi proyecto de R")
+```
+
+---
 class: inverse, center, middle 
 
-# Objetos en `R`
+# Objetos en R
 
 ---
 # Objetos en `R`
 
-## - Vectors
+- **Vectors**
   
 ---
 
 # Vectores
 
-#### `c()`, `names()`
+#### `c()` | `names()`
 
-Un **vector** es el objeto básico de `R`, un conjunto de números o caracteres. Todos los elementos d eun vector deben de ser del mismo tipo. 
+Un **vector** es el objeto básico de `R`, un conjunto de números o caracteres. Todos los elementos de un vector deben de ser del mismo tipo. 
 
 
 ```r
@@ -142,7 +156,6 @@ vector_integer
 ```
 ## [1] 1 2 5
 ```
-
 -- 
 
 Los vectores de tipo **double** están compuestos por números decimales:
@@ -170,7 +183,6 @@ vector_character
 ```
 ## [1] "Hola"              "Casa"              "Terreno en Madrid"
 ```
-
 -- 
 
 Los vectores de tipo **logical** contienen los elemento *booleanos* `TRUE` y `FALSE`:
@@ -188,8 +200,8 @@ vector_logical
 # Objetos en `R`
 
 - Vectors
-
-## - Matrices  
+     
+- **Matrices**  
 
 ---
 
@@ -219,12 +231,12 @@ my_matrix
 
 - Matrices  
 
-## - Data frames
+- **Data frames**
 ---
 
 # data frame
 
-#### `data.frame(..., stringsAsFactors = TRUE)` `rnorm(n, mean, sd)` `runif(n, min, max)`
+#### `data.frame(..., stringsAsFactors = TRUE)` | `rnorm(n, mean, sd)` | `runif(n, min, max)`
 
 Los **data frames** son conjuntos de datos en los que las columnas pueden ser de diferente tipo. Equiparable al conjunto de datos estándar utilizado en las Ciencias Sociales, casos en las filas y variables en las columnas.
 
@@ -238,12 +250,12 @@ my_df
 ```
 
 ```
-##   var_char     var_num var_logic
-## 1        a -0.11674234     FALSE
-## 2        b  0.15812546      TRUE
-## 3        c  1.28794010     FALSE
-## 4        d -0.06709884      TRUE
-## 5        e  0.03565093     FALSE
+##   var_char    var_num var_logic
+## 1        a -0.8515402      TRUE
+## 2        b  0.5462238      TRUE
+## 3        c -2.0494348      TRUE
+## 4        d -0.2486107     FALSE
+## 5        e -0.9418106      TRUE
 ```
 
 ---
@@ -255,7 +267,7 @@ my_df
 
 - Data frames
 
-## - Lists
+- **Lists**
 
 ---
 ## list
@@ -266,7 +278,7 @@ Las **listas** son conjuntos de diferentes tipos de elementos (e.g. vectores, ma
 
 
 ```r
-my_list &lt;- list(my_vector, my_matrix, my_df) # generar lista
+my_list &lt;- list(my_vector, my_df) # generar lista
 my_list
 ```
 
@@ -276,19 +288,12 @@ my_list
 ##    10    20    10 
 ## 
 ## [[2]]
-##      [,1] [,2] [,3] [,4] [,5]
-## [1,]    1    5    9   13   17
-## [2,]    2    6   10   14   18
-## [3,]    3    7   11   15   19
-## [4,]    4    8   12   16   20
-## 
-## [[3]]
-##   var_char     var_num var_logic
-## 1        a -0.11674234     FALSE
-## 2        b  0.15812546      TRUE
-## 3        c  1.28794010     FALSE
-## 4        d -0.06709884      TRUE
-## 5        e  0.03565093     FALSE
+##   var_char    var_num var_logic
+## 1        a -0.8515402      TRUE
+## 2        b  0.5462238      TRUE
+## 3        c -2.0494348      TRUE
+## 4        d -0.2486107     FALSE
+## 5        e -0.9418106      TRUE
 ```
 
 ---
@@ -303,7 +308,7 @@ my_list
 
 - Lists
 
-## - Functions 
+- **Functions** 
 
 ---
 # Functions
@@ -346,7 +351,7 @@ runif(n = 5, min = 0, max = 1)
 ```
 
 ```
-## [1] 0.7886289 0.7350379 0.6545318 0.2183688 0.3302800
+## [1] 0.45337129 0.09207319 0.23890004 0.35799788 0.65875701
 ```
 
 Los argumentos también pueden ser interpretados según su posición en la función:
@@ -357,7 +362,7 @@ runif(5, 0, 1)
 ```
 
 ```
-## [1] 0.5977877 0.4291395 0.6183972 0.9470160 0.1779285
+## [1] 0.06739364 0.73919316 0.10367962 0.25893259 0.85656707
 ```
 
 Algunos argumentos vienen definidos por defecto:
@@ -367,7 +372,7 @@ runif(5) # min = 0; max = 1
 ```
 
 ```
-## [1] 0.8943456 0.1354862 0.1716469 0.8712958 0.9519675
+## [1] 0.4097614 0.8938828 0.5805943 0.8839287 0.7309060
 ```
 ---
 # libraries
@@ -392,10 +397,145 @@ library(packageName)
 ---
 class: center, middle, inverse
 
-# Transformar objetos de un tipo a otro
+# Factores: trabajar con datos de encuestas
 
 ---
-# Primero: ¿qué tipo de objeto es?
+# Factor
+
+#### `factor(x, levels, labels, ordered)` | `str(x)`
+
+Los **factores** son un tipo concreto de vector en el que unos **valores numéricos son asociados a unas etiquetas**.
+
+
+```r
+## 1 = Trabaja, 2 = Desemp., 3 = Retirado  
+vector_values &lt;- c(1, 2, 2, 3, 1, 2)
+
+value_factor &lt;- factor(vector_values, levels = c(1, 2, 3), 
+                       labels = c("Trabaja", "Desemp.", "Retirado"))
+str(value_factor) 
+```
+
+```
+##  Factor w/ 3 levels "Trabaja","Desemp.",..: 1 2 2 3 1 2
+```
+
+---
+# Factor
+
+Los factores también pueden ser generados a partir de vectores de tipo *character*. En ese caso los **levels** son obtenidos de las categorías de texto del vector.
+
+
+```r
+vector_labels &lt;- c("Trabaja", "Desemp.", "Trabaja", "Trabaja", "Retirado")
+
+labels_factor &lt;- factor(vector_labels)
+str(labels_factor)
+```
+
+```
+##  Factor w/ 3 levels "Desemp.","Retirado",..: 3 1 3 3 2
+```
+
+---
+# Cambiar las etiquetas de un factor
+#### `recode(x, ..., .default, .missing)` | `table(x, y)`
+
+
+```
+## Registered S3 methods overwritten by 'ggplot2':
+##   method         from 
+##   [.quosures     rlang
+##   c.quosures     rlang
+##   print.quosures rlang
+```
+
+```
+## -- Attaching packages --------------------------------------------------------------------------------- tidyverse 1.2.1 --
+```
+
+```
+## v ggplot2 3.1.1     v purrr   0.3.2
+## v tibble  2.1.3     v dplyr   0.8.1
+## v tidyr   0.8.3     v stringr 1.4.0
+## v readr   1.3.1     v forcats 0.4.0
+```
+
+```
+## -- Conflicts ------------------------------------------------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+```
+
+Una de las operaciones básicas con los factores es cambiar las etiquetas, para ello se utiliza la función `recode()`. En este ejemplo se modifican `"Desemp."` `\(\to\)` `"Desempleado"` y `"Retirado"` `\(\to\)` `"Jubilado"`:
+
+
+```r
+labels_factor_recode &lt;- recode(labels_factor, 
+                               "Desemp." = "Desempleado",
+                               "Retirado" = "Jubilado")
+
+table(labels_factor, labels_factor_recode)
+```
+
+```
+##              labels_factor_recode
+## labels_factor Desempleado Jubilado Trabaja
+##      Desemp.            1        0       0
+##      Retirado           0        1       0
+##      Trabaja            0        0       3
+```
+
+---
+# Reordenar los niveles de un factor
+
+#### `fct_relevel(x, ...)`
+
+Los niveles de un factor se pueden reordenar con la función `fct_relevel()`. Por ejemplo, asociar el nivel `"Trabaja"` con el valor `1`. Los niveles no explicitados en la función son colocados al final en el mismo orden que estaban: 
+
+
+```r
+levels(labels_factor_recode)
+```
+
+```
+## [1] "Desempleado" "Jubilado"    "Trabaja"
+```
+
+```r
+labels_factor_recode &lt;- fct_relevel(labels_factor_recode, "Trabaja")
+levels(labels_factor_recode)
+```
+
+```
+## [1] "Trabaja"     "Desempleado" "Jubilado"
+```
+
+---
+# Combinar varios niveles de un factor
+
+La función `recode()` sirve para unir categorías de los factores, recodificar:
+
+
+```r
+labels_factor_recode &lt;- recode(labels_factor_recode, 
+                               "Desempleado" = "No trabaja",
+                               "Jubilado" = "No trabaja")
+
+levels(labels_factor_recode)
+```
+
+```
+## [1] "Trabaja"    "No trabaja"
+```
+
+---
+class: center, middle, inverse
+
+# Transformar objetos
+
+---
+# Paso 1: ¿qué tipo de objeto es?
 
 #### `class(x)` `str(x)`
 
@@ -439,37 +579,100 @@ class(my_list)
 ```
 ## [1] "list"
 ```
----
 
+---
+# Paso 2: transformar objetos
+
+Las funciones de tipo `as.data.frame()` sirven para transformar los objetos de R, sin embargo todas las transformaciones no son posibles. Principales transformaciones:  
+ 
+
+
+```r
+as.character()
+as.factor()
+as.numeric()
+as.data.frame()
+as.list()
+```
+
+---
+#character `\(\to\)` numeric
+
+--
+
+🔴: Tras cargar un conjunto de datos una varaible de tipo numérico, como puede ser edad está almacenada como texto. El objetivo es calcular la media.
+
+
+```r
+numbers &lt;- c("19.0", "22.0", "33.0")
+```
+
+--
+
+Partimos de un vector de tipo *character* que contiene números:
+
+
+```r
+mean(numbers)
+```
+
+```
+## Warning in mean.default(numbers): argument is not numeric or logical:
+## returning NA
+```
+
+```
+## [1] NA
+```
+
+-- 
+
+Para transformarlo en *numeric*:
+
+
+```r
+numbers_new &lt;- as.numeric(numbers)
+mean(numbers_new)
+```
+
+```
+## [1] 24.66667
+```
+
+---
+#character `\(\to\)` factor
+
+Partimos de un vector de tipo *character*:
+
+
+```r
+char &lt;- c("Madrid", "Barcelona", "Madrid")
+str(char)
+```
+
+```
+##  chr [1:3] "Madrid" "Barcelona" "Madrid"
+```
+
+Para transformarlo en *factor*:
+
+
+```r
+factor_new &lt;- as.factor(char)
+str(factor_new)
+```
+
+```
+##  Factor w/ 2 levels "Barcelona","Madrid": 2 1 2
+```
+
+
+---
 ## Estructura de R: factores
 
 Los **factores** son vectores de datos categóricos
 
 
-```r
-df$varl
-```
-
-```
-## [1] a b c d e
-## Levels: a b c d e
-```
-
-```r
-class(df$varl) #función: evaluar la clase del objeto
-```
-
-```
-## [1] "factor"
-```
-
-```r
-levels(df$varl) #función: evaluar los niveles del factor
-```
-
-```
-## [1] "a" "b" "c" "d" "e"
-```
 
 
 
@@ -481,6 +684,13 @@ Ayuda con las funciones:
 
 ```r
 help(mean)
+```
+
+```
+## starting httpd help server ... done
+```
+
+```r
 ?mean
 ```
 ---
@@ -675,7 +885,7 @@ grep('天', dojutsu, value = TRUE)
 ```
 
 ```
-# [1] "地爆天星" "天照"
+# character(0)
 ```
 
 ---
@@ -776,9 +986,8 @@ library(leaflet)
 leaflet() %&gt;% addTiles() %&gt;% setView(-93.65, 42.0285, zoom = 17)
 ```
 
-<div id="htmlwidget-c41659d691d03a8cde04" style="width:100%;height:432px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c41659d691d03a8cde04">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]}],"setView":[[42.0285,-93.65],17,[]]},"evals":[],"jsHooks":[]}</script>
-
+&lt;div id="htmlwidget-0f4c37c95a1a5db8b16b" style="width:100%;height:432px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-0f4c37c95a1a5db8b16b">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]}],"setView":[[42.0285,-93.65],17,[]]},"evals":[],"jsHooks":[]}</script><
 ---
 
 
@@ -789,9 +998,8 @@ DT::datatable(
 )
 ```
 
-<div id="htmlwidget-fbbc6133919217d5a2c8" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-fbbc6133919217d5a2c8">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9],[3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1],[1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5],[0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1],["setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sepal.Length<\/th>\n      <th>Sepal.Width<\/th>\n      <th>Petal.Length<\/th>\n      <th>Petal.Width<\/th>\n      <th>Species<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
-
+&lt;div id="htmlwidget-45de81d7758e3cc3b3f0" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-45de81d7758e3cc3b3f0">{"x":{"filter":"none","fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10"],[5.1,4.9,4.7,4.6,5,5.4,4.6,5,4.4,4.9],[3.5,3,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1],[1.4,1.4,1.3,1.5,1.4,1.7,1.4,1.5,1.4,1.5],[0.2,0.2,0.2,0.2,0.2,0.4,0.3,0.2,0.2,0.1],["setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa","setosa"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Sepal.Length<\/th>\n      <th>Sepal.Width<\/th>\n      <th>Petal.Length<\/th>\n      <th>Petal.Width<\/th>\n      <th>Species<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":8,"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[8,10,25,50,100]}},"evals":[],"jsHooks":[]}</script><
 ---
 
 # Some Tips

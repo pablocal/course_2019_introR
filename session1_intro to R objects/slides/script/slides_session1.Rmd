@@ -43,14 +43,14 @@ mono_light(
 # Cómo sobrevivir a una pelea con `R`
 
 - Tipos de **objetos en `R`**: vectors, matrices, data frames, lists, functions
-    
-- El poder de **transformar objetos**: `class()` y `as._()`
+
+- El caso especial de los **factores** o cómo trabajar con datos de encuesta
      
 - **Operadores**: `+`, `-`, `/`, `*`, `**`,  COMPLETAR
     
 - **Indexación** en `R`: `[]`, `[[]]`, `$`
-    
-- El caso especial de los **factores** o cómo trabajar con datos de encuesta
+
+- El poder de **transformar objetos**: `class()` y `as._()`
      
 - Cadenas de **texto**: funciones básicas
      
@@ -81,7 +81,7 @@ setwd("c:/user/pablo/documentos/mi proyecto de R")
 ---
 class: inverse, center, middle 
 
-# Objetos en `R`
+# Objetos en R
 
 ---
 # Objetos en `R`
@@ -92,9 +92,9 @@ class: inverse, center, middle
 
 # Vectores
 
-#### `c()`, `names()`
+#### `c()` | `names()`
 
-Un **vector** es el objeto básico de `R`, un conjunto de números o caracteres. Todos los elementos d eun vector deben de ser del mismo tipo. 
+Un **vector** es el objeto básico de `R`, un conjunto de números o caracteres. Todos los elementos de un vector deben de ser del mismo tipo. 
 
 ```{r gen vector, echo=TRUE}
 my_vector <- c(10, 20, 10) # crear objeto mi_vector
@@ -123,7 +123,6 @@ Los vectores **integer** están compuestos por números enteros:
 vector_integer <- c(1, 2, 5)
 vector_integer
 ```
-
 -- 
 
 Los vectores de tipo **double** están compuestos por números decimales:
@@ -141,7 +140,6 @@ Los vectores **character** contienen cadenas de texto:
 vector_character <- c("Hola", "Casa", "Terreno en Madrid")
 vector_character 
 ```
-
 -- 
 
 Los vectores de tipo **logical** contienen los elemento *booleanos* `TRUE` y `FALSE`:
@@ -181,7 +179,7 @@ my_matrix
 
 # data frame
 
-#### `data.frame(..., stringsAsFactors = TRUE)` `rnorm(n, mean, sd)` `runif(n, min, max)`
+#### `data.frame(..., stringsAsFactors = TRUE)` | `rnorm(n, mean, sd)` | `runif(n, min, max)`
 
 Los **data frames** son conjuntos de datos en los que las columnas pueden ser de diferente tipo. Equiparable al conjunto de datos estándar utilizado en las Ciencias Sociales, casos en las filas y variables en las columnas.
 
@@ -202,7 +200,7 @@ my_df
 
 - Data frames
 
-## - Lists
+- **Lists**
 
 ---
 ## list
@@ -212,7 +210,7 @@ my_df
 Las **listas** son conjuntos de diferentes tipos de elementos (e.g. vectores, matrices, df, funciones, listas...):
 
 ```{r list example, echo=TRUE}
-my_list <- list(my_vector, my_matrix, my_df) # generar lista
+my_list <- list(my_vector, my_df) # generar lista
 my_list
 ```
 
@@ -228,7 +226,7 @@ my_list
 
 - Lists
 
-## - Functions 
+- **Functions** 
 
 ---
 # Functions
@@ -293,14 +291,90 @@ class: center, middle, inverse
 # Factores: trabajar con datos de encuestas
 
 ---
-class: center, middle, inverse
+# Factor
 
-# Transformar objetos de un tipo a otro
+#### `factor(x, levels, labels, ordered)` | `str(x)`
+
+Los **factores** son un tipo concreto de vector en el que unos **valores numéricos son asociados a unas etiquetas**.
+
+```{r factor from values}
+## 1 = Trabaja, 2 = Desemp., 3 = Retirado  
+vector_values <- c(1, 2, 2, 3, 1, 2)
+
+value_factor <- factor(vector_values, levels = c(1, 2, 3), 
+                       labels = c("Trabaja", "Desemp.", "Retirado"))
+str(value_factor) 
+```
 
 ---
-# Primero: ¿qué tipo de objeto es?
+# Factor
 
-#### `class(x)` `str(x)`
+Los factores también pueden ser generados a partir de vectores de tipo *character*. En ese caso los **levels** son obtenidos de las categorías de texto del vector.
+
+```{r factor from labels}
+vector_labels <- c("Trabaja", "Desemp.", "Trabaja", "Trabaja", "Retirado")
+
+labels_factor <- factor(vector_labels)
+str(labels_factor)
+```
+
+---
+# Cambiar las etiquetas de un factor
+#### `recode(x, ..., .default, .missing)` | `table(x, y)`
+
+```{r load tidyverse, echo=FALSE}
+# install.packages("tidyverse")
+library(tidyverse)
+```
+
+Una de las operaciones básicas con los factores es cambiar las etiquetas, para ello se utiliza la función `recode()`. En este ejemplo se modifican `"Desemp."` $\to$ `"Desempleado"` y `"Retirado"` $\to$ `"Jubilado"`:
+
+```{r change factor labels}
+
+labels_factor_recode <- recode(labels_factor, 
+                               "Desemp." = "Desempleado",
+                               "Retirado" = "Jubilado")
+
+table(labels_factor, labels_factor_recode)
+```
+
+---
+# Reordenar los niveles de un factor
+
+#### `fct_relevel(x, ...)`
+
+Los niveles de un factor se pueden reordenar con la función `fct_relevel()`. Por ejemplo, asociar el nivel `"Trabaja"` con el valor `1`. Los niveles no explicitados en la función son colocados al final en el mismo orden que estaban: 
+
+```{r reorder factor levels}
+levels(labels_factor_recode)
+labels_factor_recode <- fct_relevel(labels_factor_recode, "Trabaja")
+levels(labels_factor_recode)
+```
+
+---
+# Combinar varios niveles de un factor
+
+La función `recode()` sirve para unir categorías de los factores, recodificar:
+
+```{r combinar categorías}
+
+labels_factor_recode <- recode(labels_factor_recode, 
+                               "Desempleado" = "No trabaja",
+                               "Jubilado" = "No trabaja")
+
+levels(labels_factor_recode)
+
+```
+
+---
+class: center, middle, inverse
+
+# Transformar objetos
+
+---
+# Paso 1: ¿qué tipo de objeto es?
+
+#### `class(x)` | `str(x)`
 
 La función `class()` devuelve el tipo de objeto:
 
@@ -323,21 +397,73 @@ class(my_list)
 ```
 
 ---
-#¿Cómo transformar un factor en una variable numérica?
+# Paso 2: transformar objetos
 
+Las funciones de tipo `as.data.frame()` sirven para transformar los objetos de R, sin embargo todas las transformaciones no son posibles. Principales transformaciones:  
+ 
+
+```{r types of transformations, eval=FALSE}
+as.character()
+as.factor()
+as.numeric()
+as.data.frame()
+as.list()
+```
 
 ---
-## Estructura de R: factores
+#character $\to$ numeric
 
-Los **factores** son vectores de datos categóricos
+--
+`r emo::ji("red_circle")` Tras cargar un conjunto de datos una varaible de tipo numérico, como puede ser edad está almacenada como texto. El objetivo es calcular la media.
 
-```{r fig.width=10, fig.height=7, echo=TRUE}
-df$varl
-class(df$varl) #función: evaluar la clase del objeto
-levels(df$varl) #función: evaluar los niveles del factor
+```{r create character vector with numbers}
+numbers <- c("19.0", "22.0", "33.0")
+```
+--
+
+Partimos de un vector de tipo *character* que contiene números:
+
+```{r mean character vector}
+mean(numbers)
 ```
 
 
+-- 
+
+`r emo::ji("green_circle")` Transformar el vector en *numeric*:
+
+```{r character to numeric}
+numbers_new <- as.numeric(numbers)
+mean(numbers_new)
+```
+
+---
+#character $\to$ factor
+
+`r emo::ji("red_circle")` R trata los factores de forma específica en algunos procedimientos, como por ejemplo en las regresiones `lm()`. Las variables de tipo factor son dicotomizadas, sin embargo, en muchas ocasiones al cargar el conjunto de datos la variable categórica está alamacenada como *character*.
+
+--
+Partimos de un vector de tipo *character*, en este caso ciudades.
+
+```{r character vector}
+char <- c("Madrid", "Barcelona", "Madrid")
+str(char)
+```
+       
+--
+
+`r emo::ji("green_circle")` Transformar la variable en factor usando `as.factor()`:
+
+```{r character to factor}
+factor_new <- as.factor(char)
+str(factor_new)
+```
+---
+class: inverse, middle, center
+
+# 
+
+---
 
 # Help!
 
