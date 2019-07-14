@@ -1,0 +1,227 @@
+---
+title: "Cómo sobrevivir a una pelea con R"
+author:  "Ejercicios"
+date: "Julio 2019"
+output:
+  tufte::tufte_handout
+---
+
+```{r setup, include=FALSE}
+library(tufte)
+library(tidyverse)
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+```
+
+
+## Introducción
+
+En los ejercicios de la primera sesión vamos a trabajar sobre los diferentes objetos de `R` y su manipulación. Antes de empezar:
+
+1. **Abre el script** `sesion1_ejercicios.R`. **Limpia** el espacio de datos ejecutando `rm(list = ls())`. Con este comando eliminarás del espacio de trabajo todos los datos (objetos) que estén disponibles evitando posibles confusiones^[Puedes usar el atajo `Ctrl + Enter` para ejecutar una línea de código en `RStudio`].   
+
+
+2. **Carga los paquetes** que necesitas para realizar la práctica, ejecutando las líneas de `library()`. En caso de que alguno de ellos no esté instalado, instalaló utilizando `install.packages("package")`^[Usa comillas (" ") a la hora de instalar los paquetes con la función `install.packages()`].    
+
+
+## A. Tipos de objetos
+
+**A.1** Crea **dos vectores** `(x, y)`, ambos de tres elementos. El primero debe contener los valores `2, 4, 6` y el segundo `3, 4, 9`. Para ello utiliza la función `c()`. Calcula la **media de cada vector** y **almacena los resultados** como `mean_x` y `mean_y`. Después suma `mean_x` al vector `x`, ¿Cómo se ha producido la suma? Anota la respuesta en el script.     
+
+```{marginfigure}
+`c(...)`
+Devuelve un vector que combina los elementos pasados en la función.
+```
+
+```{marginfigure}
+`mean(x, na.rm = FALSE)`
+Devuelve la media aritmética del vector `x`.
+```
+
+$\smallskip$ 
+
+**A.2** Une los vectores `x` e `y` en un único vector, que será asignado a `z`. A partir del vector `z` **crea una matriz de dos columnas** y almacénala como `matriz_a`.   
+```{marginfigure}
+`matrix(data, nrow, ncol, byrow)`
+Devuelve un objeto de tipo `matrix`.
+```
+$\smallskip$     
+
+**A.3** Crea un **data frame** (`df`) en el que la `var1` sea el vector `x`, la `var2` sea `y` y la `var3` sea `z`. Utiliza la función `data.frame()`. Imprime el df, ¿qué ha ocurrido con la `var_1` y la `var_2`? 
+
+```{marginfigure}
+`data.frame(..., stringsAsFactors = TRUE)`
+Devuelve un data frame con los elementos especificados en `...`.
+```
+$\smallskip$      
+     
+**A.4** Crea una **lista** (`storage`) que contenga todos los elementos que has creado hasta el momento: `x`, `y`, `mean_x`, `mean_y`, `z`, `matriz_a` y `df`. Utiliza la función `list()`. Al finalizar imprime el resultado.    
+```{marginfigure}
+`list(...)`
+Devuelve una lista con los elementos especificados en `...`.
+```
+
+## B. Indexar objetos
+
+**B.1** A continuación tienes un vector con los `ingresos` de una serie de individuos. Utiliza la función `mean()` para **calcular la media de los ingresos de los hombre y las mujeres por separado**. ¿Qué sistema has utilizado para seleccionar los subgrupos: posicional o por nombre? ¿Por qué? 
+
+```{r B1 exercise, echo=TRUE, fig.fullwidth = FALSE}
+ingresos <- c(Marcos = 1500, Marta = 200, 
+              Juan = 2050, Isabel = 300)
+```
+$\smallskip$ 
+
+**B.2** El data frame `mtcars` viene precargado en `R`^[`R` y alguno de sus paquetes traen datos precargados con el fin de facilitar la replicabilidad de los ejemplos. Puedes consultar un listado de estos objetos con la función `data()`. Para acceder a los datos solo tienes que utilizar su nombre, por ejemplo, `mtcars`.]. Para saber cómo es el conjunto de datos `mtcars` ejecuta la siguiente línea de código, que te permitirá observar los 5 primeros casos:
+```{marginfigure}
+`head(df, n = 6)`
+Devuelve un data frame con las primeras 6 observaciones por defecto.
+```
+$\smallskip$ 
+
+```{r B2 exer code, eval=FALSE}
+head(x = mtcars, n = 5)
+```
+$\smallskip$ 
+
+```{r B2 exer, echo=FALSE}
+kableExtra::kable(head(mtcars[,1:6], n = 5))
+```
+$\smallskip$ 
+
+
+El data frame `mtcars` cuenta con 11 variables y los nombres de las filas, a los que puedes acceder con la función `rownames(df)`. Realiza una **selección de columnas**, es decir, variables. Selecciona las variables `mpg`, `cyl` y `wt` y guarda el data frame resultante como `mtcars_small`. Posteriormente calcula la media de la variable `mpg`.
+```{marginfigure}
+`rownames(df)`
+Devuelve un vector de tipo character con los nombres de las filas o su posición.
+```
+$\smallskip$ 
+
+```{r B2 answer, include=FALSE}
+mtcars_small <- mtcars[, c("mpg", "cyl", "wt")]
+```
+
+
+**B.3** Del data frame `mtcars_small` calcula la media de la variable `mpg` para los 5 primeros casos **indexando de dos formas diferentes**.       
+
+$\smallskip$ 
+
+**B.4** Ahora selecciona una **muestra aleatoria de 7 coches** del conjunto de datos `mtcars_small`. Para seleccionar una muestra aleatoria puedes usar la función `sample()`. Esta función creará un vector con los elementos seleccionados. Por lo general, cuando se extrae una muestra de un data frame con `sample()`se utilizan los nombres de las filas como referente. A los nombres de las filas se accede con la función `rownames()`. Fíjate en  el siguiente ejemplo:
+```{marginfigure}
+`sample(x, size, replace, prob)`
+Devuelve un vector con los `n` elementos seleccionados en la muestra.
+```
+
+```{r B4}
+set.seed(123)
+sample(x = rownames(mtcars_small), size =  2)
+```
+
+Ahora selecciona la muestra y guárdala como `mtcars_small_sample`.
+
+
+
+
+## C. Modificar vectores
+
+> Para **modificar vectores dentro de un data frame** se utiliza `$` para acceder a las variables o vectores, por ejemplo:
+>
+
+>`mtcars$new <- mtcars$mpg + mtcars$wt`
+>
+
+> La variable `mtcars$new` será creada dentro de `mtcars`, siendo la suma de `mpg` y `wt` para cada caso del data frame.
+
+
+**C.1** Otro conjunto de datos precargado en `R` es `gss_cat`. Utiliza la función `head()` para **explorar los datos**. Recodifica la variable `race` de forma que tenga dos categorías `white` y `Non-white`. Puedes usar la función `levels()` para explorar los niveles del factor y la función `recode()` para hacer la recodificación. Almacena la nueva variable dentro de `gss_cat` como `race_recode`. Usa la función `table()` para comprobar la recodificación.
+```{marginfigure}
+`levels(x)`
+Devuelve un vector con los niveles de un factor `x`.
+```
+```{marginfigure}
+`recode(x, ..., .default, .missing)`
+Devuelve un vector recodificado.
+```
+```{marginfigure}
+`table(x, y)`
+Devuelve un objeto tipo `table`.
+```
+$\smallskip$ 
+
+**C.2** Haz un `table()` de la variable `marital`, como ves la respuesta `No answer` es la primera opción. **Reordena los niveles de la variable** `marital` de forma que las categorías `"Married"`, `"Divorced"` y `"Separated"` sean los tres primeros niveles y `"No answer"` el último. Sustituye la antigua versión de `marital` por la nueva.
+```{marginfigure}
+`fct_relevel(x, ...)`
+Devuelve un factor con las categorías reordenadas.
+```
+$\smallskip$ 
+
+**C.3** Convierte el nivel **"No answer"** de la variable `marital` en `NA`. Determina el número de valores perdidos utilizando la función `is.na()` y `sum()`.
+```{marginfigure}
+`is.na(x)`
+Devuelve un vector lógico.
+```
+```{marginfigure}
+`sum(x, na.rm = FALSE)`
+Devuelve la suma de los elementos de `x`.
+```
+$\smallskip$ 
+
+
+**C.4** A continuación tienes un vector de tipo character (`datos`). **Separa los nombres de la edad** y crea un data frame con dos variables: `nombre` y `edad`. Para conocer la longitud de las cadenas de texto puedes utilizar la función `str_length()`. Para crear el data frmae utiliza la función `cbind()` que sirve para combinar columnas. Guarda el nuevo objeto con el nombre `datos_edad_nombre`.
+```{marginfigure}
+`str_length(string)`
+Devuelve un vector con la longitud de la `string`.
+```
+```{marginfigure}
+`str_locate(string, pattern)`
+Devuelve una matriz con la posición inicial y final de la `pattern` en cada `string`.
+```
+```{marginfigure}
+`str_sub(string, start, end)`
+Devuelve un vector con las cadenas extraídas.
+``` 
+ 
+```{r C4}
+datos <- c("Juan Antonio, 28", "María Jesús, 29", 
+           "Pedro Sarmiento, 21", "Josefa Maura, +99")
+```
+
+```{marginfigure}
+`cbind(x, y)`
+Devuelve un objeto que combina als columnas de `x` e `y`.
+```
+$\smallskip$
+
+
+## D. Transformar objetos
+
+
+**D.1** ¿Qué tipo de objeto es `datos_edad_nombre`? Conviértelo en un data frame y asignalo al mismo objeto. Imprime el objeto resultante.
+```{marginfigure}
+`class(x)`
+Devuelve la denominación tipo de objeto.
+```
+```{marginfigure}
+`as.data.frame(x)`
+Devuelve un objeto tipo data frame.
+```
+$\smallskip$
+
+
+**D.2** Observa qué tipo de variables son `nombre` y `edad` del conjunto `datos_edad_nombre`. Convierte la variable `nombre` en un vector de tipo character y la variable `edad` en numérica. Al transformar las variables utiliza los nombres `edad_numeric` y `nombre_character` ¿Qué ha ocurrido con la variable `edad`? ¿Y con `nombre`?
+```{marginfigure}
+`str(x)`
+Devuelve la estructura de `x`.
+```
+```{marginfigure}
+`as.character(x)`
+Devuelve un objeto tipo character.
+```
+```{marginfigure}
+`as.numeric(x)`
+Devuelve un objeto tipo numeric.
+```
+$\smallskip$
+
+**D.3** Una posible solución al problema con `edad_numeric` es hacer una doble conversión con el fin de que los niveles de `edad` sean leídos en vez de los valores de la variable. Crea una nueva versión de la variable `edad` que se llame `edad_numeric2`. Para ello, en primer lugar, convierte el vector en charater para posteriormente convertirlo en numeric.
+

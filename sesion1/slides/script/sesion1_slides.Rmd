@@ -1,0 +1,1166 @@
+---
+title: "Cómo sobrevivir a una pelea con R"
+subtitle: 'Curso de introducción a R'
+author: ''
+institute: 'Pablo Cabrera-Álvarez <br> <span style = "font-size: 75%;">[`r icon::fa("github")`](https://github.com/pablocal) | [`r icon::fa("twitter")`](https://twitter.com/pablocalv) @pablocalv </span> <br>'
+date: "<br><br>Julio 2019"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightStyle: idea
+      titleSlideClass: ["left", "middle", "inverse"]
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+library(DiagrammeR)
+library(tidyverse)
+library(kableExtra)
+options(htmltools.dir.version = FALSE)
+mono_accent_inverse(
+  base_color = "#3C989E",
+  link_color = "#b1d5d8",
+  header_font_google = google_font("Oswald", "500"),
+  text_font_google   = google_font("Roboto Slab", "400", "400i"),
+  code_font_google   = google_font("IBM Plex Mono")
+)
+```
+# El curso
+
+1. Cómo sobrevivir a una pelea con `R`    
+ 
+
+--
+2. Manipulación de datos, lo básico pero en `R`    
+ 
+
+--
+3. Manipulación de datos, más allá de lo básico   
+
+--
+ 
+4. *Outputs*: ¿Y todo esto para hacer una tabla?    
+ 
+ 
+--
+     
+     
+----
+    
+    
+- Proyecto: Crear una BD a partir de fuentes web
+
+---
+# Dinámica de trabajo
+
+--
+
+ - **Reproducir** $\to$ **Aplicar** $\to$ **Insertar**    
+
+--
+
+ - **Jugar** con vuestros propios datos    
+ 
+--
+
+ - Dudas a [pablocal@usal.es](mailto:pablocal@usal.es) | [@pablocalv](https://twitter.com/pablocalv)    
+ 
+--
+
+ - En `R` hay que **perderse**    
+ 
+--
+
+- ¿Para qué es `R` útil?    
+
+--
+
+- Materiales y todo el **código** disponible en  [`r icon::fa("github")`](https://github.com/pablocal/course_introR)
+
+
+---
+background-image: url(http://bit.ly/2XGHKmb)
+
+# Cómo sobrevivir a una pelea con `R`
+
+
+
+---
+# Cómo sobrevivir a una pelea con `R`
+
+- Tipos de **objetos en `R`**: vectors, matrices, data frames, lists, functions
+
+--
+
+- **Indexación** en `R` $\to$ `[]`, `$`, `[[]]`:
+  * Vectors
+  * Matrices
+  * Data frames
+  * Lists
+
+--
+
+- **Modificar** vectores en `R`:
+  * Operadores
+  * Factors
+  * Character
+  * Dates
+  * Valores **perdidos** en `R`
+
+--
+
+- **Transformar objetos**: `class()` y `as._()`
+
+--
+
+- **Proyecto** y workflow en `R`
+
+---
+# Antes de empezar, consejos generales `r emo::ji("nerd_face")`
+
+
+- Empezar un script (`.R`)
+  * Título y metadatos
+  * Limpiar el espacio
+  * Cargar paquetes que van a ser usados
+  
+```{r set up, eval=FALSE}
+########## CURSO DE R - Sesión 1: Objetos #############
+# by PCA on 15th jul. 19
+
+rm(list = ls()) # limpiar el espacio
+
+library(tidyverse) # carga paquete tidyverse
+library(lubridate) # carga paquete lubridate
+```
+  
+---
+# Antes de empezar, consejos generales `r emo::ji("nerd_face")`
+
+- Nombrar objetos
+  * 2Cs: Conciso y consistente
+  * Minúscula
+  * Estilos: `sexoEdad`, `sexo_edad` o `sexo.edad`    
+
+--
+
+- Comentar `#` [`Ctrl` + `C`]
+  * Explicar el por qué
+  * Usar separadores para organizar el scrip [`Ctrl` + `Mayús` + `R`]
+
+--
+
+- Espacios  
+  * Usar espacios en torno a los operadores
+  * Evitar espacios en el principio/final de los paréntesis
+  
+```{r spaces, eva=FALSE}
+a<-22+23 # mal
+a <- 22 + 23 # bien
+```
+  
+---
+# Directorio de trabajo
+
+#### `setwd(dir)` | `getwd()`
+
+Antes de comenzar a trabajar en `R` es preciso **designar una carpeta de trabajo**, para lo que existen dos opciones.
+
+--
+
+La primera opción es utilizar un **proyecto de `RStudio`**, que fijará el directorio de trabajo en la carpeta escogida:
+
+`File` $\to$ `New project...` $\to$ `New directory`
+
+--
+
+La segunda opción consiste en **fijar manualmente el directorio**<sup>1</sup> de trabajo con la función `setwd(dir)`. Para conocer el directorio de trabajo actual se puede utilizar `getwd()`.
+
+```{r set wd, eval=FALSE}
+setwd("c:/user/pablo/documentos/mi proyecto de R")
+```
+
+.footnote[
+[1] Nótese el sentido de las barras (`/`).
+]
+ 
+---
+class: inverse, center, middle 
+
+# Objetos en R
+
+---
+# `R` como lenguaje orientado a objetos
+
+R es un **lenguaje orientado a objetos**: todos los elementos son almacenables como un objeto...
+
+
+```{r object oriented}
+number_a <- 5
+number_b <- 2
+```
+
+
+...y los objetos pueden ser utilizados posteriormente en otras operaciones:
+
+```{r object oriente resutls}
+number_c <- number_a*number_b
+
+number_c
+```
+
+---
+# Objetos en `R`
+
+```{r objects-diagram, echo=FALSE}
+mermaid("
+graph LR
+A((Objetos R))-->B[Vector]
+A-->C[Matrix]
+A-->D[Data frame]
+A-->E[List]
+
+style B fill:#00758f
+")
+
+```
+
+
+---
+# Vector
+
+```{r objects diagram vector, echo=FALSE}
+mermaid("
+graph LR
+A((Vector))-->B[Numeric] 
+A-->G[Character]
+A-->H[Logical]
+A-->I[Factor]
+A-->J[Date]
+B-->K[Integer]
+B-->L[Double]
+
+style A fill:#00758f
+
+")
+```
+
+---
+
+# Vectores
+
+#### `c()` | `names()`
+
+Un **vector** es el objeto básico de `R`, un conjunto de números o caracteres. Todos los elementos de un vector deben de ser del mismo tipo. 
+
+```{r gen vector, echo=TRUE}
+my_vector <- c(10, 20, 10) # crear objeto mi_vector
+```
+
+
+Para **imprimir el vector**, simplemente ejecutar el nombre:
+
+```{r print vector, echo=TRUE}
+my_vector # imprimir mi_vector
+```
+
+
+Los elementos de los vectores pueden tener **atributos**, como **nombres**:
+
+```{r name vector, echo=TRUE}
+{{names(my_vector) <- c("Juan", "Marta", "Pablo")}} # asignar nombres
+my_vector # imprimir vector con nombres
+```
+
+---
+# Numeric
+
+Los vectores **integer** están compuestos por números enteros:
+```{r vector integer, echo=TRUE}
+vector_integer <- c(1, 2, 5)
+vector_integer
+```
+
+
+Los vectores de tipo **double** están compuestos por números decimales:
+```{r vector double, echo=TRUE}
+vector_double <- c(1.87, 2, 5.8754)
+vector_double
+```
+
+---
+# Character 
+
+Los vectores **character** contienen cadenas de texto:
+```{r vector character, echo=TRUE}
+vector_character <- c("Hola", "Casa", "Terreno en Madrid")
+vector_character 
+```
+
+---
+# Logical
+
+Los vectores de tipo **logical** contienen los elemento *booleanos* `TRUE` y `FALSE`:
+```{r vector logical, echo=TRUE}
+vector_logical <- c(TRUE, FALSE, TRUE)
+vector_logical
+```
+
+---
+# Factor
+
+#### `factor(x, levels, labels, ordered)` | `str(x)`
+
+Los **factores** son un tipo concreto de vector en el que unos **valores numéricos son asociados a unas etiquetas**.
+
+```{r factor from values}
+## 1 = Trabaja, 2 = Desemp., 3 = Retirado  
+vector_values <- c(1, 2, 2, 3, 1, 2)
+
+value_factor <- factor(vector_values, levels = c(1, 2, 3), 
+                       labels = c("Trabaja", "Desemp.", "Retirado"))
+str(value_factor) 
+```
+
+---
+# Factor
+
+Los factores también pueden ser generados a partir de vectores de tipo *character*. En ese caso los **levels** son obtenidos de las categorías de texto del vector.
+
+```{r factor from labels}
+vector_labels <- c("Trabaja", "Desemp.", "Trabaja", "Trabaja", "Retirado")
+
+labels_factor <- factor(vector_labels)
+str(labels_factor)
+```
+
+---
+# Quiz `r emo::ji("memo")`
+
+En el siguiente vector lógico: `c(TRUE, TRUE, FALSE)`, ¿cuál será el resultado de la suma de sus elementos?
+
+--
+
+```{r quiz vector logical}
+sum(c(TRUE, TRUE, FALSE))
+```
+
+---
+# Objetos en `R`
+
+```{r objects-diagram2, echo=FALSE}
+mermaid("
+graph LR
+A((Objetos R))-->B[Vector]
+A-->C[Matrix]
+A-->D[Data frame]
+A-->E[List]
+
+style C fill:#00758f
+")
+
+```
+---
+
+# Matrix 
+#### `matrix(x, nrow, ncol)`
+
+Los **matrices** son un conjunto de datos del mismo tipo organizados en más de una dimensión:
+  
+```{r matrix example, echo=TRUE}
+my_matrix <- matrix(1:20, nrow = 4) # genera una matriz (4 × 5)
+my_matrix
+```
+
+---
+# Objetos en `R`
+
+
+```{r objects-diagram3, echo=FALSE}
+mermaid("
+graph LR
+A((Objetos R))-->B[Vector]
+A-->C[Matrix]
+A-->D[Data frame]
+A-->E[List]
+
+style D fill:#00758f
+")
+
+```
+---
+
+# Data frame
+
+#### `data.frame(..., stringsAsFactors = TRUE)` | `rnorm(n, mean = 1, sd = 0)` | `runif(n, min = 0, max = 1)`
+
+Los **data frames** son conjuntos de datos en los que las columnas pueden ser vectores de diferente tipo. Equiparable al conjunto de datos estándar utilizado en las Ciencias Sociales, **casos** en las **filas** y **variables** en las **columnas**.
+
+
+```{r df example, echo=TRUE}
+my_df <- data.frame(var_char= letters[1:5],
+                 var_num = rnorm(5),
+                 var_logic = runif(5) > .5)
+my_df
+```
+
+---
+# Objetos en `R`
+
+
+```{r objects-diagram4, echo=FALSE}
+mermaid("
+graph LR
+A((Objetos R))-->B[Vector]
+A-->C[Matrix]
+A-->D[Data frame]
+A-->E[List]
+
+style E fill:#00758f
+")
+
+```
+
+---
+## List
+
+#### `list(...)`
+
+Las **listas** son conjuntos de diferentes tipos de elementos (e.g. vectores, matrices, df, funciones, listas...):
+
+```{r list example, echo=TRUE}
+my_list <- list(vector = my_vector, df = my_df) # generar lista
+my_list
+```
+
+---
+# Quiz `r emo::ji("memo")`
+
+¿Es posible que una lista contenga otra lista dentro como en el siguiente código?
+
+```{r quiz lists, eval=FALSE}
+my_list2 <- list(list_old = my_list, 
+                 df = my_df)
+```
+
+---
+# Function
+
+#### `mean(x, na.rm = FALSE)`
+
+Las **funciones** son las **herramientas** que sirven para trabajar con los datos, también son objetos almacenables, modificables y que pueden ser creadas por el usuario:
+
+```{r function example, echo=TRUE}
+mean(my_vector)
+```
+
+```{r function store output, echo=TRUE}
+mean_my_vector <- mean(my_vector)
+mean_my_vector
+```
+
+---
+# Function
+
+Las **funciones** siempre tienen la misma estructura:
+
+`function(arg1 = x1, arg2 = x2, ...)`
+
+Algunos argumentos son **obligatorios**, otros opcionales; utilizar el nombre del argumento es útil para hacer más legible el código, especialmente en el caso de funciones poco utilizadas.
+        
+```{r function arguments, echo=TRUE}
+runif(n = 5, min = 0, max = 1)
+``` 
+
+Los argumentos también pueden ser interpretados según su **posición** en la función:
+
+```{r function arguments positional, echo=TRUE}
+runif(5, 0, 1)
+```
+
+Algunos argumentos vienen definidos **por defecto**:
+```{r function predef args}
+runif(5) # min = 0; max = 1
+```
+---
+# Paquetes de funciones
+
+#### `install.packages(pkgs)` | `library(pkgs)`
+
+Algunas funciones vienen por defecto en `R` (8 paquetes) y otras están en paquetes creados por terceros. Los paquetes se encuentran disponibles en un repositiorio llamado **CRAN**.
+  
+Para **instalar un paquete**: 
+
+```{r install packages, echo=T, eval=F}
+install.packages("package")
+```
+
+Una vez instalado, para **cargar un paquete**:
+
+```{r load package, echo=T, eval=F}
+library(package)
+```
+
+Alternativamente se puede **extraer una función** de un paquete instalado **sin necesidad de cargarlo**:
+
+```{r load given fn, eval=FALSE}
+package::function()
+```
+
+
+---
+class: center, middle, inverse
+
+# Indexar en R
+
+---
+# Indexar en R
+
+```{r objects_index, echo=FALSE}
+df <- data.frame(Objeto = c("Vector", "Matrix", "Data frame", "List"), 
+                    Indexación = c("Usar corchetes [] junto con la posición o nombre del elemento", "Usar corchetes [,] para seleccionar filas y columnas; en blanco equivale a todas las filas o columnas", "Dos formas habituales $ y [,]. Con $ se seleccionan las columnas por su nombre, mientras que con [,] se seleccionan las filas, según su posición o alguna característica y columnas según su nombre o posición", "Se utiliza $ y [[]], el primero en caso de que los elementos de la lista tengan nombre, el segundo para extraer los elementos por su posición"),
+                    Ejemplo = c("my_vector[1:2] my_vector['Juan']", "my_matrix[c(1, 3), ] my_matrix[1:3, c(2, 5)]", "my_df$var_char my_df[1:5, c('var_char', 'var_num')] my_df[my_df$var_logic == TRUE, ]", "my_list[[2]] my_list$df"))
+
+kable(df) %>%
+  kable_styling(full_width = T) %>%
+  column_spec(1, bold = T, border_right = T) %>%
+  column_spec(2, width = "50em") %>% 
+  column_spec(2, width = "40em") %>% 
+  row_spec(1, bold = T, color = "white", background = "#3C989E") %>% 
+row_spec(3, bold = T, color = "white", background = "#3C989E")
+```
+
+---
+# Indexar vectores
+
+`r icon::ii("alert")` Es recurrente la selección de **elementos dentro de los vectores**. En este caso se quiere seleccionar los valores correspondientes a Marta y Pablo. 
+
+```{r present vector}
+my_vector
+```
+--
+
+`r icon::ii("checkmark-circled")` Para indexar un vector se utiliza el corchete `[]`. Hay dos formas de hacerlo, si el vector no tiene nombres se utiliza la **posición del elemento**. En el caso de Marta es posición `2` mientras que Pablo está en la posición `3`.
+
+```{r index positional}
+my_vector[2:3]
+```
+
+---
+# Indexar vectores
+
+`r icon::ii("checkmark-circled")` La otra opción consiste en utilizar **los nombres de los elementos** del vector:
+
+```{r index names}
+my_vector[c("Marta", "Pablo")]
+```
+
+---
+# Indexar matrices
+
+`r icon::ii("alert")` A veces es necesario **seleccionar parte de las matrices**. En este caso se seleccionará las filas 1 y 3, y las columnas 3-5.
+
+```{r present matrix}
+my_matrix
+```
+
+--
+
+
+`r icon::ii("checkmark-circled")` La indexación de matrices se hace a partir del `[]`, separando con una coma (`,`) la selección de las **filas**, primero, de la selección de las **columnas**, segundo. En ambos casos según su **posición**:
+
+```{r index matrix}
+my_matrix[c(1, 3), 3:5]
+```
+
+---
+# Indexar data frames
+
+`r icon::ii("alert")` En los data frames se suelen **seleccionar variables** o **filtrar casos**. Como ejemplo vamos a utilizar `my_df`. Para empezar vamos a subseleccionar la variable `var_num`.
+
+```{r present df}
+my_df
+```
+
+---
+# Filtrar columnas
+
+`r icon::ii("checkmark-circled")` Las columnas se pueden indexar de hasta tres maneras diferentes, según se utilice el **nombre** (`var_num`) o la **posición** (`2`) de la variable en el data frame y el **tipo de indexación** `[,]` o `$`.
+
+
+```{r select columns, eval=FALSE}
+my_df$var_num # produce un vector
+
+my_df[, "var_num"] # produce un df
+my_df[, 2] # produce un df
+```
+
+---
+# Filtrar filas por posición
+
+`r icon::ii("alert")` Ahora, además de escoger la variables `var_num` vamos a **seleccionar las filas** 1 y 3
+
+--
+        
+        
+`r icon::ii("checkmark-circled")` Para ello en el caso de haber utilizado `$` se emplean los **corchetes** `[]`; en el caso de haber utilizado corchetes `[,]`, se completa la **parte izquierda**:
+
+```{r select rows by order, eval=FALSE}
+my_df$var_num[c(1, 3)] # produce un vector
+my_df[c(1, 3), ]$var_num # produce un vector
+
+my_df[c(1, 3), "var_num"] # produce un vector
+my_df[c(1, 3), 2] # produce un vector
+```
+
+---
+
+# Filtrar filas por carcterística
+
+`r icon::ii("alert")` Lo más común es que las filas sean seleccionadas a partir de una **característica**, por ejemplo, si en `var_logic` es `FALSE`
+
+```{r show again df}
+my_df
+```
+
+---
+# Filtrar filas por carcterística
+
+`r icon::ii("checkmark-circled")` Para ello en el caso de haber utilizado `$` se emplean los **corchetes** `[]`, mientras que en el caso de haber utilizado corchetes `[,]`, se completa la **parte izquierda**:
+
+```{r select rows by condition, eval=FALSE}
+my_df$var_num[my_df$var_logic == FALSE] # produce un vector
+my_df[my_df$var_logic == FALSE, ]$var_num # produce un vector
+
+my_df[my_df$var_logic == FALSE, "var_num"] # produce un vector
+my_df[my_df$var_logic == FALSE, 2] # produce un vector
+```
+
+---
+# Quiz `r emo::ji("memo")`
+
+¿Cómo se seleccionarían los casos para los que `var_logic == TRUE` y que `var_num < 0`?
+
+--
+
+```{r quiz index}
+
+my_df[my_df$var_logic == TRUE & my_df$var_num < 0,]
+
+```
+
+---
+# Indexar lists
+
+`r icon::ii("alert")` También puede ser necesario acceder a **elementos concretos de las listas**. Por ejemplo, queremos **extraer el data frame** de `my_list`:
+
+```{r show my_list}
+my_list
+```
+---
+# Indexar lists
+
+`r icon::ii("checkmark-circled")` Para acceder a los elementos de una lista existen dos sistemas: `$` y `[[]]`. El uso de `$` solo es posible **si los elementos de la lista tienen nombres**, de lo contrario habrá que seleccionarlos por su **posición** utilizando `[[]]`. Para comporbar si una lista tiene nombres se utiliza la función `names()`:
+
+```{r select df in list0}
+names(my_list)
+```
+
+
+```{r select df in list1, eval=FALSE}
+
+my_list$df
+```
+
+```{r select df in list2}
+my_list[[2]]
+```
+
+
+---
+class: center, middle, inverse
+
+# Modificar vectores
+
+---
+class: center, middle, inverse
+
+# Operadores
+
+---
+
+# Operaciones aritméticas
+
+Las **operaciones aritméticas** son las más comunes, `+`, `-`, `/`, `*`, `^`, `%%`, `%/%`. Estas operaciones tienen sentidos con vectores numéricos o factores ordinales. Para ejemplificar las opetaciones con vectores se crean dos vectores, el `v1` y `v2`:
+
+```{r gen two vectors}
+v1 <- c(10, 5, 3)
+v2 <- c(4, 5, 20)
+```
+
+Y ahora operamos con ellos:
+
+```{r arithmetic operations with vectors}
+v1+v2
+v1/v2 
+```
+
+---
+# Operaciones relacionales
+
+Los **operadores relacionales** (`< >`, `<= >=`, `==`, `!=`) funcionan con cualquier tipo de vector comparan dos elementos y devuelven un vector de tipo lógico como resultado:
+
+```{r relational operators}
+v1 == v2
+v1 >= v2
+```
+
+---
+# Operaciones lógicas
+
+Los **operadores lógicos** (`!`, `&`, `|`) sirven para establecer relaciones entre elementos:
+
+```{r logical operators}
+v1 | v2 == c(10, 5, 20) 
+```
+
+---
+
+# Quiz `r emo::ji("memo")`
+
+¿Por qué el resultado de `v1 | v2 == c(10, 5, 20)` es igual a `TRUE TRUE TRUE` dados `V1` y `V2`?
+
+```{r quiz logical }
+v1
+v2
+v1 | v2 == c(10, 5, 20) 
+```
+---
+class: center, middle, inverse
+
+# Factors
+
+
+---
+# `r emo::ji("warning")` `r emo::ji("warning")` `r emo::ji("warning")` Atención `r emo::ji("warning")` `r emo::ji("warning")` `r emo::ji("warning")`
+.pull-left[### `R`
+
+- Los factores son recodificados a <br>partir de los niveles
+
+- La intervención de los factores en <br>
+fórmulas lógicas se hace a traves de <br>
+los niveles
+
+- Ejemplo:
+
+```{r ejemplo recode r, eval=FALSE}
+region <- recode(ciudad, 
+                 "Valladolid" = "CyL",
+                 "Salamanca" = "CyL")
+```
+]
+.pull-rigt[
+### `SPSS` o `Stata`
+
+- Las variables son recodificadas en <br>base a los valores 
+
+- La intervención de las variables en <br> 
+fórmulas lógicas se hace a través de <br> 
+los valores
+
+- Ejemplo:
+
+```{r ejemplo recode spss, eval=FALSE}
+# SPSS
+recode ciudad (3 = 2) (else = copy) into region.
+val labels region 1"Madrid" 2"CyL".
+```
+]
+---
+# Cambiar las etiquetas de un factor
+#### `recode(x, ..., .default, .missing)` | `table(x, y)`
+
+`r icon::ii("alert")` **Cambiar las etiquetas** de labels_factor_recode de forma que `"Desemp."` $\to$ `"Desempleado"` y `"Retirado"` $\to$ `"Jubilado"`.
+
+
+--
+
+`r icon::ii("checkmark-circled")` Una de las operaciones básicas con los factores es cambiar las etiquetas, para ello se utiliza la función `recode()`:
+
+```{r change factor labels}
+
+labels_factor_recode <- recode(labels_factor, 
+                               "Desemp." = "Desempleado",
+                               "Retirado" = "Jubilado")
+
+table(labels_factor, labels_factor_recode)
+```
+
+---
+# Reordenar los niveles de un factor
+
+#### `fct_relevel(x, ...)`
+
+`r icon::ii("alert")` Hay que **reordenar los niveles** de un factor. Asociar el nivel `"Trabaja"` con el valor `1`.
+
+
+--
+
+`r icon::ii("checkmark-circled")` Los niveles de un factor se pueden reordenar con la función `fct_relevel()`. Los niveles no explicitados en la función son colocados al final en el mismo orden que estaban: 
+
+```{r reorder factor levels}
+levels(labels_factor_recode)
+labels_factor_recode <- fct_relevel(labels_factor_recode, "Trabaja")
+levels(labels_factor_recode)
+```
+
+---
+# Combinar varios niveles de un factor
+
+`r icon::ii("alert")` Hay que **recodificar el vector** `labels_factor_recode` de forma que `"Desempleado" = "No trabaja"` y `"Jubilado" = "No trabaja"`.
+
+--
+
+`r icon::ii("checkmark-circled")` La función `recode()` sirve para unir categorías de los factores, recodificar:
+
+```{r combinar categorías}
+
+labels_factor_recode <- recode(labels_factor_recode, 
+                               "Desempleado" = "No trabaja",
+                               "Jubilado" = "No trabaja")
+
+levels(labels_factor_recode)
+
+```
+
+---
+# Momento *nerd* `r emo::ji("nerd_face")`
+
+Ahora sabemos modficar factores y hacer operaciones numéricas, pero los vectores que utilizamos se **encuentran generalmente dentro de un data frame**.    
+
+--
+
+> ¿Cómo se modifica o crea un vector nuevo dentro de un data frame?
+
+--
+
+```{r factors in data frame}
+my_df$new_var <- my_df$var_num + 5
+```
+
+--
+
+Utilizaremos el **operador `$` para acceder a los vectores** y modificarlos o emplearlos en otras transformaciones.
+
+---
+class: center, middle, inverse
+
+# Cadenas de texto
+
+---
+
+# Cadenas de texto en `R`
+
+Uno de los problemas usuales que se plantean al manipular datos es el manejo de las cadenas de texto del tipo:
+
+```{r create a string}
+centros <- c("CEIP María de Molina: Madrid", "IES Juan de la Cierva: Barcelona", "IES Juan Robles: Madrid")
+```
+
+---
+# Localizar 
+
+#### `str_locate(string, pattern)` | `str_locate_all(string, pattern)`
+
+`r icon::ii("alert")` Para separar los los nombres de los centros educativos de los municipios es necesario localizar `:`.    
+
+
+
+--
+`r icon::ii("checkmark-circled")` En su forma más sencilla `str_locate()` permite localizar expresiones de texto (*p. ej.* `"Madrid"`) o símbolos antecedidos por una doble barra (*p. ej.* `"\\:"`). En este caso de lo que se trata es de localizar la posición de los dos puntos en cada cadena:
+
+```{r str locate}
+str_locate(string = centros, pattern = "\\:")
+```
+
+
+---
+# Remplazar
+#### `str_replace(string, pattern, replacement)` | `str_replace_all(string, pattern, replacement)`
+
+`r icon::ii("alert")` Otra forma de limpiar texto es **sustituyendo** partes del mismo. Por ejemplo, en el caso de `centros` se podría sustituir `:` por la expresión `" de"`.     
+
+
+--
+`r icon::ii("checkmark-circled")` Para ello, la función `str_replace()` puede sustitir una expresión o símbolo por otros:
+
+```{r str_replace}
+
+str_replace(string = centros, pattern = "\\:", replacement = " de") # nótese el espacio en blanco en " de"
+
+```
+
+
+---
+# Eliminar 
+
+#### `str_remove(string, pattern)` | `str_remove_all(string, pattern)`
+
+`r icon::ii("alert")` Otra forma operación habitual es la **eliminación** de determinados elementos con el fin de limpiar el texto. En el caso de `centros` se trata de eliminar los dos puntos (`:`).   
+
+
+--
+`r icon::ii("checkmark-circled")` Para ello se utilizan las funciones `str_remove()` para eliminar la primera ocurrencia o `str_remove_all()` para eliminar todas las ocurrencias de la expresión:
+
+```{r str remove}
+str_remove(string = centros, pattern = "\\:")
+```
+
+---
+# Seleccionar
+
+#### `str_sub(string, start, end)`
+
+`r icon::ii("alert")` La otra operación básica consiste en **seleccionar fragmentos** de las cadenas de texto. En este caso se trata, por ejemplo, de seleccionar el nombre de los centros omitiendo las ciudades.     
+
+
+--
+`r icon::ii("checkmark-circled")` En este caso habría que emplear la función `str_sub()`, estableciendo el comienzo en el caracter `1` y el final en el caracter en el que se localiza `:` menos `1`.
+
+```{r str sub}
+ends <- str_locate(string = centros, pattern = "\\:")[,1]
+
+str_sub(string = centros, start = 1, end = ends-1)
+```
+
+---
+# Quiz `r emo::ji("memo")`
+
+¿Por qué es necesario utilizar `[,1]` al final de la expresión `ends <- str_locate(centros, "\\:")[,1]` para que `str_sub(string = centros, start = 1, end = ends-1)` funcione?
+
+--
+
+```{r quiz str locate}
+str_locate(string = centros, pattern = "\\:")
+```
+
+
+---
+class: inverse, middle, center
+
+# Formatear fechas
+
+---
+# Formatear fechas
+
+#### `parse_date_time()`
+
+`r icon::ii("alert")` En ocasiones las **fechas son cargadas como texto** y deben ser convertidas a formato fechas.
+
+```{r dates}
+dates <- c("10/07/2019", "11/08/2019")
+class(dates)
+```
+     
+     
+
+--
+`r icon::ii("checkmark-circled")` Para convertir a fecha el texto se puede utilizar la función `parse_date_time()`, especificando el formato de la fecha del tipo `"dmy"` (día-mes-año):
+
+```{r parse date}
+lubridate::parse_date_time(x = dates, orders = "dmy")
+```
+
+---
+class: inverse, middle, center
+
+# Valores perdidos
+
+---
+# Los valores perdidos en `R`
+
+En `R` los **valores perdidos** toman la forma de `NA`, perdidos por el sistema. Para que códigos de encuesta como el 98 o 99 fueran tratados como perdidos habría que convertirlos en `NA`. Para ejemplificar el tratamiento vamos a partir del siguiente vector que representa la variable `age`:
+
+```{r NA vector}
+# variable age en la que 999 es NC
+age <- c(36, 44, NA, 999, 67, NA)
+```
+
+---
+# Localizar los valores perdidos
+
+#### `is.na(x)` | `sum(x)` 
+
+`r icon::ii("alert")` Un problema es saber cuantos valores perdidos hay en cada objeto.    
+
+
+
+--
+
+
+`r icon::ii("checkmark-circled")` Utilizar la función `is.na()` en combinación con `sum()`. Por un lado, `is.na()` produce un vector lógico en el que `TRUE` se refiere a los valores perdidos. Un vector lógico se puede transformar en numérico, en el que `TRUE` es 1 y `FALSE` es 0. 
+
+```{r missings}
+is.na(age)
+
+sum(is.na(age))
+```
+---
+# Convertir valores en perdidos
+
+`r icon::ii("alert")` En ocasiones hay valores que deben ser transformados en perdidos, por ejemplo, en el caso de `age` el código `999`.    
+
+
+--
+
+`r icon::ii("checkmark-circled")` Seleccionar los casos que tengan código `999` y asignarles `NA`.
+
+```{r assign NA}
+age[age == 999] <- NA 
+age
+```
+
+---
+# Tratar los valores perdidos
+
+#### `mean(x, na.rm)`
+
+`r icon::ii("alert")` También hay que tratar los valores perdidos para el análisis. Al usarlo en algunas funciones, el resultado en `NA`:
+
+```{r missing mean}
+mean(age)
+```
+
+--
+`r icon::ii("checkmark-circled")` En las funciones como `mean()` existe una opción `na.rm` que cuando se le asigna el valor `TRUE` excluye los valores `NA` del análisis:
+
+```{r mean narm}
+mean(age, na.rm = TRUE)
+```
+
+---
+class: center, middle, inverse
+
+# Transformar objetos
+
+---
+# Paso 1: ¿qué **tipo de objeto** es?
+
+#### `class(x)` 
+
+La función `class()` devuelve el tipo de objeto:
+
+```{r object type vector}
+class(my_vector)
+
+```
+
+```{r object type list}
+class(my_list)
+```
+
+
+---
+# Paso 1: ¿qué **tipo de objeto** es?
+
+Por su parte, `str()` nos informa de la estructura del objeto:
+
+```{r str vector}
+str(my_vector)
+```
+
+```{r str list}
+str(my_list)
+```
+
+---
+# Paso 2: transformar objetos
+
+Las funciones de tipo `as.data.frame()` sirven para transformar los objetos de `R`, sin embargo todas las transformaciones no son posibles. Principales transformaciones:  
+ 
+
+```{r types of transformations, eval=FALSE}
+as.character()
+as.factor()
+as.numeric()
+as.data.frame()
+as.list()
+```
+
+---
+#character $\to$ numeric
+
+
+`r icon::ii("alert")` Tras cargar un conjunto de datos una varaible de tipo numérico, como puede ser edad, aparece **almacenada como texto**. El objetivo es calcular la media.
+
+```{r create character vector with numbers}
+numbers <- c("19.0", "22.0", "33.0")
+```
+--
+
+Partimos de un vector de tipo character que contiene números:
+
+```{r mean character vector}
+mean(numbers)
+```
+      
+---
+# character $\to$ numeric
+
+`r icon::ii("checkmark-circled")` Transformar el vector en numeric:
+
+```{r character to numeric}
+numbers_new <- as.numeric(numbers)
+mean(numbers_new)
+```
+
+---
+#character $\to$ factor
+
+#### `as.factor(x)`
+
+`r icon::ii("alert")` R trata los **factores de forma específica** en algunos procedimientos, como por ejemplo en las regresiones `lm()`. Las variables de tipo factor son dicotomizadas, sin embargo, puede ocurrir que al cargar el conjunto de datos la variable categórica aparezca alamacenada como character.    
+
+
+--
+Partimos de un vector de tipo *character*, en este caso ciudades.
+
+```{r character vector}
+char <- c("Madrid", "Barcelona", "Madrid")
+str(char)
+```
+       
+--
+`r icon::ii("checkmark-circled")` Transformar la variable en factor usando `as.factor()`:
+
+```{r character to factor}
+factor_new <- as.factor(char)
+str(factor_new)
+```
+
+---
+class: inverse, middle, center
+
+# Proyecto
+
+---
+# Proyecto y `R` *workflow*
+
+---
+# Help!
+
+#### `help()`
+Ayuda con las funciones:  
+
+```{r documentation, echo=T}
+help(mean)
+?mean
+```    
+
+---
+# Recursos: encontrar la función

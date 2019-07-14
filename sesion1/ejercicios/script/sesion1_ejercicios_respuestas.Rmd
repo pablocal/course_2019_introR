@@ -1,0 +1,191 @@
+---
+title: "Cómo sobrevivir a una pelea con `R`"
+subtitle: "Ejercicios resueltos"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Introducción
+
+En los ejercicios de la primera sesión vamos a trabajar sobre los diferentes objetos de `R` y su manipulación. Antes de empezar:
+
+1. **Abre el script** `sesion1_ejercicios.R`. **Limpia** el espacio de datos ejecutando `rm(list = ls())`. Con este comando eliminarás del espacio de trabajo todos los datos (objetos) que estén disponibles evitando posibles confusiones^[Puedes usar el atajo `Ctrl + Enter` para ejecutar una línea de código en `RStudio`].   
+
+
+2. **Carga los paquetes** que necesitas para realizar la práctica, ejecutando las líneas de `library()`. En caso de que alguno de ellos no esté instalado, instalaló utilizando `install.packages("package")`^[Usa comillas (" ") a la hora de instalar los paquetes con la función `install.packages()`]. 
+
+## A. Tipos de objetos
+
+**A.1** Crea **dos vectores** `(x, y)`, ambos de tres elementos. El primero debe contener los valores `2, 4, 6` y el segundo `3, 4, 9`. Para ello utiliza la función `c()`. Calcula la **media de cada vector** y **almacena los resultados** como `mean_x` y `mean_y`. Después suma `mean_x` al vector `x`, ¿Cómo se ha producido la suma? Anota la respuesta en el script.
+
+```{r A1, echo=TRUE}
+x <- c(2, 4, 6)
+y <- c(3, 4, 9)
+
+mean_x <- mean(x)
+mean_y <- mean(y)
+
+x + mean_x
+```
+
+
+`r emo::ji("white_check_mark")` `mean_x` se ha sumado a cada elemento del vector `x`. Dicho de otra forma, `x + mean_x` es quivalente a `x + c(mean_x, mean_x, mean_x)`.
+
+**A.2** Une los vectores `x` e `y` en un único vector, que será asignado a `z`. A partir del vector `z` **crea una matriz de dos columnas** y almacénala como `matriz_a`:
+
+```{r A2}
+z <- c(x, y)
+
+matriz_a <- matrix(z, ncol = 2)
+matriz_a 
+```
+
+**A.3** Crea un **data frame** (`df`) en el que la `var1` sea el vector `x`, la `var2` sea `y` y la `var3` sea `z`. Utiliza la función `data.frame()`. Imprime el df, ¿qué ha ocurrido con la `var_1` y la `var_2`?
+
+```{r A3}
+df <- data.frame(var1 = x,
+                 var2 = y,
+                 var3 = z)
+df
+```
+
+**A.4** Crea una **lista** (`storage`) que contenga todos los elementos que has creado hasta el momento: `x`, `y`, `mean_x`, `mean_y`, `z`, `matriz_a` y `df`. Utiliza la función `list()`. Al finalizar imprime el resultado.
+
+```{r A4}
+storage <- list(x, y, z, mean_x, mean_y, matriz_a, df)
+storage
+```
+
+
+## B. Indexar objetos
+
+**B.1** A continuación tienes un vector con los `ingresos` de una serie de individuos. Utiliza la función `mean()` para **calcular la media de los ingresos de los hombre y las mujeres por separado**. ¿Qué sistema has utilizado para seleccionar los subgrupos: posicional o por nombre? ¿Por qué?  
+
+```{r B1 exercise, echo=TRUE}
+ingresos <- c(Marcos = 1500, Marta = 200, Juan = 2050, Isabel = 300)
+```
+
+```{r B1 answer}
+mean(ingresos[c("Marcos", "Juan")])
+mean(ingresos[c("Marta", "Isabel")])
+```
+
+`r emo::ji("white_check_mark")` El sistema por nombres ya que es más robusto. Si en algún momento hubiera que replicar el análisis al usar los nombres evito la posibilidad de que haya un error derivado de cambios en la posición de los elementos.
+
+**B.2** El data frame `mtcars` viene precargado en `R`^[`R` y alguno de sus paquetes traen datos precargados con el fin de facilitar la replicabilidad de los ejemplos. Puedes consultar un listado de estos objetos con la función `data()`. Para acceder a los datos solo tienes que utilizar su nombre, por ejemplo, `mtcars`.]. Para saber cómo es el conjunto de datos `mtcars` ejecuta la siguiente línea de código, que te permitirá observar los 5 primeros casos:
+
+```{r B2 exer}
+head(mtcars, n = 5)
+```
+
+El data frame `mtcars` cuenta con 11 variables y los nombres de las filas, a los que puedes acceder con la función `rownames(df)`. Realiza una **selección de columnas**, es decir, variables. Selecciona las variables `mpg`, `cyl` y `wt` y guarda el data frame resultante como `mtcars_small`. Posteriormente calcula la media de la variable `mpg`.
+```{r B2 answer}
+mtcars_small <- mtcars[, c("mpg", "cyl", "wt")]
+mean(mtcars_small$mpg)
+```
+
+**B.3** Del data frame `mtcars_small` calcula la media de la variable `mpg` para los 5 primeros casos **indexando de dos formas diferentes**.   
+
+```{r B3}
+mean(mtcars_small$mpg[1:5])
+mean(mtcars_small[1:5,]$mpg)
+mean(mtcars_small[1:5, "mpg"])
+```
+
+**B.4** Ahora selecciona una **muestra aleatoria de 7 coches** del conjunto de datos `mtcars_small`. Para seleccionar una muestra aleatoria puedes usar la función `sample()`. Esta función creará un vector con los elementos seleccionados. Por lo general, cuando se extrae una muestra de un data frame con `sample()`se utilizan los nombres de las filas como referente. A los nombres de las filas se accede con la función `rownames()`. Fíjate en  el siguiente ejemplo:
+
+```{r B4}
+set.seed(123)
+sample(rownames(mtcars_small), 7)
+```
+
+Ahora selecciona la muestra y guárdala como `mtcars_small_sample`.
+
+```{r B4 answer}
+mtcars_small_sample <- mtcars_small[sample(rownames(mtcars_small), 7),]
+mtcars_small_sample
+```
+
+
+## C. Modificar vectores
+
+**C.1** Otro conjunto de datos precargado en `R` es `gss_cat`. Utiliza la función `head()` para explorar los datos. Recodifica la variable `race` de forma que tenga dos categorías `white` y `Non-white`. Puedes usar la función `levels()` para explorar los niveles del factor y la función `recode()` para hacer la recodificación. Almacena la nueva variable dentro de `gss_cat` como `race_recode`. Usa la función `table()` para comprobar la recodificación.
+
+```{r C1}
+levels(gss_cat$race)
+
+gss_cat$race_recode <- recode(gss_cat$race, "White" = "White",
+                              .default = "Non-white")
+
+table(gss_cat$race, gss_cat$race_recode)
+```
+
+
+**C.2** Haz un `table()` de la variable `marital`, como ves la respuesta `No answer` es la primera opción. Reordena los niveles de la variable `marital` de forma que las categorías `"Married"`, `"Divorced"` y `"Separated"` sean los tres primeros niveles y `"No answer"` el último. Sustituye la antigua versión de `marital` por la nueva.
+
+```{r C2 exer}
+table(gss_cat$marital)
+gss_cat$marital <- fct_relevel(gss_cat$marital, "Married", "Divorced", "Separated", "Never married", "Widowed")
+table(gss_cat$marital)
+```
+
+**C.3** Convierte el nivel "No answer" de la variable `marital` en `NA`. Determina el número de valores perdidos utilizando la función `is.na()` y `sum()`.
+
+```{r C3}
+gss_cat$marital[gss_cat$marital == "No answer"] <- NA
+
+sum(is.na(gss_cat$marital))
+```
+
+**C.4** A continuación tienes un vector de tipo character (`datos`). **Separa los nombres de la edad** y crea un data frame con dos variables: `nombre` y `edad`. Para conocer la longitud de las cadenas de texto puedes utilizar la función `str_length()`. Para crear el data frmae utiliza la función `cbind()` que sirve para combinar columnas. Guarda el nuevo objeto con el nombre `datos_edad_nombre`.
+
+```{r C4}
+datos <- c("Juan Antonio, 28", "María Jesús, 29", "Pedro Sarmiento, 21", "Josefa Maura, +99")
+```
+
+
+```{r C4 answer}
+nombre <- str_sub(datos, 1, str_locate(datos, "\\,")[,1]-1)
+edad <- str_sub(datos, str_locate(datos, "\\,")[,1]+2, str_length(datos))
+
+datos_edad_nombre <- cbind(nombre, edad)
+```
+
+
+## D. Transformar objetos
+
+
+**D.1** ¿Qué tipo de objeto es `datos_edad_nombre`? Conviértelo en un data frame y asignalo al mismo objeto. Imprime el objeto resultante.
+
+```{r D1}
+class(datos_edad_nombre)
+datos_edad_nombre <- as.data.frame(datos_edad_nombre)
+datos_edad_nombre
+```
+
+
+
+
+**D.2** Observa qué tipo de variables son `nombre` y `edad` de `datos_edad_nombre`. Convierte la variable `nombre` en un vector de tipo character y la variable `edad` en numérica. Al transformar las variables utiliza los nombres `edad_numeric` y `nombre_character` ¿Qué ha ocurrido con la variable `edad`? ¿Y con `nombre`?
+
+
+```{r D2}
+str(datos_edad_nombre)
+datos_edad_nombre$nombre_character <- as.character(datos_edad_nombre$nombre)
+datos_edad_nombre$edad_numeric <- as.integer(datos_edad_nombre$edad)
+datos_edad_nombre
+```
+
+`r emo::ji("white_check_mark")` La variable edad fue convertida automáticamente en un factor al combinar las columnas `cbind()` por lo que al transformarla en numérica lo que aparece es el valor asociado a los niveles del factor. Sin embargo, la variable nombre, que también era originalmente un factor, al convertirla en character se han usado los niveles.
+
+**D.3** Una posible solución al problema con `datos_edad_nombre$edad_numeric` es hacer una doble conversión con el fin de que los niveles de `edad` sean leídos en vez de los valores de la variable. Crea una nueva versión de la variable `edad` que se llame `edad_numeric2`. Para ello, en primer lugar, convierte el vector en charater para posteriormente convertirlo en numeric.
+
+
+```{r D3}
+datos_edad_nombre$edad_numeric2 <- as.numeric(as.character(datos_edad_nombre$edad))
+datos_edad_nombre
+```
+
