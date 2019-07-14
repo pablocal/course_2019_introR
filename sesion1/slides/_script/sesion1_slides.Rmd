@@ -1,6 +1,6 @@
 ---
-title: "Cómo sobrevivir a una pelea con R"
-subtitle: 'Curso de introducción a R'
+title: 'Cómo sobrevivir a una pelea con `r icon::fa("r-project")`'
+subtitle: 'Curso de introducción a `r icon::fa("r-project")`'
 author: ''
 institute: 'Pablo Cabrera-Álvarez <br> <span style = "font-size: 75%;">[`r icon::fa("github")`](https://github.com/pablocal) | [`r icon::fa("twitter")`](https://twitter.com/pablocalv) @pablocalv </span> <br>'
 date: "<br><br>Julio 2019"
@@ -32,11 +32,11 @@ mono_accent_inverse(
 ```
 # El curso
 
-1. Cómo sobrevivir a una pelea con `R`    
+1. Cómo sobrevivir a una pelea con `r icon::fa("r-project")`    
  
 
 --
-2. Manipulación de datos, lo básico pero en `R`    
+2. Manipulación de datos, lo básico pero en `r icon::fa("r-project")`    
  
 
 --
@@ -72,32 +72,31 @@ mono_accent_inverse(
  
 --
 
- - En `R` hay que **perderse**    
+ - En `r icon::fa("r-project")` hay que **perderse**    
  
 --
 
-- ¿Para qué es `R` útil?    
+- ¿Para qué es `r icon::fa("r-project")` útil?    
 
 --
 
 - Materiales y todo el **código** disponible en  [`r icon::fa("github")`](https://github.com/pablocal/course_introR)
 
-
 ---
 background-image: url(http://bit.ly/2XGHKmb)
 
-# Cómo sobrevivir a una pelea con `R`
+# Cómo sobrevivir a una pelea con `r icon::fa("r-project")`
 
 
 
 ---
-# Cómo sobrevivir a una pelea con `R`
+# Cómo sobrevivir a una pelea con `r icon::fa("r-project")`
 
-- Tipos de **objetos en `R`**: vectors, matrices, data frames, lists, functions
+- Tipos de **objetos** en `r icon::fa("r-project")`: vectors, matrices, data frames, lists, functions
 
 --
 
-- **Indexación** en `R` $\to$ `[]`, `$`, `[[]]`:
+- **Indexación** en `r icon::fa("r-project")` $\to$ `[]`, `$`, `[[]]`:
   * Vectors
   * Matrices
   * Data frames
@@ -105,12 +104,12 @@ background-image: url(http://bit.ly/2XGHKmb)
 
 --
 
-- **Modificar** vectores en `R`:
+- **Modificar** vectores en `r icon::fa("r-project")`:
   * Operadores
   * Factors
   * Character
   * Dates
-  * Valores **perdidos** en `R`
+  * Valores **perdidos** en `r icon::fa("r-project")`
 
 --
 
@@ -118,7 +117,7 @@ background-image: url(http://bit.ly/2XGHKmb)
 
 --
 
-- **Proyecto** y workflow en `R`
+- **Proyecto** y workflow en `r icon::fa("r-project")`
 
 ---
 # Antes de empezar, consejos generales `r emo::ji("nerd_face")`
@@ -163,13 +162,56 @@ library(lubridate) # carga paquete lubridate
 a<-22+23 # mal
 a <- 22 + 23 # bien
 ```
-  
+
 ---
+# Help!
+
+#### `help()`
+
+ - Ayuda con las funciones:  
+
+```{r documentation, echo=T, eval=FALSE}
+help(mean)
+?mean
+```    
+
+--
+
+- Vignettes y ejemplos    
+
+
+- [Stackoverflow](https://stackoverflow.com/)    
+
+
+- [Cheatsheets](https://www.rstudio.com/resources/cheatsheets/)    
+
+
+---
+# Recursos: aprender `r icon::fa("r-project")`
+
+- Libros: [R for Data Science](https://r4ds.had.co.nz/), [Advanced R](https://adv-r.hadley.nz/)    
+    
+    
+
+- Cursos web: [DataCamp](https://www.datacamp.com/)    
+    
+    
+
+- Twitter: [@RLadiesGlobal](https://twitter.com/RLadiesGlobal), [@hadleywickham](https://twitter.com/hadleywickham), [@dataandme](https://twitter.com/dataandme)...    
+    
+    
+
+- Rpackages: [swirl](https://swirlstats.com/students.html)    
+    
+    
+
+---
+
 # Directorio de trabajo
 
 #### `setwd(dir)` | `getwd()`
 
-Antes de comenzar a trabajar en `R` es preciso **designar una carpeta de trabajo**, para lo que existen dos opciones.
+Antes de comenzar a trabajar en `r icon::fa("r-project")` es preciso **designar una carpeta de trabajo**, para lo que existen dos opciones.
 
 --
 
@@ -192,10 +234,10 @@ setwd("c:/user/pablo/documentos/mi proyecto de R")
 ---
 class: inverse, center, middle 
 
-# Objetos en R
+# Objetos en `r icon::fa("r-project")`
 
 ---
-# `R` como lenguaje orientado a objetos
+# `r icon::fa("r-project")` como lenguaje orientado a objetos
 
 R es un **lenguaje orientado a objetos**: todos los elementos son almacenables como un objeto...
 
@@ -215,7 +257,7 @@ number_c
 ```
 
 ---
-# Objetos en `R`
+# Objetos en `r icon::fa("r-project")`
 
 ```{r objects-diagram, echo=FALSE}
 mermaid("
@@ -256,14 +298,14 @@ style A fill:#00758f
 
 #### `c()` | `names()`
 
-Un **vector** es el objeto básico de `R`, un conjunto de números o caracteres. Todos los elementos de un vector deben de ser del mismo tipo. 
+Un **vector** es el objeto básico de `r icon::fa("r-project")`, un conjunto de números o caracteres. Todos los elementos de un vector deben de ser del mismo tipo. 
 
 ```{r gen vector, echo=TRUE}
 my_vector <- c(10, 20, 10) # crear objeto mi_vector
 ```
 
 
-Para **imprimir el vector**, simplemente ejecutar el nombre:
+Para **imprimir el vector**:
 
 ```{r print vector, echo=TRUE}
 my_vector # imprimir mi_vector
@@ -314,7 +356,7 @@ vector_logical
 ---
 # Factor
 
-#### `factor(x, levels, labels, ordered)` | `str(x)`
+#### `factor(x, levels, labels, ordered)` | `str(object)`
 
 Los **factores** son un tipo concreto de vector en el que unos **valores numéricos son asociados a unas etiquetas**.
 
@@ -322,9 +364,9 @@ Los **factores** son un tipo concreto de vector en el que unos **valores numéri
 ## 1 = Trabaja, 2 = Desemp., 3 = Retirado  
 vector_values <- c(1, 2, 2, 3, 1, 2)
 
-value_factor <- factor(vector_values, levels = c(1, 2, 3), 
+value_factor <- factor(x = vector_values, levels = c(1, 2, 3), 
                        labels = c("Trabaja", "Desemp.", "Retirado"))
-str(value_factor) 
+str(object = value_factor) 
 ```
 
 ---
@@ -335,12 +377,12 @@ Los factores también pueden ser generados a partir de vectores de tipo *charact
 ```{r factor from labels}
 vector_labels <- c("Trabaja", "Desemp.", "Trabaja", "Trabaja", "Retirado")
 
-labels_factor <- factor(vector_labels)
-str(labels_factor)
+labels_factor <- factor(x = vector_labels)
+str(object = labels_factor)
 ```
 
 ---
-# Quiz `r emo::ji("memo")`
+# `r emo::ji("nerd")` Quiz
 
 En el siguiente vector lógico: `c(TRUE, TRUE, FALSE)`, ¿cuál será el resultado de la suma de sus elementos?
 
@@ -351,7 +393,7 @@ sum(c(TRUE, TRUE, FALSE))
 ```
 
 ---
-# Objetos en `R`
+# Objetos en `r icon::fa("r-project")`
 
 ```{r objects-diagram2, echo=FALSE}
 mermaid("
@@ -378,7 +420,7 @@ my_matrix
 ```
 
 ---
-# Objetos en `R`
+# Objetos en `r icon::fa("r-project")`
 
 
 ```{r objects-diagram3, echo=FALSE}
@@ -410,7 +452,7 @@ my_df
 ```
 
 ---
-# Objetos en `R`
+# Objetos en `r icon::fa("r-project")`
 
 
 ```{r objects-diagram4, echo=FALSE}
@@ -439,7 +481,7 @@ my_list
 ```
 
 ---
-# Quiz `r emo::ji("memo")`
+# `r emo::ji("nerd")` Quiz
 
 ¿Es posible que una lista contenga otra lista dentro como en el siguiente código?
 
@@ -453,7 +495,7 @@ my_list2 <- list(list_old = my_list,
 
 #### `mean(x, na.rm = FALSE)`
 
-Las **funciones** son las **herramientas** que sirven para trabajar con los datos, también son objetos almacenables, modificables y que pueden ser creadas por el usuario:
+Las **funciones** son las **herramientas** que sirven para trabajar con los datos, también son objetos almacenables, modificables y pueden ser creadas por el usuario:
 
 ```{r function example, echo=TRUE}
 mean(my_vector)
@@ -483,16 +525,20 @@ Los argumentos también pueden ser interpretados según su **posición** en la f
 runif(5, 0, 1)
 ```
 
+---
+# Function
+
 Algunos argumentos vienen definidos **por defecto**:
 ```{r function predef args}
 runif(5) # min = 0; max = 1
 ```
+
 ---
 # Paquetes de funciones
 
 #### `install.packages(pkgs)` | `library(pkgs)`
 
-Algunas funciones vienen por defecto en `R` (8 paquetes) y otras están en paquetes creados por terceros. Los paquetes se encuentran disponibles en un repositiorio llamado **CRAN**.
+Algunas funciones vienen por defecto en `r icon::fa("r-project")` (8 paquetes) y otras están en paquetes creados por terceros. Los paquetes se encuentran disponibles en un repositiorio llamado **CRAN**.
   
 Para **instalar un paquete**: 
 
@@ -516,10 +562,10 @@ package::function()
 ---
 class: center, middle, inverse
 
-# Indexar en R
+# Indexar en `r icon::fa("r-project")`
 
 ---
-# Indexar en R
+# Indexar en `r icon::fa("r-project")`
 
 ```{r objects_index, echo=FALSE}
 df <- data.frame(Objeto = c("Vector", "Matrix", "Data frame", "List"), 
@@ -642,7 +688,7 @@ my_df[my_df$var_logic == FALSE, 2] # produce un vector
 ```
 
 ---
-# Quiz `r emo::ji("memo")`
+# `r emo::ji("nerd")` Quiz
 
 ¿Cómo se seleccionarían los casos para los que `var_logic == TRUE` y que `var_num < 0`?
 
@@ -723,15 +769,19 @@ v1 >= v2
 ---
 # Operaciones lógicas
 
-Los **operadores lógicos** (`!`, `&`, `|`) sirven para establecer relaciones entre elementos:
+Los **operadores lógicos** (`!`, `&`, `|`, `%in%`) sirven para establecer relaciones entre elementos:
 
 ```{r logical operators}
 v1 | v2 == c(10, 5, 20) 
 ```
 
+
+```{r logical in}
+10 %in% v1 
+```
 ---
 
-# Quiz `r emo::ji("memo")`
+# `r emo::ji("nerd")` Quiz
 
 ¿Por qué el resultado de `v1 | v2 == c(10, 5, 20)` es igual a `TRUE TRUE TRUE` dados `V1` y `V2`?
 
@@ -748,7 +798,7 @@ class: center, middle, inverse
 
 ---
 # `r emo::ji("warning")` `r emo::ji("warning")` `r emo::ji("warning")` Atención `r emo::ji("warning")` `r emo::ji("warning")` `r emo::ji("warning")`
-.pull-left[### `R`
+.pull-left[### `r icon::fa("r-project")`
 
 - Los factores son recodificados a <br>partir de los niveles
 
@@ -839,13 +889,9 @@ levels(labels_factor_recode)
 ```
 
 ---
-# Momento *nerd* `r emo::ji("nerd_face")`
+# `r emo::ji("brain")` Acceder a los elementos de un data frame
 
-Ahora sabemos modficar factores y hacer operaciones numéricas, pero los vectores que utilizamos se **encuentran generalmente dentro de un data frame**.    
-
---
-
-> ¿Cómo se modifica o crea un vector nuevo dentro de un data frame?
+Ahora sabemos modficar factores y hacer operaciones numéricas, pero los vectores que utilizamos se **encuentran generalmente dentro de un data frame**. ¿Cómo se modifica o crea un vector nuevo dentro de un data frame?
 
 --
 
@@ -856,7 +902,7 @@ my_df$new_var <- my_df$var_num + 5
 --
 
 Utilizaremos el **operador `$` para acceder a los vectores** y modificarlos o emplearlos en otras transformaciones.
-
+  
 ---
 class: center, middle, inverse
 
@@ -864,7 +910,7 @@ class: center, middle, inverse
 
 ---
 
-# Cadenas de texto en `R`
+# Cadenas de texto en `r icon::fa("r-project")`
 
 Uno de los problemas usuales que se plantean al manipular datos es el manejo de las cadenas de texto del tipo:
 
@@ -939,7 +985,7 @@ str_sub(string = centros, start = 1, end = ends-1)
 ```
 
 ---
-# Quiz `r emo::ji("memo")`
+# `r emo::ji("nerd")` Quiz
 
 ¿Por qué es necesario utilizar `[,1]` al final de la expresión `ends <- str_locate(centros, "\\:")[,1]` para que `str_sub(string = centros, start = 1, end = ends-1)` funcione?
 
@@ -982,9 +1028,9 @@ class: inverse, middle, center
 # Valores perdidos
 
 ---
-# Los valores perdidos en `R`
+# Los valores perdidos en `r icon::fa("r-project")`
 
-En `R` los **valores perdidos** toman la forma de `NA`, perdidos por el sistema. Para que códigos de encuesta como el 98 o 99 fueran tratados como perdidos habría que convertirlos en `NA`. Para ejemplificar el tratamiento vamos a partir del siguiente vector que representa la variable `age`:
+En `r icon::fa("r-project")` los **valores perdidos** toman la forma de `NA`, perdidos por el sistema. Para que códigos de encuesta como el 98 o 99 fueran tratados como perdidos habría que convertirlos en `NA`. Para ejemplificar el tratamiento vamos a partir del siguiente vector que representa la variable `age`:
 
 ```{r NA vector}
 # variable age en la que 999 es NC
@@ -1081,7 +1127,7 @@ str(my_list)
 ---
 # Paso 2: transformar objetos
 
-Las funciones de tipo `as.data.frame()` sirven para transformar los objetos de `R`, sin embargo todas las transformaciones no son posibles. Principales transformaciones:  
+Las funciones de tipo `as.data.frame()` sirven para transformar los objetos de `r icon::fa("r-project")`, sin embargo todas las transformaciones no son posibles. Principales transformaciones:  
  
 
 ```{r types of transformations, eval=FALSE}
@@ -1124,7 +1170,7 @@ mean(numbers_new)
 
 #### `as.factor(x)`
 
-`r icon::ii("alert")` R trata los **factores de forma específica** en algunos procedimientos, como por ejemplo en las regresiones `lm()`. Las variables de tipo factor son dicotomizadas, sin embargo, puede ocurrir que al cargar el conjunto de datos la variable categórica aparezca alamacenada como character.    
+`r icon::ii("alert")` `r icon::fa("r-project")` trata los **factores de forma específica** en algunos procedimientos, como por ejemplo en las regresiones `lm()`. Las variables de tipo factor son dicotomizadas, sin embargo, puede ocurrir que al cargar el conjunto de datos la variable categórica aparezca alamacenada como character.    
 
 
 --
@@ -1149,18 +1195,27 @@ class: inverse, middle, center
 # Proyecto
 
 ---
-# Proyecto y `R` *workflow*
+# Proyecto y `r icon::fa("r-project")` *workflow*
+
+**Objetivo**: Crear una base de datos con las **notas de la EVaU** de los centros educativos de Castilla-La Mancha y las características de los centros.
+
+--
+
+1. Notas por centro educativo de la EVaU disponible en la UCLM en PDF.
+
+--
+
+2. Notas de los centros educativos disponibles en una base de datos de consulta individual de la Consejería de Educación.
+
+--
+
+3. Combinar las extraciones de las dos fuentes de información.
 
 ---
-# Help!
+# Hoy..
 
-#### `help()`
-Ayuda con las funciones:  
+1. Conocer la información y planificar las tareas
 
-```{r documentation, echo=T}
-help(mean)
-?mean
-```    
 
----
-# Recursos: encontrar la función
+
+

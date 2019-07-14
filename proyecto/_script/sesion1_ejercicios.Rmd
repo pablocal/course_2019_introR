@@ -1,0 +1,35 @@
+---
+title: "Quién tiene mejores resultados en la EVaU: ¿púlica, privada o cocnertada?"
+author:  "Proyecto"
+date: "Julio 2019"
+output:
+  tufte::tufte_handout
+---
+
+```{r setup, include=FALSE}
+library(tufte)
+library(tidyverse)
+# invalidate cache when the tufte version changes
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+```
+
+
+## Introducción
+
+El objetivo de este proyecto es **crear una base datos** con las **notas de la EVaU por centro en la comunidad de Castilla-La Mancha**. A la base de datos de las notas se le **añadirá información de los centros educativos**. Ambas fuentes de información, las notas de la EVaU por centro y las características de los institutos se encuentran disponibles en la web, aunque en diferente formato:
+
+- Los **resultados de la EVaU** por centros son publicados por la Universidad de Castilla-La Mancha en formato **PDF**. El archivo correspondiente a 2018 se puede encontrar en su [web](https://www.uclm.es/-/media/Files/A04-Gestion-Academica/EstadisticasPruebasAcceso/Curso2017_2018/Aprobados-por-campus-y-materia-ordinaria.ashx?la=es). 
+
+- Los **datos de los centros** educativos de Castilla-La Mancha pueden ser consultados de forma individual a través del portal web de la [consejería](http://www.educa.jccm.es/es/centros).
+
+Una vez que los datos de ambas fuentes hayan sido recogidos habrá que **combinarlos** en la base de datos final. Todo el proceso deberá realizarse utilizando herramientas de `R`.
+
+
+- Resultados de la **EVaU**: https://www.uclm.es/-/media/Files/A04-Gestion-Academica/EstadisticasPruebasAcceso/Curso2017_2018/Aprobados-por-campus-y-materia-ordinaria.ashx?la=es 
+
+- Web con información de los **centros**:http://www.educa.jccm.es/es/centros
+
+
+
+
