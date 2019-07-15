@@ -3,7 +3,10 @@
 ###############################################################
 
 rm(list = ls())
+# install.packages("tidyverse")
+# install.packages("lubridate")
 library(tidyverse)
+library(lubridate)
 
 
 # A. Tipos de objetos -----------------------------------------------------
