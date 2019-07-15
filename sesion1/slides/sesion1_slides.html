@@ -13,7 +13,6 @@
     <link href="libs/DiagrammeR-styles/styles.css" rel="stylesheet" />
     <script src="libs/chromatography/chromatography.js"></script>
     <script src="libs/DiagrammeR-binding/DiagrammeR.js"></script>
-    <script src="libs/kePrint/kePrint.js"></script>
     <link href="libs/ionicons/css/ionicons.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
@@ -96,7 +95,7 @@ background-image: url(http://bit.ly/2XGHKmb)
 
 --
 
-- **Indexación** en <i class="fab  fa-r-project "></i> `\(\to\)` `[]`, `$`, `[[]]`:
+- **Indexación** en <i class="fab  fa-r-project "></i>:
   * Vectors
   * Matrices
   * Data frames
@@ -104,16 +103,16 @@ background-image: url(http://bit.ly/2XGHKmb)
 
 --
 
-- **Modificar** vectores en <i class="fab  fa-r-project "></i>:
+- **Modificar** vectores:
   * Operadores
-  * Factors
+  * Factor
   * Character
-  * Dates
-  * Valores **perdidos** en <i class="fab  fa-r-project "></i>
+  * Date
+  * Valores **perdidos** `NA`
 
 --
 
-- **Transformar objetos**: `class()` y `as._()`
+- **Transformar** objetos
 
 --
 
@@ -149,7 +148,7 @@ library(lubridate) # carga paquete lubridate
 
 --
 
-- Comentar `#` [`Ctrl` + `C`]
+- Comentar `#` [`Ctrl` + `Mayús` + `C`]
   * Explicar el por qué
   * Usar separadores para organizar el scrip [`Ctrl` + `Mayús` + `R`]
 
@@ -188,6 +187,7 @@ help(mean)
 
 - [Cheatsheets](https://www.rstudio.com/resources/cheatsheets/)    
 
+- [Quick <i class="fab  fa-r-project "></i>](https://www.statmethods.net/)
 
 ---
 # Recursos: aprender <i class="fab  fa-r-project "></i>
@@ -204,8 +204,14 @@ help(mean)
     
     
 
-- Rpackages: [swirl](https://swirlstats.com/students.html)    
-    
+- Rpackages: [swirl](https://swirlstats.com/students.html)   
+
+
+     
+- Rbloggers: https://www.r-bloggers.com
+
+---
+background-image: url(https://bookdown.org/chesterismay/rbasics/gifs/top_left_pane.gif)
     
 
 ---
@@ -269,21 +275,21 @@ number_c
 ---
 # Objetos en <i class="fab  fa-r-project "></i>
 
-<div id="htmlwidget-0ca2f617344cac87d929" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0ca2f617344cac87d929">{"x":{"diagram":"\ngraph LR\nA((Objetos R))-->B[Vector]\nA-->C[Matrix]\nA-->D[Data frame]\nA-->E[List]\n\nstyle B fill:#00758f\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-99f9ace271df48dfe2f8" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-99f9ace271df48dfe2f8">{"x":{"diagram":"\ngraph LR\nA((Objetos R))-->B[Vector]\nA-->C[Matrix]\nA-->D[Data frame]\nA-->E[List]\n\nstyle B fill:#00758f\n"},"evals":[],"jsHooks":[]}</script>
 
 
 ---
 # Vector
 
-<div id="htmlwidget-29430b0b2cded2c44805" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-29430b0b2cded2c44805">{"x":{"diagram":"\ngraph LR\nA((Vector))-->B[Numeric] \nA-->G[Character]\nA-->H[Logical]\nA-->I[Factor]\nA-->J[Date]\nB-->K[Integer]\nB-->L[Double]\n\nstyle A fill:#00758f\n\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-96326fe9e21268e8aa3a" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-96326fe9e21268e8aa3a">{"x":{"diagram":"\ngraph LR\nA((Vector))-->B[Numeric] \nA-->G[Character]\nA-->H[Logical]\nA-->I[Factor]\nA-->J[Date]\nB-->K[Integer]\nB-->L[Double]\n\nstyle A fill:#00758f\n\n"},"evals":[],"jsHooks":[]}</script>
 
 ---
 
-# Vectores
+# Vector
 
-#### `c()` | `names()`
+#### `c(...)` | `names(x)`
 
 Un **vector** es el objeto básico de <i class="fab  fa-r-project "></i>, un conjunto de números o caracteres. Todos los elementos de un vector deben de ser del mismo tipo. 
 
@@ -429,8 +435,8 @@ sum(c(TRUE, TRUE, FALSE))
 ---
 # Objetos en <i class="fab  fa-r-project "></i>
 
-<div id="htmlwidget-faba00e318bff23230a5" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-faba00e318bff23230a5">{"x":{"diagram":"\ngraph LR\nA((Objetos R))-->B[Vector]\nA-->C[Matrix]\nA-->D[Data frame]\nA-->E[List]\n\nstyle C fill:#00758f\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7f4c6db4f3495906aa31" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7f4c6db4f3495906aa31">{"x":{"diagram":"\ngraph LR\nA((Objetos R))-->B[Vector]\nA-->C[Matrix]\nA-->D[Data frame]\nA-->E[List]\n\nstyle C fill:#00758f\n"},"evals":[],"jsHooks":[]}</script>
 ---
 
 # Matrix 
@@ -456,8 +462,8 @@ my_matrix
 # Objetos en <i class="fab  fa-r-project "></i>
 
 
-<div id="htmlwidget-36c4d37e3372eeaf1e74" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-36c4d37e3372eeaf1e74">{"x":{"diagram":"\ngraph LR\nA((Objetos R))-->B[Vector]\nA-->C[Matrix]\nA-->D[Data frame]\nA-->E[List]\n\nstyle D fill:#00758f\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-7ece1d8216403397aa58" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7ece1d8216403397aa58">{"x":{"diagram":"\ngraph LR\nA((Objetos R))-->B[Vector]\nA-->C[Matrix]\nA-->D[Data frame]\nA-->E[List]\n\nstyle D fill:#00758f\n"},"evals":[],"jsHooks":[]}</script>
 ---
 
 # Data frame
@@ -477,19 +483,19 @@ my_df
 
 ```
 ##   var_char     var_num var_logic
-## 1        a  0.41965233      TRUE
-## 2        b -0.82922965     FALSE
-## 3        c  0.21008625     FALSE
-## 4        d  0.01499032      TRUE
-## 5        e  0.04078364      TRUE
+## 1        a  0.77608922     FALSE
+## 2        b -0.14854701      TRUE
+## 3        c -0.38244872     FALSE
+## 4        d -0.11902709     FALSE
+## 5        e  0.06831824      TRUE
 ```
 
 ---
 # Objetos en <i class="fab  fa-r-project "></i>
 
 
-<div id="htmlwidget-1381882137be8b85af7b" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1381882137be8b85af7b">{"x":{"diagram":"\ngraph LR\nA((Objetos R))-->B[Vector]\nA-->C[Matrix]\nA-->D[Data frame]\nA-->E[List]\n\nstyle E fill:#00758f\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-292de5db094db2fdb548" style="width:504px;height:504px;" class="DiagrammeR html-widget"></div>
+<script type="application/json" data-for="htmlwidget-292de5db094db2fdb548">{"x":{"diagram":"\ngraph LR\nA((Objetos R))-->B[Vector]\nA-->C[Matrix]\nA-->D[Data frame]\nA-->E[List]\n\nstyle E fill:#00758f\n"},"evals":[],"jsHooks":[]}</script>
 
 ---
 ## List
@@ -511,11 +517,11 @@ my_list
 ## 
 ## $df
 ##   var_char     var_num var_logic
-## 1        a  0.41965233      TRUE
-## 2        b -0.82922965     FALSE
-## 3        c  0.21008625     FALSE
-## 4        d  0.01499032      TRUE
-## 5        e  0.04078364      TRUE
+## 1        a  0.77608922     FALSE
+## 2        b -0.14854701      TRUE
+## 3        c -0.38244872     FALSE
+## 4        d -0.11902709     FALSE
+## 5        e  0.06831824      TRUE
 ```
 
 ---
@@ -570,7 +576,7 @@ runif(n = 5, min = 0, max = 1)
 ```
 
 ```
-## [1] 0.8623721 0.4893880 0.2188313 0.2577270 0.1005044
+## [1] 0.1324611 0.8815074 0.4423002 0.7949167 0.4191350
 ```
 
 Los argumentos también pueden ser interpretados según su **posición** en la función:
@@ -581,7 +587,7 @@ runif(5, 0, 1)
 ```
 
 ```
-## [1] 0.1796991 0.8940891 0.7816263 0.6044885 0.7068266
+## [1] 0.42745405 0.61604122 0.05450059 0.89956295 0.82168076
 ```
 
 ---
@@ -594,11 +600,11 @@ runif(5) # min = 0; max = 1
 ```
 
 ```
-## [1] 0.8640456 0.1726171 0.9243996 0.7156822 0.9326930
+## [1] 0.3907304 0.1041690 0.2038754 0.9706789 0.9953343
 ```
 
 ---
-# Paquetes de funciones
+# Packages
 
 #### `install.packages(pkgs)` | `library(pkgs)`
 
@@ -630,41 +636,6 @@ package::function()
 class: center, middle, inverse
 
 # Indexar en <i class="fab  fa-r-project "></i>
-
----
-# Indexar en <i class="fab  fa-r-project "></i>
-
-&lt;table class="table" style="margin-left: auto; margin-right: auto;"&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; Objeto &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Indexación &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Ejemplo &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;font-weight: bold;border-right:1px solid;font-weight: bold;color: white !important;background-color: #3C989E !important;"&gt; Vector &lt;/td&gt;
-   &lt;td style="text-align:left;width: 50em; width: 40em; font-weight: bold;color: white !important;background-color: #3C989E !important;"&gt; Usar corchetes [] junto con la posición o nombre del elemento &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;color: white !important;background-color: #3C989E !important;"&gt; my_vector[1:2] my_vector['Juan'] &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;font-weight: bold;border-right:1px solid;"&gt; Matrix &lt;/td&gt;
-   &lt;td style="text-align:left;width: 50em; width: 40em; "&gt; Usar corchetes [,] para seleccionar filas y columnas; en blanco equivale a todas las filas o columnas &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; my_matrix[c(1, 3), ] my_matrix[1:3, c(2, 5)] &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;font-weight: bold;border-right:1px solid;font-weight: bold;color: white !important;background-color: #3C989E !important;"&gt; Data frame &lt;/td&gt;
-   &lt;td style="text-align:left;width: 50em; width: 40em; font-weight: bold;color: white !important;background-color: #3C989E !important;"&gt; Dos formas habituales $ y [,]. Con $ se seleccionan las columnas por su nombre, mientras que con [,] se seleccionan las filas, según su posición o alguna característica y columnas según su nombre o posición &lt;/td&gt;
-   &lt;td style="text-align:left;font-weight: bold;color: white !important;background-color: #3C989E !important;"&gt; my_df$var_char my_df[1:5, c('var_char', 'var_num')] my_df[my_df$var_logic == TRUE, ] &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;font-weight: bold;border-right:1px solid;"&gt; List &lt;/td&gt;
-   &lt;td style="text-align:left;width: 50em; width: 40em; "&gt; Se utiliza $ y [[]], el primero en caso de que los elementos de la lista tengan nombre, el segundo para extraer los elementos por su posición &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; my_list[[2]] my_list$df &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
 
 ---
 # Indexar vectores
@@ -755,11 +726,11 @@ my_df
 
 ```
 ##   var_char     var_num var_logic
-## 1        a  0.41965233      TRUE
-## 2        b -0.82922965     FALSE
-## 3        c  0.21008625     FALSE
-## 4        d  0.01499032      TRUE
-## 5        e  0.04078364      TRUE
+## 1        a  0.77608922     FALSE
+## 2        b -0.14854701      TRUE
+## 3        c -0.38244872     FALSE
+## 4        d -0.11902709     FALSE
+## 5        e  0.06831824      TRUE
 ```
 
 ---
@@ -808,11 +779,11 @@ my_df
 
 ```
 ##   var_char     var_num var_logic
-## 1        a  0.41965233      TRUE
-## 2        b -0.82922965     FALSE
-## 3        c  0.21008625     FALSE
-## 4        d  0.01499032      TRUE
-## 5        e  0.04078364      TRUE
+## 1        a  0.77608922     FALSE
+## 2        b -0.14854701      TRUE
+## 3        c -0.38244872     FALSE
+## 4        d -0.11902709     FALSE
+## 5        e  0.06831824      TRUE
 ```
 
 ---
@@ -842,8 +813,8 @@ my_df[my_df$var_logic == TRUE &amp; my_df$var_num &lt; 0,]
 ```
 
 ```
-## [1] var_char  var_num   var_logic
-## &lt;0 rows&gt; (or 0-length row.names)
+##   var_char   var_num var_logic
+## 2        b -0.148547      TRUE
 ```
 
 ---
@@ -863,11 +834,11 @@ my_list
 ## 
 ## $df
 ##   var_char     var_num var_logic
-## 1        a  0.41965233      TRUE
-## 2        b -0.82922965     FALSE
-## 3        c  0.21008625     FALSE
-## 4        d  0.01499032      TRUE
-## 5        e  0.04078364      TRUE
+## 1        a  0.77608922     FALSE
+## 2        b -0.14854701      TRUE
+## 3        c -0.38244872     FALSE
+## 4        d -0.11902709     FALSE
+## 5        e  0.06831824      TRUE
 ```
 ---
 # Indexar lists
@@ -896,11 +867,11 @@ my_list[[2]]
 
 ```
 ##   var_char     var_num var_logic
-## 1        a  0.41965233      TRUE
-## 2        b -0.82922965     FALSE
-## 3        c  0.21008625     FALSE
-## 4        d  0.01499032      TRUE
-## 5        e  0.04078364      TRUE
+## 1        a  0.77608922     FALSE
+## 2        b -0.14854701      TRUE
+## 3        c -0.38244872     FALSE
+## 4        d -0.11902709     FALSE
+## 5        e  0.06831824      TRUE
 ```
 
 
@@ -1023,7 +994,7 @@ v1 | v2 == c(10, 5, 20)
 ---
 class: center, middle, inverse
 
-# Factors
+# Factor
 
 
 ---
@@ -1162,7 +1133,7 @@ Utilizaremos el **operador `$` para acceder a los vectores** y modificarlos o em
 ---
 class: center, middle, inverse
 
-# Cadenas de texto
+# Character
 
 ---
 
@@ -1288,7 +1259,7 @@ str_locate(string = centros, pattern = "\\:")
 ---
 class: inverse, middle, center
 
-# Formatear fechas
+# Date
 
 ---
 # Formatear fechas
@@ -1472,8 +1443,8 @@ str(my_list)
 ##   ..- attr(*, "names")= chr [1:3] "Juan" "Marta" "Pablo"
 ##  $ df    :'data.frame':	5 obs. of  3 variables:
 ##   ..$ var_char : Factor w/ 5 levels "a","b","c","d",..: 1 2 3 4 5
-##   ..$ var_num  : num [1:5] 0.4197 -0.8292 0.2101 0.015 0.0408
-##   ..$ var_logic: logi [1:5] TRUE FALSE FALSE TRUE TRUE
+##   ..$ var_num  : num [1:5] 0.7761 -0.1485 -0.3824 -0.119 0.0683
+##   ..$ var_logic: logi [1:5] FALSE TRUE FALSE FALSE TRUE
 ```
 
 ---
@@ -1593,7 +1564,7 @@ class: inverse, middle, center
 ---
 # Hoy..
 
-1. Conocer la información y planificar las tareas
+- Conocer la información y planificar las tareas
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
