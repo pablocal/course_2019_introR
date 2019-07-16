@@ -1,0 +1,254 @@
+---
+title: "Manipulación de datos, lo básico pero en `R`"
+subtitle: "Ejercicios resueltos"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(haven)
+```
+
+## Introducción
+
+En los ejercicios de la segunda sesión vamos a trabajar sobre los diferentes objetos de `R` y su manipulación. Antes de empezar:
+
+1. **Abre el script** `sesion2_ejercicios.R`. **Limpia** el espacio de datos ejecutando `rm(list = ls())`. Con este comando eliminarás del espacio de trabajo todos los datos (objetos) que estén disponibles evitando posibles confusiones^[Puedes usar el atajo `Ctrl + Enter` para ejecutar una línea de código en `RStudio`].   
+
+
+2. **Carga los paquetes** que necesitas para realizar la práctica, ejecutando las líneas de `library()`. En caso de que alguno de ellos no esté instalado, instalaló utilizando `install.packages("package")`^[Usa comillas (" ") a la hora de instalar los paquetes con la función `install.packages()`]. 
+
+3. En la carpeta **data** encontrarás los ficheros de datos que vas a utilizar en esta práctica.
+
+## A. Cargar means `read` & `glipmse`
+
+**A.1** Lo primero que vas a hacer es **cargar** un archivo de tipo `.csv` y almacenarlo como `my_csv`. En la carpeta `data` hay un archivo con el nombre `ine_valladolid.csv` que contiene los códigos y nombres de municipios de la provincia. Utiliza la función `read_csv2()`.  Explora los datos. ¿Qué problemas identificas?
+
+```{r A1, echo=TRUE}
+my_csv <- read_csv2("/home/pablocal/git_repos/course_introR/sesion2/data/ine_valladolid.csv")
+glimpse(my_csv)
+head(my_csv, n = 10)
+```
+
+
+`r emo::ji("white_check_mark")` Los nombres de los municipios tienen problemas de `encoding`, los acentos, por ejemplo, no aparecen. Además, `CMUN` es una variable que podría ser numérica.
+
+**A.2** Vuelve a cargar los datos del ejercicio anterior. En esta ocasión utiliza el argumento `locale` para especificar el `encoding`. Prueba con `Latin1`. Una vez cargados los datos, convierte la variable `CMUN` a numérica. Comprueba que los datos han sido cargados correctamente.
+
+```{r A2}
+my_csv <- read_csv2("/home/pablocal/git_repos/course_introR/sesion2/data/ine_valladolid.csv", locale = locale(encoding = "Latin1"))
+my_csv$CMUN <- as.integer(my_csv$CMUN)
+glimpse(my_csv)
+head(my_csv, n = 10)
+```
+
+**A.3** Ahora vas a **cargar** la base de datos `cis_oct17.sav` utilizando la función `read_spss()` del paquete `haven`. Almacena el objeto como `my_spss` y explora la estructura de los datos. ¿De qué tipo es la variable `tamuni`? ¿Y la variable `sexo`?
+
+```{r A3}
+my_spss <- read_spss(file = "/home/pablocal/git_repos/course_introR/sesion2/data/cis_oct17.sav")
+str(my_spss)
+```
+
+`r emo::ji("white_check_mark")` Las variables categóricas son objetos de tipo `labelled`, es decir, vectores numéricos con atributos como las etiquetas. Este tipo de objetos tienen una funcionalidad muy limitada en `R` y es necesario convertirlos a factores para poder tratar las variables y analizarlas. Por ejemplo, la variable `tamuni` es de tipo numeric, aunque tenga como atributos las etiquetas. Lo mismo ocurre con la variable `sexo`.
+
+**A.4** Convierte las columnas de tipo `labelled` en factores con la función `as_factor()` y alamacena el resultado como `my_spss_factor`. Explora la estructura de los datos. Fíjate en la variable `edad`, ¿qué tiene de particular?
+
+```{r A4}
+my_spss_factor <- as_factor(my_spss)
+str(my_spss_factor)
+```
+`r emo::ji("white_check_mark")` La variable edad ha sido transformada en un factor.
+
+
+**A.5** Convierte la varaible `edad` en una de tipo numérico y comprueba el resultado de la transformación.
+  
+```{r A5}
+my_spss_factor$edad <- as.numeric(as.character(my_spss_factor$edad))
+str(my_spss_factor$edad)
+```
+
+  
+## B. Seleccionar variables 
+
+```{r data, echo=FALSE}
+head(my_spss_factor, 10) %>% kableExtra::kable()
+```
+
+
+**B.1** Primero, explora con más detenimiento los datos. Utiliza las funciones `summary()` y `glimpse()`.
+
+```{r B1 exercise}
+glimpse(my_spss_factor)
+summary(my_spss_factor)
+```
+
+
+**B.2** Selecciona las variables `edad` y `estud` del conjunto de datos `my_spss_factor`. No guardes el cambio, pero imprime el resultado.  
+
+```{r B3}
+select(.data = my_spss_factor, edad, estud)
+```
+
+**B.3** Ahora **selecciona** las variables cuyos nombres terminan por la letra **d**. Utiliza para ello la función auxiliar `ends_with()`. No guardes el resultado.
+
+```{r B4}
+select(.data = my_spss_factor, ends_with("d"))
+```
+
+**B.4** Crea un nuevo data frame en el que figuren todas las variables presentes en `my_spss_factor` excepto `ocupa`. LLama al nuevo data frame `cis`.
+
+```{r B5}
+cis <- select(.data = my_spss_factor, -ocupa)
+```
+
+
+## C. Ordenar y filtrar casos
+
+**C.1** **Ordena** el data frame `cis` por las variables `region` (ascendente) y `edad` (descendente). Comprueba el orden del data frame utilizando la función `View()`. Cuando hagas una transformación **no olvides volver guardar el objedo** para no perder el cambio en el data frame.
+
+```{r C1}
+cis <- arrange(cis, region, desc(edad))
+```
+
+```{r C1 exr noev, eval=FALSE}
+View(cis)
+```
+
+
+```{r C1 exercise, echo=FALSE}
+cis
+```
+
+**C.2** Selecciona una **submuestra de los casos** del data frame `cis`  que contenga los casos de `Andalucía`, `Madrid (Comunidad de)` y `Cataluña`. Para realizar el filtrado intenta usar el operador `%in%`, que sirve para hacer selecciones múltiples y así evitar el uso reiterado del operador lógico `|`. Guarda el data frame resultante con el mismo nombre.
+
+```{r C2}
+cis <- filter(.data = cis, region %in% c("Andalucía", "Cataluña", "Madrid (Comunidad de)"))
+table(cis$region)
+```
+
+**C.3** Ahora crea una lista de data frames segmentados a partir de la variable `region` utilizando para ello la función `group_split()`. Guarda la lista de data frames como `cis_split`. Comprueba la estructura de `cis_split`.
+
+```{r cis split}
+cis_split <- group_split(cis, region)
+str(cis_split)
+```
+
+**C.4** Realiza una tabla de la variable `idv` correspondiente a `Andalucía` a partir del objeto `cis_split`. Para realizar la tabla puedes utilizar la función `table()`.
+
+```{r C4}
+table(cis_split[[1]]$region)
+table(cis_split[[1]]$idv)
+```
+
+
+## D. Transformar variables y renombrar
+
+**D.1** Crea una variable que sea la suma de la variable `edad` en `cis` y  50. Llama a la nueva variable `edad_rec1`. Comprueba la nueva variable con la función `head()` mostrando solo las variables `edad` y `edad_rec1`. Para hacer la selección de las variables usa `select()`.
+
+```{r D1}
+cis <- mutate(cis,
+              edad_rec1 = edad + 50)
+
+head(select(cis, edad, edad_rec1), n = 5)
+
+```
+
+**D.2** Ahora crea una variable (`edad_rec2`) que sea la suma de edad y un número aleatorio entre 1 y 50 **diferente para cada caso**. Para generar el número aleatorio utiliza la función `runif()` con un mínimo de 1 y un máximo de 50. Comprueba la transformación de la variable con `head()`.
+
+```{r D2}
+cis <- mutate(cis,
+              edad_rec2 = edad + runif(n = nrow(cis), min = 0, max = 50))
+
+head(select(cis, edad, edad_rec2), n = 5)
+```
+
+
+**D.3** **Recodifica** la variable `idv` del data frame `cis` en `idv_rec` de forma que tenga seis categorías: `PSOE`, `PP`, `UP`, `Cs`, `Otros` y `No vota`.
+
+1. Utiliza la función `levels()` para **conocer los niveles** de la variable original (`idv`)
+
+2. Los valores `N.C.` tansfórmalos en **perdidos** (`NA`) 
+
+3. Utiliza la función `mutate()` en combinación con `recode()`
+
+4. Para simplificar el trabajo utiliza el argumento `.default` de la función `recode()`, que establece la categoría por defecto a la que pertecen los casos en la variable recodificada
+
+
+¿De qué tipo es el vector `idv_rec`?
+
+```{r D3}
+levels(cis$idv)
+cis <- mutate(.data = cis, 
+              idv_rec = recode(idv,
+                "PSOE" = "PSOE",
+                "PP" = "PP",
+                "Ciudadanos" = "Cs",
+                "Podemos" = "UP", 
+                "En Comú Podem" = "UP", 
+                "IU" = "UP",
+                "No votaría" = "No vota",
+                "N.C." = NA_character_,
+                .default = "Otros"
+              ))
+table(cis$idv, cis$idv_rec)
+class(cis$idv_rec)
+```
+
+`r emo::ji("white_check_mark")` Es un factor.
+
+**D.4** Crea la variable `edad_group` con 4 grupos de edad `18-29`, `30-44`, `45-64`, `65+`. Para ello utiliza la función auxiliar `case_when()`. Haz una tabla para comprobar la transformación de la variable.
+
+```{r D4}
+cis <- mutate(cis,
+              edad_group = case_when(
+                edad <= 29 ~ "18-29",
+                edad >= 30 & edad <= 44 ~ "30-44",
+                edad >= 45 & edad <= 64 ~ "45-64",
+                edad >= 65 ~ "65+"
+              ))
+
+table(cis$edad, cis$edad_group)
+```
+
+
+**D.5** Crea una nueva variable (`idv_sexo`) que sea una combinación de `idv_rec` y `sexo` para los casos de `PSOE` y `PP`, mientras que el resto de los casos será especificado como `"Otros"`. Fíjate en la siguiente tabla:
+
+```{r D5 table, echo=FALSE}
+tibble(idv_rec = c("PSOE", "PSOE", "PP", "PP", "Otros"),
+             sexo = c("Hombre", "Mujer", "Hombre", "Mujer", "Indiferente"),
+             idv_sexo = c("PSOE Hombre", "PSOE Mujer", "PP Hombre", "PP Mujer", "Otros")) %>% 
+  kableExtra::kable()
+```
+
+```{r D5}
+cis <- mutate(cis,
+              idv_sexo = case_when(
+                idv_rec == "PSOE" & sexo == "Hombre" ~ "PSOE Hombre",
+                idv_rec == "PSOE" & sexo == "Mujer" ~ "PSOE Mujer",
+                idv_rec == "PP" & sexo == "Hombre" ~ "PP Hombre",
+                idv_rec == "PP" & sexo == "Mujer" ~ "PP Mujer",
+                TRUE ~ "Otros"
+              ))
+table(cis$sexo, cis$idv_sexo)
+table(cis$idv_rec, cis$idv_sexo)
+```
+
+
+**D.6** Ahora vas a crear una **nueva variable edad** (`edad_rec3`) en la que los menores de 25 años tengan un valor perdido (`NA`) y el resto su valor orignal en la variable `edad`. Para ello utiliza la función `ifelse()`. Comprueba la transformación.
+
+```{r D6}
+cis <- mutate(cis,
+              edad_rec3 = ifelse(edad < 25, NA, edad))
+table(cis$edad_rec3)
+```
+
+
+**D.7** Cambia el nombre de la variable `edad_rec3` a `edad_na`. Para ello utiliza la función `rename()`. Utiliza la función `colnames()` para comprobar que el nombre de la variable se ha cambiado correctamente. 
+
+```{r D8}
+cis <- rename(cis, edad_na = edad_rec3)
+colnames(cis)
+```
+
+
+
