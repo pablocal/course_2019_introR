@@ -796,7 +796,6 @@ gss_cat_mutate <- mutate(.data = gss_cat,
                                                  .default = "other"))
 
 ```
-
 ---
 # Funciones de apoyo a la transformación
 
@@ -805,9 +804,70 @@ table(gss_cat_mutate$partyid, gss_cat_mutate$partyid_recode)
 ```
 
 ---
+# Otras funciones de apoyo a la transformación
+
+Existen más **funciones auxliares**<sup>6</sup> para apoyar la transformación de datos:
+
+.pull-left[
+- **`lead()`** 
+- **`lag()`**
+- **`dense_rank()`**
+- **`min_rank()`**
+- **`percent_rank()`**
+- **`row_number()`** 
+- **`cume_dist()`** 
+- **`ntile()`**
+]
+
+.pull-rigth[
+- **`na_if()`**
+- **`coalesce()`**
+- **`cumsum()`**
+- **`cummean()`**
+- **`cummin()`**
+- **`cummax()`**
+- **`cumany()`**
+- **`cumall()`**
+]
+
+.footnote[
+[6] Más información sobre las funciones auxiliares a mutate [aquí](https://dplyr.tidyverse.org/reference/mutate.html).
+]
+---
 class: inverse, center, middle
 
 # Proyecto
+
+---
+class: inverse, middle, center
+
+# Proyecto
+
+---
+# Proyecto y `r icon::fa("r-project")` *workflow*
+
+**Objetivo**: Crear una base de datos con las **notas de la EVaU** de los centros educativos de Castilla-La Mancha y las características de los centros.
+
+--
+
+1. Notas por centro educativo de la EVaU disponible en la UCLM en PDF.
+
+--
+
+2. Notas de los centros educativos disponibles en una base de datos de consulta individual de la Consejería de Educación.
+
+--
+
+3. Combinar las extraciones de las dos fuentes de información.
+
+---
+# Hoy..
+
+- Conocer la información y **planificar** las tareas
+
+- Buscar **funciones**
+
+
 
 
 
