@@ -1,5 +1,5 @@
 ---
-title: "Quién tiene mejores resultados en la EVaU: ¿púlica, privada o cocnertada?"
+title: "¿Quién tiene mejores resultados en la EVaU: púlica, privada o cocnertada?"
 author:  "Proyecto"
 date: "Julio 2019"
 output:

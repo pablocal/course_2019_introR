@@ -8,6 +8,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(tufte)
+library(tidyverse)
 # invalidate cache when the tufte version changes
 knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
 options(htmltools.dir.version = FALSE)
@@ -178,10 +179,24 @@ $\bigskip$
 **D.5** Crea una nueva variable (`idv_sexo`) que sea una **combinación** de `idv_rec` y `sexo` para los casos de `PSOE` y `PP`, mientras que el resto de los casos será especificado como `"Otros"`. Fíjate en la siguiente tabla:
 $\bigskip$
 
+```{r D5 table, echo=FALSE}
+tibble(idv_rec = c("PSOE", "PSOE", "PP", "PP", "Otros"),
+             sexo = c("Hombre", "Mujer", "Hombre", "Mujer", "Indiferente"),
+             idv_sexo = c("PSOE Hombre", "PSOE Mujer", "PP Hombre", "PP Mujer", "Otros")) %>% 
+  kableExtra::kable()
+```
+
+
+$\bigskip$
+
 ```{marginfigure}
 `ifelse(test, yes, no)`
 Devuelve un objeto modificado según una condición.
 ```
+
+
+
+
 
 **D.6** Ahora vas a crear una **nueva variable edad** (`edad_rec3`) en la que los menores de 25 años tengan un valor perdido (`NA`) y el resto su valor orignal en la variable `edad`. Para ello utiliza la función `ifelse()`. Comprueba la transformación.
 $\bigskip$
