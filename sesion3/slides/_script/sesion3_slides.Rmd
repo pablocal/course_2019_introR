@@ -1,0 +1,563 @@
+---
+title: 'Manipulación de datos, más allá de lo básico'
+subtitle: 'Curso de introducción a `r icon::fa("r-project")`'
+author: ''
+institute: 'Pablo Cabrera-Álvarez <br> <span style = "font-size: 75%;">[`r icon::fa("github")`](https://github.com/pablocal) | [`r icon::fa("twitter")`](https://twitter.com/pablocalv) @pablocalv </span> <br>'
+date: "<br><br>Julio 2019"
+output:
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightStyle: idea
+      titleSlideClass: ["left", "middle", "inverse"]
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+library(tidyverse)
+library(haven)
+library(kableExtra)
+options(htmltools.dir.version = FALSE)
+mono_accent_inverse(
+  base_color = "#3C989E",
+  link_color = "#b1d5d8",
+  header_font_google = google_font("Oswald", "500"),
+  text_font_google   = google_font("Roboto Slab", "400", "400i"),
+  code_font_google   = google_font("IBM Plex Mono")
+)
+```
+# `r emo::ji("nerd")` Quiz
+
+Vamos a utilizar el conjunto de datos `gss_cat`. Para poder reescribirli voy a guardarlo como `gss`:
+
+```{r}
+gss <- gss_cat
+glimpse(gss)
+```
+
+---
+# `r emo::ji("nerd")` Quiz
+
+- **Ordenar** el conjunto de datos por `age` ascendente y `year` descendente:
+
+--
+
+```{r}
+gss <- arrange(gss, age, desc(year))
+glimpse(gss)
+```
+
+---
+# `r emo::ji("nerd")` Quiz
+
+- Crear una variable que sea `id` con un **identificador** único:
+
+--
+
+```{r}
+gss <- mutate(gss,
+              id = 1:nrow(gss))
+glimpse(gss)
+```
+
+---
+# `r emo::ji("nerd")` Quiz
+
+- **Reordenar** las variables para que `id` sea la primera del data frame:
+
+--
+
+```{r}
+gss <- select(gss,
+              id, everything())
+glimpse(gss)
+```
+
+---
+# `r emo::ji("nerd")` Quiz
+
+- **Filtrar** lo casos que sean mayores de 25 años:
+
+--
+
+```{r}
+gss <- filter(gss,
+              age > 25)
+summary(gss$age)
+```
+
+
+---
+# `r emo::ji("nerd")` Quiz
+
+- **Renombrar** la variable `rincome` $\to$ `income_bands`:
+
+--
+
+```{r}
+gss <- rename(gss,
+              income_bands = rincome)
+glimpse(gss)
+```
+
+---
+# Manipulación de datos, más allá de lo básico
+
+- Un toque de elegancia: el uso de *pipes* `%>%`
+
+--
+
+- **Agrupar** datos 
+
+--
+
+- **Resumir** variables
+
+--
+
+- Combinar **filas** 
+
+--
+
+- Combinar **columnas**
+
+--
+
+- De archivo largo a ancho: **spread**
+
+--
+
+- De ancho a largo: **gather**
+
+---
+class: inverse, middle, center
+
+# Operar con *pipes* `%>%`
+
+---
+# Espíritu `tidyverse`
+
+```{r, eval=FALSE}
+gss <- gss_cat
+gss <- arrange(gss, age, desc(year))
+gss <- mutate(gss, id = 1:nrow(gss))
+gss <- select(gss, id, everything())
+gss <- filter(gss, age > 25)
+gss <- rename(gss, income_bands = rincome)
+```
+
+--
+
+¿Cómo simplificar el código?
+
+--
+
+`gss` está repetida **11** veces 
+
+---
+# Espíritu `tidyverse` 
+
+
+```{r, eval=FALSE}
+gss  <- gss_cat
+        arrange(age, desc(year))
+        mutate(id = 1:nrow(gss))
+        select(id, everything())
+        filter(age > 25)
+        rename(income_bands = rincome)
+```
+---
+# Espíritu `tidyverse` 
+
+
+```{r pipe}
+gss  <- gss_cat %>% 
+        arrange(age, desc(year)) %>% 
+        mutate(id = 1:nrow(gss_cat)) %>%
+        select(id, everything()) %>%
+        filter(age > 25) %>%
+        rename(income_bands = rincome)
+glimpse(gss)
+```
+
+---
+# Operar con `%>%`
+
+- Las *pipes* o tuberías **transportan un objeto**, generalmente un data frame, a lo largo de una serie de **funciones** que sucesivamente van transformando los datos:
+
+```{r, eval=FALSE}
+gss_cat %>% 
+  select(race, partyid) %>% 
+  filter(race == "White")
+```
+
+---
+# Operar con `%>%`
+
+- También se pueden incluir **funciones** que generen otros **objetos** (e.g. gráficos o análisis):
+
+```{r}
+gss_cat %>% 
+  select(race, partyid) %>% 
+  filter(race == "White") %>% 
+  head()
+
+```
+
+---
+# Operar con `%>%` 
+
+- En ocasiones es necesario **referirse a los datos dentro de un pipe**, para ello se puede utilizar el punto (`.`).
+
+
+```{r}
+gss_cat %>% 
+  mutate(id = 1:nrow(.)) %>% 
+  select(id) %>% 
+  head()
+
+```
+
+---
+# Uso de las *pipes* en el código
+
+- Evitar *pipes* de más de diez líneas, en ese caso crear varios objetos     
+
+--
+
+- Utiliza *pipes* siempre que haya dos o más funciones, pero no en caso de que corresponda usar una única función:
+
+```{r, eval=FALSE}
+gss_cat %>% select(race, age) # mal
+
+gss_cat %>% #bien 
+  select(race, age) %>% 
+  filter(race == "White")
+```
+
+---
+class: inverse, middle, center 
+
+
+# Agrupar means group
+
+---
+# Agrupar casos
+
+#### `group_by(.data, ...)` | 
+
+- La función `group_by()` permite agrupar los casos según una o varias variables:
+
+```{r}
+gss_group <- gss_cat %>% 
+          group_by(race)
+glimpse(gss_group)
+```
+
+---
+class: inverse, middle, center 
+
+# Resumir means summarise 
+
+---
+# Hacer estadísticos resumen
+
+#### summarise(.data, ...)
+
+- La función `summarise()` es útil para crear estadísticos **resumen**:
+
+```{r}
+gss_cat %>% 
+summarise(mean_age = mean(age, na.rm = TRUE))
+```
+
+--
+
+- También funciona con data frames **agrupados**:
+
+```{r}
+gss_group %>% 
+summarise(mean_age = mean(age, na.rm = TRUE))
+```
+
+---
+# Funcionamiento habitual de summarise
+
+- El **resumen** de los datos con `summarise()` se suele hacer después de una **agrupación** de los mismos con `group_by()`:
+
+
+```{r}
+gss_cat %>% 
+  group_by(race) %>% 
+  summarise(mean_age = mean(age, na.rm = TRUE),
+            sd_age = sd(age, na.rm = TRUE),
+            first_rincome = first(rincome))
+```
+
+---
+# Funciones de apoyo a summarise
+
+.pull-left[
+* `mean()`
+* `sd()`
+* `median()`
+* `IQR()`
+* `min()`
+* `max()`
+* `qualtile()`
+]
+
+.pull-right[
+* `first()`
+* `last()`
+* `nth()`
+* `n()`
+* `n_distinct()`
+* `any()`
+* `all()`
+]
+
+---
+# Una función extra: frecuencia más repetida
+
+#### `which.max(x)`
+
+- Una función auxiliar que no está implementada en *tidyverse* es extraer el nivel con la frecuencia más alta para cada grupo. Para ello es necesario combinar tres funciones de `rbase`: `table()`, `which.max()` y `names()`.
+
+--
+
+- Lo solucionamos en tres pasos:
+
+  1. Con `table()` se obtienen las frecuencias
+  2. Con `which.max()` se selecciona la categoría con mayor frecuencia
+  3. Con `names()` se extrae el nombre del nivel del factor
+  
+  
+```{r}
+table(gss_cat$partyid) 
+```
+  
+---
+# Una función extra: frecuencia más repetida
+
+- El siguiente código da la etiqueta y el nivel de la categoría con mayor frecuencia:
+
+```{r}
+which.max(table(gss_cat$partyid)) 
+```
+
+--
+
+- Se aplica la función `names()` para obtener la etiqueta de la variable:
+
+```{r}
+names(which.max(table(gss_cat$partyid))) 
+```
+
+---
+# Un ejemplo de la aplicación
+
+- Para cada grupo de la variable `race` obtener el partido más frecuente con el que se identifican `party_id`:
+
+
+```{r}
+gss_cat %>% 
+  group_by(race) %>% 
+  summarise(most_freq_partyid = names(which.max(table(partyid))))
+```
+
+
+---
+# Crear una variable resumen a nivel individual
+
+- La función `group_by()` también funciona con `mutate()` para crear una variable resumen:
+
+```{r}
+gss_cat %>% 
+  select(race, age) %>% 
+  group_by(race) %>% 
+  mutate(mean_age = mean(age, na.rm = TRUE)) %>% 
+  head()
+```
+
+
+
+---
+class: inverse, middle, center
+
+# Combinar filas
+
+---
+# Combinar filas
+
+
+```{r}
+rows_a <- gss_cat[1:3, c(1, 3:4)]
+glimpse(rows_a)
+rows_b <- gss_cat[4:6, c(1:4)]
+glimpse(rows_b)
+```
+
+---
+# Combinar filas 
+
+#### `bind_rows(..., id)`
+
+- La función `bind_rows()` permite combinar dos conjuntos de filas en un único objeto. La combinación se lelva  acabo a partir del nombre de las columnas o variables:
+
+```{r}
+bind_rows(rows_a, rows_b)
+```
+
+---
+class: inverse, middle, center
+
+# Combinar variables
+
+---
+# Combinar variables 
+
+
+```{r}
+gss <- gss_cat %>% 
+  mutate(id = 1:nrow(gss_cat)) %>% 
+  select(id, everything())
+cols_a <- gss[1:3, 1:3]
+glimpse(cols_a)
+cols_b <- gss[c(1:2, 4), c(1, 4:5)]
+glimpse(cols_b)
+```
+
+---
+# Combinar variables 
+
+#### `bind_cols(...)`
+
+- La función `bind_cols()` realiza una combinación de dos data frames a partir de las columnas; la combinación es posicional por lo que es necesario que los casos (filas) estén ordenados apra que se realice correctamente:
+
+```{r}
+bind_cols(cols_a, cols_b)
+```
+
+---
+# Combinar variables, por la izquierda
+
+#### `left_join(x, y, by)`
+
+- La función `left_join()` sirve para **unir dos data frames** en base a una o más variables clave, tomando como referencia el data frame `x`, situado a la izquierda de la definición:
+
+```{r}
+left_join(x = cols_a, y = cols_b, by = "id")
+```
+
+
+---
+# Combinar variables, por la derecha
+
+#### `right_join(x, y, by)`
+
+- La función `right_join()` sirve para **unir dos data frames** en base a una o más variables clave, tomando como referencia el data frame `y`, situado a la derecha de la definición:
+
+```{r}
+right_join(x = cols_a, y = cols_b, by = "id")
+```
+
+---
+# Combinar variables, todas
+
+#### `full_join(x, y, by)`
+
+- La función `full_join()` sirve para unir dos data frames en base a una o más variables clave:
+
+```{r}
+full_join(x = cols_a, y = cols_b, by = "id")
+```
+
+---
+# Variables sin combinar
+
+#### `anti_join()`
+
+- En ocasiones es necesario tener un listado de aquellos casos que no se han combinado al no estar en ambos data frames. Para ello se puede utilizar la función `anti_join()`:
+
+```{r}
+anti_join(x = cols_a, y = cols_b, by = "id")
+```
+
+---
+class: inverse, middle, center
+
+# A formato ancho
+
+---
+# Cambiar la forma de los datos
+
+- En ocasiones los datos deben ser **cambiados de forma** par apoder ser analizados:
+
+![](http://ohi-science.org/data-science-training/img/rstudio-cheatsheet-reshaping-data-spread.png)
+
+
+---
+# Datos en formato largo
+
+```{r, echo=FALSE}
+muni <- tibble(muni = c("Madrid", "Madrid", "Barcelona", "Barcelona"),
+               item = c("Poblac.", "Votos", "Poblac.", "Votos"),
+               valor_mill = c(5.7, 2.4, 2.5, 1.6)) 
+```
+
+
+```{r}
+muni
+```
+
+---
+# De largo a ancho
+
+#### `spread(data, key, value)`
+
+- Para pasar los datos de formato **largo a ancho** se usa lafunción `spread()`:
+
+```{r}
+spread(data = muni, key = item, value = valor_mill)
+```
+
+
+---
+class: inverse, middle, center
+
+# A formato largo
+
+---
+# Cambiar la forma de los datos
+
+- Otra manera de formatear los datos es pasarlos **de ancho a largo**:
+
+![](http://ohi-science.org/data-science-training/img/rstudio-cheatsheet-reshaping-data-gather.png)
+
+
+---
+# De ancho a largo
+
+```{r}
+glimpse(iris)
+head(iris, n = 5)
+```
+
+
+---
+# De ancho a largo
+
+#### `gather(data, key, value, ...)`
+
+- Con la función `gather()` los datos pasan de **formato ancho a largo**. Los argumentos son los mismos que en la función `spread()`, pero los valores esperados son distintos. Se espera unas nuevas versiones de estas funciones próximamente: `pivot_wide()` y `pivot_long()`.
+
+```{r}
+gather(data = iris, key = "var", value = "value", Sepal.Length:Petal.Width)
+```
+
+

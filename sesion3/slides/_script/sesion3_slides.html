@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Manipulación de datos, más allá de lo básico</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: left, middle, inverse, title-slide
+
+# Manipulación de datos, más allá de lo básico
+## Curso de introducción a <i class="fab  fa-r-project "></i>
+### Pablo Cabrera-Álvarez <br> <span style="font-size: 75%;"><a href="https://github.com/pablocal"><i class="fab  fa-github "></i></a> | <a href="https://twitter.com/pablocalv"><i class="fab  fa-twitter "></i></a> <span class="citation">@pablocalv</span> </span> <br>
+### <br><br>Julio 2019
+
+---
+
+
+
+# 🤓 Quiz
+
+Vamos a utilizar el conjunto de datos `gss_cat`. Para poder reescribirli voy a guardarlo como `gss`:
+
+
+```r
+gss &lt;- gss_cat
+glimpse(gss)
+```
+
+```
+## Observations: 21,483
+## Variables: 9
+## $ year    &lt;int&gt; 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, ...
+## $ marital &lt;fct&gt; Never married, Divorced, Widowed, Never married, Divor...
+## $ age     &lt;int&gt; 26, 48, 67, 39, 25, 25, 36, 44, 44, 47, 53, 52, 52, 51...
+## $ race    &lt;fct&gt; White, White, White, White, White, White, White, White...
+## $ rincome &lt;fct&gt; $8000 to 9999, $8000 to 9999, Not applicable, Not appl...
+## $ partyid &lt;fct&gt; "Ind,near rep", "Not str republican", "Independent", "...
+## $ relig   &lt;fct&gt; Protestant, Protestant, Protestant, Orthodox-christian...
+## $ denom   &lt;fct&gt; Southern baptist, Baptist-dk which, No denomination, N...
+## $ tvhours &lt;int&gt; 12, NA, 2, 4, 1, NA, 3, NA, 0, 3, 2, NA, 1, NA, 1, 7, ...
+```
+
+---
+# 🤓 Quiz
+
+- **Ordenar** el conjunto de datos por `age` ascendente y `year` descendente:
+
+--
+
+
+```r
+gss &lt;- arrange(gss, age, desc(year))
+glimpse(gss)
+```
+
+```
+## Observations: 21,483
+## Variables: 9
+## $ year    &lt;int&gt; 2014, 2014, 2014, 2014, 2014, 2014, 2012, 2012, 2012, ...
+## $ marital &lt;fct&gt; Never married, Never married, Never married, Never mar...
+## $ age     &lt;int&gt; 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18...
+## $ race    &lt;fct&gt; White, Black, White, Black, White, White, Other, Other...
+## $ rincome &lt;fct&gt; Not applicable, Not applicable, Not applicable, Not ap...
+## $ partyid &lt;fct&gt; "Other party", "Ind,near dem", "Ind,near rep", "Not st...
+## $ relig   &lt;fct&gt; None, Protestant, Protestant, None, None, Protestant, ...
+## $ denom   &lt;fct&gt; Not applicable, Baptist-dk which, Baptist-dk which, No...
+## $ tvhours &lt;int&gt; 5, 4, 1, 3, 0, 0, 5, 3, 2, NA, NA, 1, 3, 1, 2, 4, 1, 2...
+```
+
+---
+# 🤓 Quiz
+
+- Crear una variable que sea `id` con un **identificador** único:
+
+--
+
+
+```r
+gss &lt;- mutate(gss,
+              id = 1:nrow(gss))
+glimpse(gss)
+```
+
+```
+## Observations: 21,483
+## Variables: 10
+## $ year    &lt;int&gt; 2014, 2014, 2014, 2014, 2014, 2014, 2012, 2012, 2012, ...
+## $ marital &lt;fct&gt; Never married, Never married, Never married, Never mar...
+## $ age     &lt;int&gt; 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18...
+## $ race    &lt;fct&gt; White, Black, White, Black, White, White, Other, Other...
+## $ rincome &lt;fct&gt; Not applicable, Not applicable, Not applicable, Not ap...
+## $ partyid &lt;fct&gt; "Other party", "Ind,near dem", "Ind,near rep", "Not st...
+## $ relig   &lt;fct&gt; None, Protestant, Protestant, None, None, Protestant, ...
+## $ denom   &lt;fct&gt; Not applicable, Baptist-dk which, Baptist-dk which, No...
+## $ tvhours &lt;int&gt; 5, 4, 1, 3, 0, 0, 5, 3, 2, NA, NA, 1, 3, 1, 2, 4, 1, 2...
+## $ id      &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,...
+```
+
+---
+# 🤓 Quiz
+
+- **Reordenar** las variables para que `id` sea la primera del data frame:
+
+--
+
+
+```r
+gss &lt;- select(gss,
+              id, everything())
+glimpse(gss)
+```
+
+```
+## Observations: 21,483
+## Variables: 10
+## $ id      &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,...
+## $ year    &lt;int&gt; 2014, 2014, 2014, 2014, 2014, 2014, 2012, 2012, 2012, ...
+## $ marital &lt;fct&gt; Never married, Never married, Never married, Never mar...
+## $ age     &lt;int&gt; 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18...
+## $ race    &lt;fct&gt; White, Black, White, Black, White, White, Other, Other...
+## $ rincome &lt;fct&gt; Not applicable, Not applicable, Not applicable, Not ap...
+## $ partyid &lt;fct&gt; "Other party", "Ind,near dem", "Ind,near rep", "Not st...
+## $ relig   &lt;fct&gt; None, Protestant, Protestant, None, None, Protestant, ...
+## $ denom   &lt;fct&gt; Not applicable, Baptist-dk which, Baptist-dk which, No...
+## $ tvhours &lt;int&gt; 5, 4, 1, 3, 0, 0, 5, 3, 2, NA, NA, 1, 3, 1, 2, 4, 1, 2...
+```
+
+---
+# 🤓 Quiz
+
+- **Filtrar** lo casos que sean mayores de 25 años:
+
+--
+
+
+```r
+gss &lt;- filter(gss,
+              age &gt; 25)
+summary(gss$age)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   26.00   37.00   48.00   50.15   61.00   89.00
+```
+
+
+---
+# 🤓 Quiz
+
+- **Renombrar** la variable `rincome` `\(\to\)` `income_bands`:
+
+--
+
+
+```r
+gss &lt;- rename(gss,
+              income_bands = rincome)
+glimpse(gss)
+```
+
+```
+## Observations: 19,139
+## Variables: 10
+## $ id           &lt;int&gt; 2269, 2270, 2271, 2272, 2273, 2274, 2275, 2276, 2...
+## $ year         &lt;int&gt; 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2...
+## $ marital      &lt;fct&gt; Married, Never married, Never married, Never marr...
+## $ age          &lt;int&gt; 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 2...
+## $ race         &lt;fct&gt; White, White, Black, Other, White, White, White, ...
+## $ income_bands &lt;fct&gt; $25000 or more, $25000 or more, $25000 or more, $...
+## $ partyid      &lt;fct&gt; "Not str republican", "Ind,near dem", "Not str de...
+## $ relig        &lt;fct&gt; Catholic, None, Catholic, Catholic, Catholic, Cat...
+## $ denom        &lt;fct&gt; Not applicable, Not applicable, Not applicable, N...
+## $ tvhours      &lt;int&gt; NA, 3, 2, 3, NA, NA, 0, 3, NA, NA, NA, NA, 1, NA,...
+```
+
+---
+# Manipulación de datos, más allá de lo básico
+
+- Un toque de elegancia: el uso de *pipes* `%&gt;%`
+
+--
+
+- **Agrupar** datos 
+
+--
+
+- **Resumir** variables
+
+--
+
+- Combinar **filas** 
+
+--
+
+- Combinar **columnas**
+
+--
+
+- De archivo largo a ancho: **spread**
+
+--
+
+- De ancho a largo: **gather**
+
+---
+class: inverse, middle, center
+
+# Operar con *pipes* `%&gt;%`
+
+---
+# Espíritu `tidyverse`
+
+
+```r
+gss &lt;- gss_cat
+gss &lt;- arrange(gss, age, desc(year))
+gss &lt;- mutate(gss, id = 1:nrow(gss))
+gss &lt;- select(gss, id, everything())
+gss &lt;- filter(gss, age &gt; 25)
+gss &lt;- rename(gss, income_bands = rincome)
+```
+
+--
+
+¿Cómo simplificar el código?
+
+--
+
+`gss` está repetida **11** veces 
+
+---
+# Espíritu `tidyverse` 
+
+
+
+```r
+gss  &lt;- gss_cat
+        arrange(age, desc(year))
+        mutate(id = 1:nrow(gss))
+        select(id, everything())
+        filter(age &gt; 25)
+        rename(income_bands = rincome)
+```
+---
+# Espíritu `tidyverse` 
+
+
+
+```r
+gss  &lt;- gss_cat %&gt;% 
+        arrange(age, desc(year)) %&gt;% 
+        mutate(id = 1:nrow(gss_cat)) %&gt;%
+        select(id, everything()) %&gt;%
+        filter(age &gt; 25) %&gt;%
+        rename(income_bands = rincome)
+glimpse(gss)
+```
+
+```
+## Observations: 19,139
+## Variables: 10
+## $ id           &lt;int&gt; 2269, 2270, 2271, 2272, 2273, 2274, 2275, 2276, 2...
+## $ year         &lt;int&gt; 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2014, 2...
+## $ marital      &lt;fct&gt; Married, Never married, Never married, Never marr...
+## $ age          &lt;int&gt; 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 2...
+## $ race         &lt;fct&gt; White, White, Black, Other, White, White, White, ...
+## $ income_bands &lt;fct&gt; $25000 or more, $25000 or more, $25000 or more, $...
+## $ partyid      &lt;fct&gt; "Not str republican", "Ind,near dem", "Not str de...
+## $ relig        &lt;fct&gt; Catholic, None, Catholic, Catholic, Catholic, Cat...
+## $ denom        &lt;fct&gt; Not applicable, Not applicable, Not applicable, N...
+## $ tvhours      &lt;int&gt; NA, 3, 2, 3, NA, NA, 0, 3, NA, NA, NA, NA, 1, NA,...
+```
+
+---
+# Operar con `%&gt;%`
+
+- Las *pipes* o tuberías **transportan un objeto**, generalmente un data frame, a lo largo de una serie de **funciones** que sucesivamente van transformando los datos:
+
+
+```r
+gss_cat %&gt;% 
+  select(race, partyid) %&gt;% 
+  filter(race == "White")
+```
+
+---
+# Operar con `%&gt;%`
+
+- También se pueden incluir **funciones** que generen otros **objetos** (e.g. gráficos o análisis):
+
+
+```r
+gss_cat %&gt;% 
+  select(race, partyid) %&gt;% 
+  filter(race == "White") %&gt;% 
+  head()
+```
+
+```
+## # A tibble: 6 x 2
+##   race  partyid           
+##   &lt;fct&gt; &lt;fct&gt;             
+## 1 White Ind,near rep      
+## 2 White Not str republican
+## 3 White Independent       
+## 4 White Ind,near rep      
+## 5 White Not str democrat  
+## 6 White Strong democrat
+```
+
+---
+# Operar con `%&gt;%` 
+
+- En ocasiones es necesario **referirse a los datos dentro de un pipe**, para ello se puede utilizar el punto (`.`).
+
+
+
+```r
+gss_cat %&gt;% 
+  mutate(id = 1:nrow(.)) %&gt;% 
+  select(id) %&gt;% 
+  head()
+```
+
+```
+## # A tibble: 6 x 1
+##      id
+##   &lt;int&gt;
+## 1     1
+## 2     2
+## 3     3
+## 4     4
+## 5     5
+## 6     6
+```
+
+---
+# Uso de las *pipes* en el código
+
+- Evitar *pipes* de más de diez líneas, en ese caso crear varios objetos     
+
+--
+
+- Utiliza *pipes* siempre que haya dos o más funciones, pero no en caso de que corresponda usar una única función:
+
+
+```r
+gss_cat %&gt;% select(race, age) # mal
+
+gss_cat %&gt;% #bien 
+  select(race, age) %&gt;% 
+  filter(race == "White")
+```
+
+---
+class: inverse, middle, center 
+
+
+# Agrupar means group
+
+---
+# Agrupar casos
+
+#### `group_by(.data, ...)` | 
+
+- La función `group_by()` permite agrupar los casos según una o varias variables:
+
+
+```r
+gss_group &lt;- gss_cat %&gt;% 
+          group_by(race)
+glimpse(gss_group)
+```
+
+```
+## Observations: 21,483
+## Variables: 9
+## Groups: race [3]
+## $ year    &lt;int&gt; 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, ...
+## $ marital &lt;fct&gt; Never married, Divorced, Widowed, Never married, Divor...
+## $ age     &lt;int&gt; 26, 48, 67, 39, 25, 25, 36, 44, 44, 47, 53, 52, 52, 51...
+## $ race    &lt;fct&gt; White, White, White, White, White, White, White, White...
+## $ rincome &lt;fct&gt; $8000 to 9999, $8000 to 9999, Not applicable, Not appl...
+## $ partyid &lt;fct&gt; "Ind,near rep", "Not str republican", "Independent", "...
+## $ relig   &lt;fct&gt; Protestant, Protestant, Protestant, Orthodox-christian...
+## $ denom   &lt;fct&gt; Southern baptist, Baptist-dk which, No denomination, N...
+## $ tvhours &lt;int&gt; 12, NA, 2, 4, 1, NA, 3, NA, 0, 3, 2, NA, 1, NA, 1, 7, ...
+```
+
+---
+class: inverse, middle, center 
+
+# Resumir means summarise 
+
+---
+# Hacer estadísticos resumen
+
+#### summarise(.data, ...)
+
+- La función `summarise()` es útil para crear estadísticos **resumen**:
+
+
+```r
+gss_cat %&gt;% 
+summarise(mean_age = mean(age, na.rm = TRUE))
+```
+
+```
+## # A tibble: 1 x 1
+##   mean_age
+##      &lt;dbl&gt;
+## 1     47.2
+```
+
+--
+
+- También funciona con data frames **agrupados**:
+
+
+```r
+gss_group %&gt;% 
+summarise(mean_age = mean(age, na.rm = TRUE))
+```
+
+```
+## # A tibble: 3 x 2
+##   race  mean_age
+##   &lt;fct&gt;    &lt;dbl&gt;
+## 1 Other     39.5
+## 2 Black     43.9
+## 3 White     48.7
+```
+
+---
+# Funcionamiento habitual de summarise
+
+- El **resumen** de los datos con `summarise()` se suele hacer después de una **agrupación** de los mismos con `group_by()`:
+
+
+
+```r
+gss_cat %&gt;% 
+  group_by(race) %&gt;% 
+  summarise(mean_age = mean(age, na.rm = TRUE),
+            sd_age = sd(age, na.rm = TRUE),
+            first_rincome = first(rincome))
+```
+
+```
+## # A tibble: 3 x 4
+##   race  mean_age sd_age first_rincome 
+##   &lt;fct&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;fct&gt;         
+## 1 Other     39.5   14.4 $20000 - 24999
+## 2 Black     43.9   16.1 $25000 or more
+## 3 White     48.7   17.5 $8000 to 9999
+```
+
+---
+# Funciones de apoyo a summarise
+
+.pull-left[
+* `mean()`
+* `sd()`
+* `median()`
+* `IQR()`
+* `min()`
+* `max()`
+* `qualtile()`
+]
+
+.pull-right[
+* `first()`
+* `last()`
+* `nth()`
+* `n()`
+* `n_distinct()`
+* `any()`
+* `all()`
+]
+
+---
+# Una función extra: frecuencia más repetida
+
+#### `which.max(x)`
+
+- Una función auxiliar que no está implementada en *tidyverse* es extraer el nivel con la frecuencia más alta para cada grupo. Para ello es necesario combinar tres funciones de `rbase`: `table()`, `which.max()` y `names()`.
+
+--
+
+- Lo solucionamos en tres pasos:
+
+  1. Con `table()` se obtienen las frecuencias
+  2. Con `which.max()` se selecciona la categoría con mayor frecuencia
+  3. Con `names()` se extrae el nombre del nivel del factor
+  
+  
+
+```r
+table(gss_cat$partyid) 
+```
+
+```
+## 
+##          No answer         Don't know        Other party 
+##                154                  1                393 
+##  Strong republican Not str republican       Ind,near rep 
+##               2314               3032               1791 
+##        Independent       Ind,near dem   Not str democrat 
+##               4119               2499               3690 
+##    Strong democrat 
+##               3490
+```
+  
+---
+# Una función extra: frecuencia más repetida
+
+- El siguiente código da la etiqueta y el nivel de la categoría con mayor frecuencia:
+
+
+```r
+which.max(table(gss_cat$partyid)) 
+```
+
+```
+## Independent 
+##           7
+```
+
+--
+
+- Se aplica la función `names()` para obtener la etiqueta de la variable:
+
+
+```r
+names(which.max(table(gss_cat$partyid))) 
+```
+
+```
+## [1] "Independent"
+```
+
+---
+# Un ejemplo de la aplicación
+
+- Para cada grupo de la variable `race` obtener el partido más frecuente con el que se identifican `party_id`:
+
+
+
+```r
+gss_cat %&gt;% 
+  group_by(race) %&gt;% 
+  summarise(most_freq_partyid = names(which.max(table(partyid))))
+```
+
+```
+## # A tibble: 3 x 2
+##   race  most_freq_partyid
+##   &lt;fct&gt; &lt;chr&gt;            
+## 1 Other Independent      
+## 2 Black Strong democrat  
+## 3 White Independent
+```
+
+
+---
+# Crear una variable resumen a nivel individual
+
+- La función `group_by()` también funciona con `mutate()` para crear una variable resumen:
+
+
+```r
+gss_cat %&gt;% 
+  select(race, age) %&gt;% 
+  group_by(race) %&gt;% 
+  mutate(mean_age = mean(age, na.rm = TRUE)) %&gt;% 
+  head()
+```
+
+```
+## # A tibble: 6 x 3
+## # Groups:   race [1]
+##   race    age mean_age
+##   &lt;fct&gt; &lt;int&gt;    &lt;dbl&gt;
+## 1 White    26     48.7
+## 2 White    48     48.7
+## 3 White    67     48.7
+## 4 White    39     48.7
+## 5 White    25     48.7
+## 6 White    25     48.7
+```
+
+
+
+---
+class: inverse, middle, center
+
+# Combinar filas
+
+---
+# Combinar filas
+
+
+
+```r
+rows_a &lt;- gss_cat[1:3, c(1, 3:4)]
+glimpse(rows_a)
+```
+
+```
+## Observations: 3
+## Variables: 3
+## $ year &lt;int&gt; 2000, 2000, 2000
+## $ age  &lt;int&gt; 26, 48, 67
+## $ race &lt;fct&gt; White, White, White
+```
+
+```r
+rows_b &lt;- gss_cat[4:6, c(1:4)]
+glimpse(rows_b)
+```
+
+```
+## Observations: 3
+## Variables: 4
+## $ year    &lt;int&gt; 2000, 2000, 2000
+## $ marital &lt;fct&gt; Never married, Divorced, Married
+## $ age     &lt;int&gt; 39, 25, 25
+## $ race    &lt;fct&gt; White, White, White
+```
+
+---
+# Combinar filas 
+
+#### `bind_rows(..., id)`
+
+- La función `bind_rows()` permite combinar dos conjuntos de filas en un único objeto. La combinación se lelva  acabo a partir del nombre de las columnas o variables:
+
+
+```r
+bind_rows(rows_a, rows_b)
+```
+
+```
+## # A tibble: 6 x 4
+##    year   age race  marital      
+##   &lt;int&gt; &lt;int&gt; &lt;fct&gt; &lt;fct&gt;        
+## 1  2000    26 White &lt;NA&gt;         
+## 2  2000    48 White &lt;NA&gt;         
+## 3  2000    67 White &lt;NA&gt;         
+## 4  2000    39 White Never married
+## 5  2000    25 White Divorced     
+## 6  2000    25 White Married
+```
+
+---
+class: inverse, middle, center
+
+# Combinar variables
+
+---
+# Combinar variables 
+
+
+
+```r
+gss &lt;- gss_cat %&gt;% 
+  mutate(id = 1:nrow(gss_cat)) %&gt;% 
+  select(id, everything())
+cols_a &lt;- gss[1:3, 1:3]
+glimpse(cols_a)
+```
+
+```
+## Observations: 3
+## Variables: 3
+## $ id      &lt;int&gt; 1, 2, 3
+## $ year    &lt;int&gt; 2000, 2000, 2000
+## $ marital &lt;fct&gt; Never married, Divorced, Widowed
+```
+
+```r
+cols_b &lt;- gss[c(1:2, 4), c(1, 4:5)]
+glimpse(cols_b)
+```
+
+```
+## Observations: 3
+## Variables: 3
+## $ id   &lt;int&gt; 1, 2, 4
+## $ age  &lt;int&gt; 26, 48, 39
+## $ race &lt;fct&gt; White, White, White
+```
+
+---
+# Combinar variables 
+
+#### `bind_cols(...)`
+
+- La función `bind_cols()` realiza una combinación de dos data frames a partir de las columnas; la combinación es posicional por lo que es necesario que los casos (filas) estén ordenados apra que se realice correctamente:
+
+
+```r
+bind_cols(cols_a, cols_b)
+```
+
+```
+## # A tibble: 3 x 6
+##      id  year marital         id1   age race 
+##   &lt;int&gt; &lt;int&gt; &lt;fct&gt;         &lt;int&gt; &lt;int&gt; &lt;fct&gt;
+## 1     1  2000 Never married     1    26 White
+## 2     2  2000 Divorced          2    48 White
+## 3     3  2000 Widowed           4    39 White
+```
+
+---
+# Combinar variables, por la izquierda
+
+#### `left_join(x, y, by)`
+
+- La función `left_join()` sirve para **unir dos data frames** en base a una o más variables clave, tomando como referencia el data frame `x`, situado a la izquierda de la definición:
+
+
+```r
+left_join(x = cols_a, y = cols_b, by = "id")
+```
+
+```
+## # A tibble: 3 x 5
+##      id  year marital         age race 
+##   &lt;int&gt; &lt;int&gt; &lt;fct&gt;         &lt;int&gt; &lt;fct&gt;
+## 1     1  2000 Never married    26 White
+## 2     2  2000 Divorced         48 White
+## 3     3  2000 Widowed          NA &lt;NA&gt;
+```
+
+
+---
+# Combinar variables, por la derecha
+
+#### `right_join(x, y, by)`
+
+- La función `right_join()` sirve para **unir dos data frames** en base a una o más variables clave, tomando como referencia el data frame `y`, situado a la derecha de la definición:
+
+
+```r
+right_join(x = cols_a, y = cols_b, by = "id")
+```
+
+```
+## # A tibble: 3 x 5
+##      id  year marital         age race 
+##   &lt;int&gt; &lt;int&gt; &lt;fct&gt;         &lt;int&gt; &lt;fct&gt;
+## 1     1  2000 Never married    26 White
+## 2     2  2000 Divorced         48 White
+## 3     4    NA &lt;NA&gt;             39 White
+```
+
+---
+# Combinar variables, todas
+
+#### `full_join(x, y, by)`
+
+- La función `full_join()` sirve para unir dos data frames en base a una o más variables clave:
+
+
+```r
+full_join(x = cols_a, y = cols_b, by = "id")
+```
+
+```
+## # A tibble: 4 x 5
+##      id  year marital         age race 
+##   &lt;int&gt; &lt;int&gt; &lt;fct&gt;         &lt;int&gt; &lt;fct&gt;
+## 1     1  2000 Never married    26 White
+## 2     2  2000 Divorced         48 White
+## 3     3  2000 Widowed          NA &lt;NA&gt; 
+## 4     4    NA &lt;NA&gt;             39 White
+```
+
+---
+class: inverse, middle, center
+
+# A formato ancho
+
+---
+# Cambiar la forma de los datos
+
+- En ocasiones los datos deben ser **cambiados de forma** par apoder ser analizados:
+
+![](http://ohi-science.org/data-science-training/img/rstudio-cheatsheet-reshaping-data-spread.png)
+
+
+---
+# Datos en formato largo
+
+
+
+
+
+```r
+muni
+```
+
+```
+## # A tibble: 4 x 3
+##   muni      item    valor_mill
+##   &lt;chr&gt;     &lt;chr&gt;        &lt;dbl&gt;
+## 1 Madrid    Poblac.        5.7
+## 2 Madrid    Votos          2.4
+## 3 Barcelona Poblac.        2.5
+## 4 Barcelona Votos          1.6
+```
+
+---
+# De largo a ancho
+
+#### `spread(data, key, value)`
+
+- Para pasar los datos de formato **largo a ancho** se usa lafunción `spread()`:
+
+
+```r
+spread(data = muni, key = item, value = valor_mill)
+```
+
+```
+## # A tibble: 2 x 3
+##   muni      Poblac. Votos
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt;
+## 1 Barcelona     2.5   1.6
+## 2 Madrid        5.7   2.4
+```
+
+
+---
+class: inverse, middle, center
+
+# A formato largo
+
+---
+# Cambiar la forma de los datos
+
+- Otra manera de formatear los datos es pasarlos **de ancho a largo**:
+
+![](http://ohi-science.org/data-science-training/img/rstudio-cheatsheet-reshaping-data-gather.png)
+
+
+---
+# De ancho a largo
+
+
+```r
+glimpse(iris)
+```
+
+```
+## Observations: 150
+## Variables: 5
+## $ Sepal.Length &lt;dbl&gt; 5.1, 4.9, 4.7, 4.6, 5.0, 5.4, 4.6, 5.0, 4.4, 4.9,...
+## $ Sepal.Width  &lt;dbl&gt; 3.5, 3.0, 3.2, 3.1, 3.6, 3.9, 3.4, 3.4, 2.9, 3.1,...
+## $ Petal.Length &lt;dbl&gt; 1.4, 1.4, 1.3, 1.5, 1.4, 1.7, 1.4, 1.5, 1.4, 1.5,...
+## $ Petal.Width  &lt;dbl&gt; 0.2, 0.2, 0.2, 0.2, 0.2, 0.4, 0.3, 0.2, 0.2, 0.1,...
+## $ Species      &lt;fct&gt; setosa, setosa, setosa, setosa, setosa, setosa, s...
+```
+
+```r
+head(iris, n = 5)
+```
+
+```
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+```
+
+
+---
+# De ancho a largo
+
+#### `gather(data, key, value, ...)`
+
+- Con la función `gather()` los datos pasan de **formato ancho a largo**. Los argumentos son los mismos que en la función `spread()`, pero los valores esperados son distintos. Se espera unas nuevas versiones de estas funciones próximamente: `pivot_wide()` y `pivot_long()`.
+
+
+```r
+gather(data = iris, key = "var", value = "value", Sepal.Length:Petal.Width)
+```
+
+```
+##        Species          var value
+## 1       setosa Sepal.Length   5.1
+## 2       setosa Sepal.Length   4.9
+## 3       setosa Sepal.Length   4.7
+## 4       setosa Sepal.Length   4.6
+## 5       setosa Sepal.Length   5.0
+## 6       setosa Sepal.Length   5.4
+## 7       setosa Sepal.Length   4.6
+## 8       setosa Sepal.Length   5.0
+## 9       setosa Sepal.Length   4.4
+## 10      setosa Sepal.Length   4.9
+## 11      setosa Sepal.Length   5.4
+## 12      setosa Sepal.Length   4.8
+## 13      setosa Sepal.Length   4.8
+## 14      setosa Sepal.Length   4.3
+## 15      setosa Sepal.Length   5.8
+## 16      setosa Sepal.Length   5.7
+## 17      setosa Sepal.Length   5.4
+## 18      setosa Sepal.Length   5.1
+## 19      setosa Sepal.Length   5.7
+## 20      setosa Sepal.Length   5.1
+## 21      setosa Sepal.Length   5.4
+## 22      setosa Sepal.Length   5.1
+## 23      setosa Sepal.Length   4.6
+## 24      setosa Sepal.Length   5.1
+## 25      setosa Sepal.Length   4.8
+## 26      setosa Sepal.Length   5.0
+## 27      setosa Sepal.Length   5.0
+## 28      setosa Sepal.Length   5.2
+## 29      setosa Sepal.Length   5.2
+## 30      setosa Sepal.Length   4.7
+## 31      setosa Sepal.Length   4.8
+## 32      setosa Sepal.Length   5.4
+## 33      setosa Sepal.Length   5.2
+## 34      setosa Sepal.Length   5.5
+## 35      setosa Sepal.Length   4.9
+## 36      setosa Sepal.Length   5.0
+## 37      setosa Sepal.Length   5.5
+## 38      setosa Sepal.Length   4.9
+## 39      setosa Sepal.Length   4.4
+## 40      setosa Sepal.Length   5.1
+## 41      setosa Sepal.Length   5.0
+## 42      setosa Sepal.Length   4.5
+## 43      setosa Sepal.Length   4.4
+## 44      setosa Sepal.Length   5.0
+## 45      setosa Sepal.Length   5.1
+## 46      setosa Sepal.Length   4.8
+## 47      setosa Sepal.Length   5.1
+## 48      setosa Sepal.Length   4.6
+## 49      setosa Sepal.Length   5.3
+## 50      setosa Sepal.Length   5.0
+## 51  versicolor Sepal.Length   7.0
+## 52  versicolor Sepal.Length   6.4
+## 53  versicolor Sepal.Length   6.9
+## 54  versicolor Sepal.Length   5.5
+## 55  versicolor Sepal.Length   6.5
+## 56  versicolor Sepal.Length   5.7
+## 57  versicolor Sepal.Length   6.3
+## 58  versicolor Sepal.Length   4.9
+## 59  versicolor Sepal.Length   6.6
+## 60  versicolor Sepal.Length   5.2
+## 61  versicolor Sepal.Length   5.0
+## 62  versicolor Sepal.Length   5.9
+## 63  versicolor Sepal.Length   6.0
+## 64  versicolor Sepal.Length   6.1
+## 65  versicolor Sepal.Length   5.6
+## 66  versicolor Sepal.Length   6.7
+## 67  versicolor Sepal.Length   5.6
+## 68  versicolor Sepal.Length   5.8
+## 69  versicolor Sepal.Length   6.2
+## 70  versicolor Sepal.Length   5.6
+## 71  versicolor Sepal.Length   5.9
+## 72  versicolor Sepal.Length   6.1
+## 73  versicolor Sepal.Length   6.3
+## 74  versicolor Sepal.Length   6.1
+## 75  versicolor Sepal.Length   6.4
+## 76  versicolor Sepal.Length   6.6
+## 77  versicolor Sepal.Length   6.8
+## 78  versicolor Sepal.Length   6.7
+## 79  versicolor Sepal.Length   6.0
+## 80  versicolor Sepal.Length   5.7
+## 81  versicolor Sepal.Length   5.5
+## 82  versicolor Sepal.Length   5.5
+## 83  versicolor Sepal.Length   5.8
+## 84  versicolor Sepal.Length   6.0
+## 85  versicolor Sepal.Length   5.4
+## 86  versicolor Sepal.Length   6.0
+## 87  versicolor Sepal.Length   6.7
+## 88  versicolor Sepal.Length   6.3
+## 89  versicolor Sepal.Length   5.6
+## 90  versicolor Sepal.Length   5.5
+## 91  versicolor Sepal.Length   5.5
+## 92  versicolor Sepal.Length   6.1
+## 93  versicolor Sepal.Length   5.8
+## 94  versicolor Sepal.Length   5.0
+## 95  versicolor Sepal.Length   5.6
+## 96  versicolor Sepal.Length   5.7
+## 97  versicolor Sepal.Length   5.7
+## 98  versicolor Sepal.Length   6.2
+## 99  versicolor Sepal.Length   5.1
+## 100 versicolor Sepal.Length   5.7
+## 101  virginica Sepal.Length   6.3
+## 102  virginica Sepal.Length   5.8
+## 103  virginica Sepal.Length   7.1
+## 104  virginica Sepal.Length   6.3
+## 105  virginica Sepal.Length   6.5
+## 106  virginica Sepal.Length   7.6
+## 107  virginica Sepal.Length   4.9
+## 108  virginica Sepal.Length   7.3
+## 109  virginica Sepal.Length   6.7
+## 110  virginica Sepal.Length   7.2
+## 111  virginica Sepal.Length   6.5
+## 112  virginica Sepal.Length   6.4
+## 113  virginica Sepal.Length   6.8
+## 114  virginica Sepal.Length   5.7
+## 115  virginica Sepal.Length   5.8
+## 116  virginica Sepal.Length   6.4
+## 117  virginica Sepal.Length   6.5
+## 118  virginica Sepal.Length   7.7
+## 119  virginica Sepal.Length   7.7
+## 120  virginica Sepal.Length   6.0
+## 121  virginica Sepal.Length   6.9
+## 122  virginica Sepal.Length   5.6
+## 123  virginica Sepal.Length   7.7
+## 124  virginica Sepal.Length   6.3
+## 125  virginica Sepal.Length   6.7
+## 126  virginica Sepal.Length   7.2
+## 127  virginica Sepal.Length   6.2
+## 128  virginica Sepal.Length   6.1
+## 129  virginica Sepal.Length   6.4
+## 130  virginica Sepal.Length   7.2
+## 131  virginica Sepal.Length   7.4
+## 132  virginica Sepal.Length   7.9
+## 133  virginica Sepal.Length   6.4
+## 134  virginica Sepal.Length   6.3
+## 135  virginica Sepal.Length   6.1
+## 136  virginica Sepal.Length   7.7
+## 137  virginica Sepal.Length   6.3
+## 138  virginica Sepal.Length   6.4
+## 139  virginica Sepal.Length   6.0
+## 140  virginica Sepal.Length   6.9
+## 141  virginica Sepal.Length   6.7
+## 142  virginica Sepal.Length   6.9
+## 143  virginica Sepal.Length   5.8
+## 144  virginica Sepal.Length   6.8
+## 145  virginica Sepal.Length   6.7
+## 146  virginica Sepal.Length   6.7
+## 147  virginica Sepal.Length   6.3
+## 148  virginica Sepal.Length   6.5
+## 149  virginica Sepal.Length   6.2
+## 150  virginica Sepal.Length   5.9
+## 151     setosa  Sepal.Width   3.5
+## 152     setosa  Sepal.Width   3.0
+## 153     setosa  Sepal.Width   3.2
+## 154     setosa  Sepal.Width   3.1
+## 155     setosa  Sepal.Width   3.6
+## 156     setosa  Sepal.Width   3.9
+## 157     setosa  Sepal.Width   3.4
+## 158     setosa  Sepal.Width   3.4
+## 159     setosa  Sepal.Width   2.9
+## 160     setosa  Sepal.Width   3.1
+## 161     setosa  Sepal.Width   3.7
+## 162     setosa  Sepal.Width   3.4
+## 163     setosa  Sepal.Width   3.0
+## 164     setosa  Sepal.Width   3.0
+## 165     setosa  Sepal.Width   4.0
+## 166     setosa  Sepal.Width   4.4
+## 167     setosa  Sepal.Width   3.9
+## 168     setosa  Sepal.Width   3.5
+## 169     setosa  Sepal.Width   3.8
+## 170     setosa  Sepal.Width   3.8
+## 171     setosa  Sepal.Width   3.4
+## 172     setosa  Sepal.Width   3.7
+## 173     setosa  Sepal.Width   3.6
+## 174     setosa  Sepal.Width   3.3
+## 175     setosa  Sepal.Width   3.4
+## 176     setosa  Sepal.Width   3.0
+## 177     setosa  Sepal.Width   3.4
+## 178     setosa  Sepal.Width   3.5
+## 179     setosa  Sepal.Width   3.4
+## 180     setosa  Sepal.Width   3.2
+## 181     setosa  Sepal.Width   3.1
+## 182     setosa  Sepal.Width   3.4
+## 183     setosa  Sepal.Width   4.1
+## 184     setosa  Sepal.Width   4.2
+## 185     setosa  Sepal.Width   3.1
+## 186     setosa  Sepal.Width   3.2
+## 187     setosa  Sepal.Width   3.5
+## 188     setosa  Sepal.Width   3.6
+## 189     setosa  Sepal.Width   3.0
+## 190     setosa  Sepal.Width   3.4
+## 191     setosa  Sepal.Width   3.5
+## 192     setosa  Sepal.Width   2.3
+## 193     setosa  Sepal.Width   3.2
+## 194     setosa  Sepal.Width   3.5
+## 195     setosa  Sepal.Width   3.8
+## 196     setosa  Sepal.Width   3.0
+## 197     setosa  Sepal.Width   3.8
+## 198     setosa  Sepal.Width   3.2
+## 199     setosa  Sepal.Width   3.7
+## 200     setosa  Sepal.Width   3.3
+## 201 versicolor  Sepal.Width   3.2
+## 202 versicolor  Sepal.Width   3.2
+## 203 versicolor  Sepal.Width   3.1
+## 204 versicolor  Sepal.Width   2.3
+## 205 versicolor  Sepal.Width   2.8
+## 206 versicolor  Sepal.Width   2.8
+## 207 versicolor  Sepal.Width   3.3
+## 208 versicolor  Sepal.Width   2.4
+## 209 versicolor  Sepal.Width   2.9
+## 210 versicolor  Sepal.Width   2.7
+## 211 versicolor  Sepal.Width   2.0
+## 212 versicolor  Sepal.Width   3.0
+## 213 versicolor  Sepal.Width   2.2
+## 214 versicolor  Sepal.Width   2.9
+## 215 versicolor  Sepal.Width   2.9
+## 216 versicolor  Sepal.Width   3.1
+## 217 versicolor  Sepal.Width   3.0
+## 218 versicolor  Sepal.Width   2.7
+## 219 versicolor  Sepal.Width   2.2
+## 220 versicolor  Sepal.Width   2.5
+## 221 versicolor  Sepal.Width   3.2
+## 222 versicolor  Sepal.Width   2.8
+## 223 versicolor  Sepal.Width   2.5
+## 224 versicolor  Sepal.Width   2.8
+## 225 versicolor  Sepal.Width   2.9
+## 226 versicolor  Sepal.Width   3.0
+## 227 versicolor  Sepal.Width   2.8
+## 228 versicolor  Sepal.Width   3.0
+## 229 versicolor  Sepal.Width   2.9
+## 230 versicolor  Sepal.Width   2.6
+## 231 versicolor  Sepal.Width   2.4
+## 232 versicolor  Sepal.Width   2.4
+## 233 versicolor  Sepal.Width   2.7
+## 234 versicolor  Sepal.Width   2.7
+## 235 versicolor  Sepal.Width   3.0
+## 236 versicolor  Sepal.Width   3.4
+## 237 versicolor  Sepal.Width   3.1
+## 238 versicolor  Sepal.Width   2.3
+## 239 versicolor  Sepal.Width   3.0
+## 240 versicolor  Sepal.Width   2.5
+## 241 versicolor  Sepal.Width   2.6
+## 242 versicolor  Sepal.Width   3.0
+## 243 versicolor  Sepal.Width   2.6
+## 244 versicolor  Sepal.Width   2.3
+## 245 versicolor  Sepal.Width   2.7
+## 246 versicolor  Sepal.Width   3.0
+## 247 versicolor  Sepal.Width   2.9
+## 248 versicolor  Sepal.Width   2.9
+## 249 versicolor  Sepal.Width   2.5
+## 250 versicolor  Sepal.Width   2.8
+## 251  virginica  Sepal.Width   3.3
+## 252  virginica  Sepal.Width   2.7
+## 253  virginica  Sepal.Width   3.0
+## 254  virginica  Sepal.Width   2.9
+## 255  virginica  Sepal.Width   3.0
+## 256  virginica  Sepal.Width   3.0
+## 257  virginica  Sepal.Width   2.5
+## 258  virginica  Sepal.Width   2.9
+## 259  virginica  Sepal.Width   2.5
+## 260  virginica  Sepal.Width   3.6
+## 261  virginica  Sepal.Width   3.2
+## 262  virginica  Sepal.Width   2.7
+## 263  virginica  Sepal.Width   3.0
+## 264  virginica  Sepal.Width   2.5
+## 265  virginica  Sepal.Width   2.8
+## 266  virginica  Sepal.Width   3.2
+## 267  virginica  Sepal.Width   3.0
+## 268  virginica  Sepal.Width   3.8
+## 269  virginica  Sepal.Width   2.6
+## 270  virginica  Sepal.Width   2.2
+## 271  virginica  Sepal.Width   3.2
+## 272  virginica  Sepal.Width   2.8
+## 273  virginica  Sepal.Width   2.8
+## 274  virginica  Sepal.Width   2.7
+## 275  virginica  Sepal.Width   3.3
+## 276  virginica  Sepal.Width   3.2
+## 277  virginica  Sepal.Width   2.8
+## 278  virginica  Sepal.Width   3.0
+## 279  virginica  Sepal.Width   2.8
+## 280  virginica  Sepal.Width   3.0
+## 281  virginica  Sepal.Width   2.8
+## 282  virginica  Sepal.Width   3.8
+## 283  virginica  Sepal.Width   2.8
+## 284  virginica  Sepal.Width   2.8
+## 285  virginica  Sepal.Width   2.6
+## 286  virginica  Sepal.Width   3.0
+## 287  virginica  Sepal.Width   3.4
+## 288  virginica  Sepal.Width   3.1
+## 289  virginica  Sepal.Width   3.0
+## 290  virginica  Sepal.Width   3.1
+## 291  virginica  Sepal.Width   3.1
+## 292  virginica  Sepal.Width   3.1
+## 293  virginica  Sepal.Width   2.7
+## 294  virginica  Sepal.Width   3.2
+## 295  virginica  Sepal.Width   3.3
+## 296  virginica  Sepal.Width   3.0
+## 297  virginica  Sepal.Width   2.5
+## 298  virginica  Sepal.Width   3.0
+## 299  virginica  Sepal.Width   3.4
+## 300  virginica  Sepal.Width   3.0
+## 301     setosa Petal.Length   1.4
+## 302     setosa Petal.Length   1.4
+## 303     setosa Petal.Length   1.3
+## 304     setosa Petal.Length   1.5
+## 305     setosa Petal.Length   1.4
+## 306     setosa Petal.Length   1.7
+## 307     setosa Petal.Length   1.4
+## 308     setosa Petal.Length   1.5
+## 309     setosa Petal.Length   1.4
+## 310     setosa Petal.Length   1.5
+## 311     setosa Petal.Length   1.5
+## 312     setosa Petal.Length   1.6
+## 313     setosa Petal.Length   1.4
+## 314     setosa Petal.Length   1.1
+## 315     setosa Petal.Length   1.2
+## 316     setosa Petal.Length   1.5
+## 317     setosa Petal.Length   1.3
+## 318     setosa Petal.Length   1.4
+## 319     setosa Petal.Length   1.7
+## 320     setosa Petal.Length   1.5
+## 321     setosa Petal.Length   1.7
+## 322     setosa Petal.Length   1.5
+## 323     setosa Petal.Length   1.0
+## 324     setosa Petal.Length   1.7
+## 325     setosa Petal.Length   1.9
+## 326     setosa Petal.Length   1.6
+## 327     setosa Petal.Length   1.6
+## 328     setosa Petal.Length   1.5
+## 329     setosa Petal.Length   1.4
+## 330     setosa Petal.Length   1.6
+## 331     setosa Petal.Length   1.6
+## 332     setosa Petal.Length   1.5
+## 333     setosa Petal.Length   1.5
+## 334     setosa Petal.Length   1.4
+## 335     setosa Petal.Length   1.5
+## 336     setosa Petal.Length   1.2
+## 337     setosa Petal.Length   1.3
+## 338     setosa Petal.Length   1.4
+## 339     setosa Petal.Length   1.3
+## 340     setosa Petal.Length   1.5
+## 341     setosa Petal.Length   1.3
+## 342     setosa Petal.Length   1.3
+## 343     setosa Petal.Length   1.3
+## 344     setosa Petal.Length   1.6
+## 345     setosa Petal.Length   1.9
+## 346     setosa Petal.Length   1.4
+## 347     setosa Petal.Length   1.6
+## 348     setosa Petal.Length   1.4
+## 349     setosa Petal.Length   1.5
+## 350     setosa Petal.Length   1.4
+## 351 versicolor Petal.Length   4.7
+## 352 versicolor Petal.Length   4.5
+## 353 versicolor Petal.Length   4.9
+## 354 versicolor Petal.Length   4.0
+## 355 versicolor Petal.Length   4.6
+## 356 versicolor Petal.Length   4.5
+## 357 versicolor Petal.Length   4.7
+## 358 versicolor Petal.Length   3.3
+## 359 versicolor Petal.Length   4.6
+## 360 versicolor Petal.Length   3.9
+## 361 versicolor Petal.Length   3.5
+## 362 versicolor Petal.Length   4.2
+## 363 versicolor Petal.Length   4.0
+## 364 versicolor Petal.Length   4.7
+## 365 versicolor Petal.Length   3.6
+## 366 versicolor Petal.Length   4.4
+## 367 versicolor Petal.Length   4.5
+## 368 versicolor Petal.Length   4.1
+## 369 versicolor Petal.Length   4.5
+## 370 versicolor Petal.Length   3.9
+## 371 versicolor Petal.Length   4.8
+## 372 versicolor Petal.Length   4.0
+## 373 versicolor Petal.Length   4.9
+## 374 versicolor Petal.Length   4.7
+## 375 versicolor Petal.Length   4.3
+## 376 versicolor Petal.Length   4.4
+## 377 versicolor Petal.Length   4.8
+## 378 versicolor Petal.Length   5.0
+## 379 versicolor Petal.Length   4.5
+## 380 versicolor Petal.Length   3.5
+## 381 versicolor Petal.Length   3.8
+## 382 versicolor Petal.Length   3.7
+## 383 versicolor Petal.Length   3.9
+## 384 versicolor Petal.Length   5.1
+## 385 versicolor Petal.Length   4.5
+## 386 versicolor Petal.Length   4.5
+## 387 versicolor Petal.Length   4.7
+## 388 versicolor Petal.Length   4.4
+## 389 versicolor Petal.Length   4.1
+## 390 versicolor Petal.Length   4.0
+## 391 versicolor Petal.Length   4.4
+## 392 versicolor Petal.Length   4.6
+## 393 versicolor Petal.Length   4.0
+## 394 versicolor Petal.Length   3.3
+## 395 versicolor Petal.Length   4.2
+## 396 versicolor Petal.Length   4.2
+## 397 versicolor Petal.Length   4.2
+## 398 versicolor Petal.Length   4.3
+## 399 versicolor Petal.Length   3.0
+## 400 versicolor Petal.Length   4.1
+## 401  virginica Petal.Length   6.0
+## 402  virginica Petal.Length   5.1
+## 403  virginica Petal.Length   5.9
+## 404  virginica Petal.Length   5.6
+## 405  virginica Petal.Length   5.8
+## 406  virginica Petal.Length   6.6
+## 407  virginica Petal.Length   4.5
+## 408  virginica Petal.Length   6.3
+## 409  virginica Petal.Length   5.8
+## 410  virginica Petal.Length   6.1
+## 411  virginica Petal.Length   5.1
+## 412  virginica Petal.Length   5.3
+## 413  virginica Petal.Length   5.5
+## 414  virginica Petal.Length   5.0
+## 415  virginica Petal.Length   5.1
+## 416  virginica Petal.Length   5.3
+## 417  virginica Petal.Length   5.5
+## 418  virginica Petal.Length   6.7
+## 419  virginica Petal.Length   6.9
+## 420  virginica Petal.Length   5.0
+## 421  virginica Petal.Length   5.7
+## 422  virginica Petal.Length   4.9
+## 423  virginica Petal.Length   6.7
+## 424  virginica Petal.Length   4.9
+## 425  virginica Petal.Length   5.7
+## 426  virginica Petal.Length   6.0
+## 427  virginica Petal.Length   4.8
+## 428  virginica Petal.Length   4.9
+## 429  virginica Petal.Length   5.6
+## 430  virginica Petal.Length   5.8
+## 431  virginica Petal.Length   6.1
+## 432  virginica Petal.Length   6.4
+## 433  virginica Petal.Length   5.6
+## 434  virginica Petal.Length   5.1
+## 435  virginica Petal.Length   5.6
+## 436  virginica Petal.Length   6.1
+## 437  virginica Petal.Length   5.6
+## 438  virginica Petal.Length   5.5
+## 439  virginica Petal.Length   4.8
+## 440  virginica Petal.Length   5.4
+## 441  virginica Petal.Length   5.6
+## 442  virginica Petal.Length   5.1
+## 443  virginica Petal.Length   5.1
+## 444  virginica Petal.Length   5.9
+## 445  virginica Petal.Length   5.7
+## 446  virginica Petal.Length   5.2
+## 447  virginica Petal.Length   5.0
+## 448  virginica Petal.Length   5.2
+## 449  virginica Petal.Length   5.4
+## 450  virginica Petal.Length   5.1
+## 451     setosa  Petal.Width   0.2
+## 452     setosa  Petal.Width   0.2
+## 453     setosa  Petal.Width   0.2
+## 454     setosa  Petal.Width   0.2
+## 455     setosa  Petal.Width   0.2
+## 456     setosa  Petal.Width   0.4
+## 457     setosa  Petal.Width   0.3
+## 458     setosa  Petal.Width   0.2
+## 459     setosa  Petal.Width   0.2
+## 460     setosa  Petal.Width   0.1
+## 461     setosa  Petal.Width   0.2
+## 462     setosa  Petal.Width   0.2
+## 463     setosa  Petal.Width   0.1
+## 464     setosa  Petal.Width   0.1
+## 465     setosa  Petal.Width   0.2
+## 466     setosa  Petal.Width   0.4
+## 467     setosa  Petal.Width   0.4
+## 468     setosa  Petal.Width   0.3
+## 469     setosa  Petal.Width   0.3
+## 470     setosa  Petal.Width   0.3
+## 471     setosa  Petal.Width   0.2
+## 472     setosa  Petal.Width   0.4
+## 473     setosa  Petal.Width   0.2
+## 474     setosa  Petal.Width   0.5
+## 475     setosa  Petal.Width   0.2
+## 476     setosa  Petal.Width   0.2
+## 477     setosa  Petal.Width   0.4
+## 478     setosa  Petal.Width   0.2
+## 479     setosa  Petal.Width   0.2
+## 480     setosa  Petal.Width   0.2
+## 481     setosa  Petal.Width   0.2
+## 482     setosa  Petal.Width   0.4
+## 483     setosa  Petal.Width   0.1
+## 484     setosa  Petal.Width   0.2
+## 485     setosa  Petal.Width   0.2
+## 486     setosa  Petal.Width   0.2
+## 487     setosa  Petal.Width   0.2
+## 488     setosa  Petal.Width   0.1
+## 489     setosa  Petal.Width   0.2
+## 490     setosa  Petal.Width   0.2
+## 491     setosa  Petal.Width   0.3
+## 492     setosa  Petal.Width   0.3
+## 493     setosa  Petal.Width   0.2
+## 494     setosa  Petal.Width   0.6
+## 495     setosa  Petal.Width   0.4
+## 496     setosa  Petal.Width   0.3
+## 497     setosa  Petal.Width   0.2
+## 498     setosa  Petal.Width   0.2
+## 499     setosa  Petal.Width   0.2
+## 500     setosa  Petal.Width   0.2
+## 501 versicolor  Petal.Width   1.4
+## 502 versicolor  Petal.Width   1.5
+## 503 versicolor  Petal.Width   1.5
+## 504 versicolor  Petal.Width   1.3
+## 505 versicolor  Petal.Width   1.5
+## 506 versicolor  Petal.Width   1.3
+## 507 versicolor  Petal.Width   1.6
+## 508 versicolor  Petal.Width   1.0
+## 509 versicolor  Petal.Width   1.3
+## 510 versicolor  Petal.Width   1.4
+## 511 versicolor  Petal.Width   1.0
+## 512 versicolor  Petal.Width   1.5
+## 513 versicolor  Petal.Width   1.0
+## 514 versicolor  Petal.Width   1.4
+## 515 versicolor  Petal.Width   1.3
+## 516 versicolor  Petal.Width   1.4
+## 517 versicolor  Petal.Width   1.5
+## 518 versicolor  Petal.Width   1.0
+## 519 versicolor  Petal.Width   1.5
+## 520 versicolor  Petal.Width   1.1
+## 521 versicolor  Petal.Width   1.8
+## 522 versicolor  Petal.Width   1.3
+## 523 versicolor  Petal.Width   1.5
+## 524 versicolor  Petal.Width   1.2
+## 525 versicolor  Petal.Width   1.3
+## 526 versicolor  Petal.Width   1.4
+## 527 versicolor  Petal.Width   1.4
+## 528 versicolor  Petal.Width   1.7
+## 529 versicolor  Petal.Width   1.5
+## 530 versicolor  Petal.Width   1.0
+## 531 versicolor  Petal.Width   1.1
+## 532 versicolor  Petal.Width   1.0
+## 533 versicolor  Petal.Width   1.2
+## 534 versicolor  Petal.Width   1.6
+## 535 versicolor  Petal.Width   1.5
+## 536 versicolor  Petal.Width   1.6
+## 537 versicolor  Petal.Width   1.5
+## 538 versicolor  Petal.Width   1.3
+## 539 versicolor  Petal.Width   1.3
+## 540 versicolor  Petal.Width   1.3
+## 541 versicolor  Petal.Width   1.2
+## 542 versicolor  Petal.Width   1.4
+## 543 versicolor  Petal.Width   1.2
+## 544 versicolor  Petal.Width   1.0
+## 545 versicolor  Petal.Width   1.3
+## 546 versicolor  Petal.Width   1.2
+## 547 versicolor  Petal.Width   1.3
+## 548 versicolor  Petal.Width   1.3
+## 549 versicolor  Petal.Width   1.1
+## 550 versicolor  Petal.Width   1.3
+## 551  virginica  Petal.Width   2.5
+## 552  virginica  Petal.Width   1.9
+## 553  virginica  Petal.Width   2.1
+## 554  virginica  Petal.Width   1.8
+## 555  virginica  Petal.Width   2.2
+## 556  virginica  Petal.Width   2.1
+## 557  virginica  Petal.Width   1.7
+## 558  virginica  Petal.Width   1.8
+## 559  virginica  Petal.Width   1.8
+## 560  virginica  Petal.Width   2.5
+## 561  virginica  Petal.Width   2.0
+## 562  virginica  Petal.Width   1.9
+## 563  virginica  Petal.Width   2.1
+## 564  virginica  Petal.Width   2.0
+## 565  virginica  Petal.Width   2.4
+## 566  virginica  Petal.Width   2.3
+## 567  virginica  Petal.Width   1.8
+## 568  virginica  Petal.Width   2.2
+## 569  virginica  Petal.Width   2.3
+## 570  virginica  Petal.Width   1.5
+## 571  virginica  Petal.Width   2.3
+## 572  virginica  Petal.Width   2.0
+## 573  virginica  Petal.Width   2.0
+## 574  virginica  Petal.Width   1.8
+## 575  virginica  Petal.Width   2.1
+## 576  virginica  Petal.Width   1.8
+## 577  virginica  Petal.Width   1.8
+## 578  virginica  Petal.Width   1.8
+## 579  virginica  Petal.Width   2.1
+## 580  virginica  Petal.Width   1.6
+## 581  virginica  Petal.Width   1.9
+## 582  virginica  Petal.Width   2.0
+## 583  virginica  Petal.Width   2.2
+## 584  virginica  Petal.Width   1.5
+## 585  virginica  Petal.Width   1.4
+## 586  virginica  Petal.Width   2.3
+## 587  virginica  Petal.Width   2.4
+## 588  virginica  Petal.Width   1.8
+## 589  virginica  Petal.Width   1.8
+## 590  virginica  Petal.Width   2.1
+## 591  virginica  Petal.Width   2.4
+## 592  virginica  Petal.Width   2.3
+## 593  virginica  Petal.Width   1.9
+## 594  virginica  Petal.Width   2.3
+## 595  virginica  Petal.Width   2.5
+## 596  virginica  Petal.Width   2.3
+## 597  virginica  Petal.Width   1.9
+## 598  virginica  Petal.Width   2.0
+## 599  virginica  Petal.Width   2.3
+## 600  virginica  Petal.Width   1.8
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "idea",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,278 @@
+---
+title: "Manipulación de datos, más allá de lo básico"
+subtitle: "Ejercicios resueltos"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(haven)
+```
+
+## Introducción
+
+En los ejercicios de la segunda sesión vamos a trabajar sobre los diferentes objetos de `R` y su manipulación. Antes de empezar:
+
+1. **Abre el script** `sesion3_ejercicios.R`. **Limpia** el espacio de datos ejecutando `rm(list = ls())`. Con este comando eliminarás del espacio de trabajo todos los datos (objetos) que estén disponibles evitando posibles confusiones^[Puedes usar el atajo `Ctrl + Enter` para ejecutar una línea de código en `RStudio`].   
+
+
+2. **Carga los paquetes** que necesitas para realizar la práctica, ejecutando las líneas de `library()`. En caso de que alguno de ellos no esté instalado, instalaló utilizando `install.packages("package")`^[Usa comillas (" ") a la hora de instalar los paquetes con la función `install.packages()`]. 
+
+3. En la carpeta **data** encontrarás los ficheros de datos que vas a utilizar en esta práctica.
+
+## A. Agrupar casos y resumir variables
+
+**A.1** Carga el archivo `cis_oct17.sav` que se encuentra en la carpeta `data`. Recuerda hacer la transformación de los objetos de labelled a factores con `as_factor()`. Crea un nuevo data frame agrupado, en el que la variable de agrupación sea `idv` y la variable agrupada `edad`. Imprime el objeto final. ¿Cuál es el problema?
+
+```{r A1, echo=TRUE}
+cis <- read_spss(file = "E:/Rproj/course_IntroToR/sesion2/data/cis_oct17.sav")
+cis <- as_factor(cis)
+
+cis %>% 
+  group_by(idv) %>% 
+  summarise(mean_edad = mean(edad, na.rm = T))
+
+```
+
+
+`r emo::ji("white_check_mark")` La variable edad fue convertida a factor y por lo tanto no funciona con la función `mean()`.
+
+**A.2** Convierte la variable `edad` a numérica y crea la agrupación por `idv`. Haz todas las acciones dentro del mismo `pipe`.
+
+
+```{r A2}
+cis %>% 
+  mutate(edad = as.numeric(edad)) %>% 
+  group_by(idv) %>% 
+  summarise(mean_Edad = mean(edad, na.rm = TRUE))
+```
+
+**A.3** Crea una variable a nivel individual que sea la media de `valora_gob` para cada estrato de `region` y `tamuni`. Guarda la nueva variable como `valora_gob_estrato`. Ten en cuenta que antes de agrupar tendrás que preparar la variable, especificando los valores perdidos y determinando el tipo de variable.
+
+```{r A3}
+table(cis$valora)
+
+cis <- cis %>% 
+  mutate(valora_gob = na_if(valora_gob, "N.S."),
+         valora_gob = na_if(valora_gob, "N.C."),
+         valora_gob_numeric = as.numeric(valora_gob)) %>% 
+  group_by(region, tamuni) %>% 
+  mutate(valora_gob_estrato = mean(valora_gob_numeric, na.rm = TRUE))
+
+head(cis[1:10, c("region", "tamuni", "idv", "idv_estrato", "valora_gob_numeric", "valora_gob_estrato")])
+```
+
+**A.4** Añade dos variables al data frame `cis` agrupado por `region` y `tamuni`. La primera será `idv_cat`, que se refiere a la categoría más frecuente de la variable `idv` en cada estrato. Además crea la variable `idv_por`, que será el porcentaje de la categoría más frecuente en el estrato.
+
+```{r}
+cis <- cis %>% 
+  group_by(region, tamuni) %>% 
+  mutate(
+    idv_cat = names(which.max(table(idv))),
+    idv_por = max(table(idv))/sum(table(idv))*100
+  )
+
+head(cis[sample(rownames(cis), 5), c("region", "tamuni", "idv", "idv_cat", "idv_por")], n = 4)
+```
+
+  
+## B. Combinar data frames 
+
+
+**B.1** Carga dos ficheros, el primero es `escuelas1.csv` y el segundo es `escuelas2.xlsx`. Estos ficheros contienen filas del mismo archivo, combinalas para crear un archivo único. Comprueba el resultado. 
+
+```{r B1 exercise}
+escuelas1 <- read_csv2(file = "E:/Rproj/course_IntroToR/sesion3/data/escuelas1.csv", locale = locale(encoding = "Latin2"))
+escuelas2 <- readxl::read_xlsx(path = "E:/Rproj/course_IntroToR/sesion3/data/escuelas2.xlsx")
+
+escuelas1 %>% 
+  rename(nota = notas) %>% 
+  bind_rows(escuelas2)
+```
+
+
+
+**B.2** Carga los ficheros `.sav` `cis_oct17_cols1.sav` y `cis_oct17_cols2.sav`. Haz las tansformaciones necesarias y combina los dos data frames en uno utilizando `bind_cols()`. ¿Por qué no funciona?
+
+```{r B2}
+cols1 <- read_spss(file = "E:/Rproj/course_IntroToR/sesion3/data/cis_oct17_cols1.sav")
+cols2 <- read_spss(file = "E:/Rproj/course_IntroToR/sesion3/data/cis_oct17_cols2.sav")
+cols1 <- as_factor(cols1)
+cols2 <- as_factor(cols2)
+
+bind_cols(cols1, cols2)
+```
+
+`r emo::ji("white_check_mark")` Los data frames tienen difeente número de filas. Dado que existe un identificador `id`, sería necesario unir los data frames utilizando esa clave.
+
+
+**B.3** Ahora utiliza una de las funciones para combinar columnas como `left_join()` o `right_join()`  para unir las columnas. Asigna el objeto al nombre `cis`. Determina cuále son las filas presentes en cols1, que no estaban en cols2, para lo que puedes utilizar la función `anti_join()`. ¿Existen filas presentes en cols2 que no estén presentes en cols2?
+
+```{r B3}
+cis <- left_join(x = cols1, y = cols2, by = "id")
+
+unmatched_cols2 <- anti_join(x = cols1, y = cols2, by = "id")
+head(x = unmatched_cols2, n = 5)
+
+unmatched_cols1 <- anti_join(x = cols2, y = cols1, by = "id")
+head(x = unmatched_cols1, n = 5)
+```
+
+**B.4** Realiza una unión completa de `cols1`y `cols2`. ¿Cuántos casos hay en total?
+
+```{r B5}
+cis <- full_join(x = cols1, y = cols2, by = "id")
+
+```
+
+
+## C. Ordenar y filtrar casos
+
+**C.1** **Ordena** el data frame `cis` por las variables `region` (ascendente) y `edad` (descendente). Comprueba el orden del data frame utilizando la función `View()`. Cuando hagas una transformación **no olvides volver guardar el objedo** para no perder el cambio en el data frame.
+
+```{r C1}
+cis <- arrange(cis, region, desc(edad))
+```
+
+```{r C1 exr noev, eval=FALSE}
+View(cis)
+```
+
+
+```{r C1 exercise, echo=FALSE}
+cis
+```
+
+**C.2** Selecciona una **submuestra de los casos** del data frame `cis`  que contenga los casos de `Andalucía`, `Madrid (Comunidad de)` y `Cataluña`. Para realizar el filtrado intenta usar el operador `%in%`, que sirve para hacer selecciones múltiples y así evitar el uso reiterado del operador lógico `|`. Guarda el data frame resultante con el mismo nombre.
+
+```{r C2}
+cis <- filter(.data = cis, region %in% c("Andalucía", "Cataluña", "Madrid (Comunidad de)"))
+table(cis$region)
+```
+
+**C.3** Ahora crea una lista de data frames segmentados a partir de la variable `region` utilizando para ello la función `group_split()`. Guarda la lista de data frames como `cis_split`. Comprueba la estructura de `cis_split`.
+
+```{r cis split}
+cis_split <- group_split(cis, region)
+str(cis_split)
+```
+
+**C.4** Realiza una tabla de la variable `idv` correspondiente a `Andalucía` a partir del objeto `cis_split`. Para realizar la tabla puedes utilizar la función `table()`.
+
+```{r C4}
+table(cis_split[[1]]$region)
+table(cis_split[[1]]$idv)
+```
+
+
+## D. Transformar variables y renombrar
+
+**D.1** Crea una variable que sea la suma de la variable `edad` en `cis` y  50. Llama a la nueva variable `edad_rec1`. Comprueba la nueva variable con la función `head()` mostrando solo las variables `edad` y `edad_rec1`. Para hacer la selección de las variables usa `select()`.
+
+```{r D1}
+cis <- mutate(cis,
+              edad_rec1 = edad + 50)
+
+head(select(cis, edad, edad_rec1), n = 5)
+
+```
+
+**D.2** Ahora crea una variable (`edad_rec2`) que sea la suma de edad y un número aleatorio entre 1 y 50 **diferente para cada caso**. Para generar el número aleatorio utiliza la función `runif()` con un mínimo de 1 y un máximo de 50. Comprueba la transformación de la variable con `head()`.
+
+```{r D2}
+cis <- mutate(cis,
+              edad_rec2 = edad + runif(n = nrow(cis), min = 0, max = 50))
+
+head(select(cis, edad, edad_rec2), n = 5)
+```
+
+
+**D.3** **Recodifica** la variable `idv` del data frame `cis` en `idv_rec` de forma que tenga seis categorías: `PSOE`, `PP`, `UP`, `Cs`, `Otros` y `No vota`.
+
+1. Utiliza la función `levels()` para **conocer los niveles** de la variable original (`idv`)
+
+2. Los valores `N.C.` tansfórmalos en **perdidos** (`NA`) 
+
+3. Utiliza la función `mutate()` en combinación con `recode()`
+
+4. Para simplificar el trabajo utiliza el argumento `.default` de la función `recode()`, que establece la categoría por defecto a la que pertecen los casos en la variable recodificada
+
+
+¿De qué tipo es el vector `idv_rec`?
+
+```{r D3}
+levels(cis$idv)
+cis <- mutate(.data = cis, 
+              idv_rec = recode(idv,
+                "PSOE" = "PSOE",
+                "PP" = "PP",
+                "Ciudadanos" = "Cs",
+                "Podemos" = "UP", 
+                "En Comú Podem" = "UP", 
+                "IU" = "UP",
+                "No votaría" = "No vota",
+                "N.C." = NA_character_,
+                .default = "Otros"
+              ))
+table(cis$idv, cis$idv_rec)
+class(cis$idv_rec)
+```
+
+`r emo::ji("white_check_mark")` Es un factor.
+
+**D.4** Crea la variable `edad_group` con 4 grupos de edad `18-29`, `30-44`, `45-64`, `65+`. Para ello utiliza la función auxiliar `case_when()`. Haz una tabla para comprobar la transformación de la variable.
+
+```{r D4}
+cis <- mutate(cis,
+              edad_group = case_when(
+                edad <= 29 ~ "18-29",
+                edad >= 30 & edad <= 44 ~ "30-44",
+                edad >= 45 & edad <= 64 ~ "45-64",
+                edad >= 65 ~ "65+"
+              ))
+
+table(cis$edad, cis$edad_group)
+```
+
+
+**D.5** Crea una nueva variable (`idv_sexo`) que sea una combinación de `idv_rec` y `sexo` para los casos de `PSOE` y `PP`, mientras que el resto de los casos será especificado como `"Otros"`. Fíjate en la siguiente tabla:
+
+```{r D5 table, echo=FALSE}
+tibble(idv_rec = c("PSOE", "PSOE", "PP", "PP", "Otros"),
+             sexo = c("Hombre", "Mujer", "Hombre", "Mujer", "Indiferente"),
+             idv_sexo = c("PSOE Hombre", "PSOE Mujer", "PP Hombre", "PP Mujer", "Otros")) %>% 
+  kableExtra::kable()
+```
+
+```{r D5}
+cis <- mutate(cis,
+              idv_sexo = case_when(
+                idv_rec == "PSOE" & sexo == "Hombre" ~ "PSOE Hombre",
+                idv_rec == "PSOE" & sexo == "Mujer" ~ "PSOE Mujer",
+                idv_rec == "PP" & sexo == "Hombre" ~ "PP Hombre",
+                idv_rec == "PP" & sexo == "Mujer" ~ "PP Mujer",
+                TRUE ~ "Otros"
+              ))
+table(cis$sexo, cis$idv_sexo)
+table(cis$idv_rec, cis$idv_sexo)
+```
+
+
+**D.6** Ahora vas a crear una **nueva variable edad** (`edad_rec3`) en la que los menores de 25 años tengan un valor perdido (`NA`) y el resto su valor orignal en la variable `edad`. Para ello utiliza la función `ifelse()`. Comprueba la transformación.
+
+```{r D6}
+cis <- mutate(cis,
+              edad_rec3 = ifelse(edad < 25, NA, edad))
+table(cis$edad_rec3)
+```
+
+
+**D.7** Cambia el nombre de la variable `edad_rec3` a `edad_na`. Para ello utiliza la función `rename()`. Utiliza la función `colnames()` para comprobar que el nombre de la variable se ha cambiado correctamente. 
+
+```{r D8}
+cis <- rename(cis, edad_na = edad_rec3)
+colnames(cis)
+```
+
+
+
