@@ -22,7 +22,7 @@ En los ejercicios de la tercera sesión vamos a trabajar sobre la manipulación 
 
 ## A. Agrupar casos y resumir variables
 
-**A.1** Carga el archivo `cis_oct17.sav` que se encuentra en la carpeta `data`. Recuerda hacer la transformación de los objetos de labelled a factores con `as_factor()`. Crea un nuevo data frame agrupado, en el que la variable de agrupación sea `idv`. genera un resumen que sea la media de la variable `edad`. Imprime el objeto final. ¿Cuál es el problema?
+**A.1** Carga el archivo `cis_oct17.sav` que se encuentra en la carpeta `data`. Recuerda hacer la transformación de los **objetos de labelled a factores** con `as_factor()`. Crea un nuevo data frame agrupado, en el que la variable de **agrupación** sea `idv` y genera un resumen que sea la media de la variable `edad`. Imprime el objeto final. ¿Cuál es el problema?
 
 ```{r A1, echo=TRUE}
 cis <- read_spss(file = "/home/pablocal/git_repos/course_introR/sesion3/data/cis_oct17.sav")
@@ -37,17 +37,17 @@ cis %>%
 
 `r emo::ji("white_check_mark")` La variable edad fue convertida a factor y por lo tanto no funciona con la función `mean()`.
 
-**A.2** Convierte la variable `edad` a numérica y crea la agrupación por `idv`. Haz todas las acciones dentro del mismo `pipe`.
+**A.2** Convierte la variable `edad` a **numérica** y crea la **agrupación** por `idv`. Realiza todas las transformaciones dentro del mismo `pipe`.
 
 
 ```{r A2}
 cis %>% 
   mutate(edad = as.numeric(edad)) %>% 
   group_by(idv) %>% 
-  summarise(mean_Edad = mean(edad, na.rm = TRUE))
+  summarise(mean_edad = mean(edad, na.rm = TRUE))
 ```
 
-**A.3** Crea una **variable a nivel individual** que sea la media de `valora_gob` para cada estrato de `region` y `tamuni`. Guarda la nueva variable como `valora_gob_estrato`. Ten en cuenta que antes de agrupar tendrás que preparar la variable, especificando los valores perdidos y determinando el tipo de variable.
+**A.3** Crea una **variable a nivel individual** que sea la media de `valora_gob` para cada estrato resultante de la combinación de `region` y `tamuni`. Guarda la nueva variable como `valora_gob_estrato`. Ten en cuenta que antes de agrupar tendrás que preparar la variable, especificando los valores perdidos y determinando el tipo de variable.
 
 ```{r A3}
 table(cis$valora_gob)
@@ -62,7 +62,7 @@ cis <- cis %>%
 head(cis[1:10, c("region", "tamuni", "valora_gob_numeric", "valora_gob_estrato")])
 ```
 
-**A.4** Añade dos variables al data frame `cis` agrupado por `region` y `tamuni`. La primera será `idv_cat`, que se refiere a la categoría más frecuente de la variable `idv` en cada estrato. Además crea la variable `idv_por`, que será el porcentaje de la categoría más frecuente en el estrato.
+**A.4** Añade dos variables al data frame `cis` agrupado por `region` y `tamuni`. La primera será `idv_cat`, que se refiere a la **categoría más frecuente** de la variable `idv` en cada estrato. Además crea la variable `idv_por`, que será el **porcentaje de la categoría más frecuente** en el estrato.
 
 ```{r}
 cis <- cis %>% 
@@ -79,7 +79,7 @@ head(cis[sample(rownames(cis), 5), c("region", "tamuni", "idv", "idv_cat", "idv_
 ## B. Combinar data frames 
 
 
-**B.1** Carga dos ficheros, el primero es `escuelas1.csv` y el segundo es `escuelas2.xlsx`. Estos ficheros contienen filas del mismo archivo, combinalas para crear un archivo único. Comprueba el resultado. 
+**B.1** Carga dos ficheros, el primero es `escuelas1.csv` y el segundo es `escuelas2.xlsx`. Estos ficheros contienen casos (filas) del mismo conjunto, **combínalas** para crear un archivo único. Comprueba el resultado. 
 
 ```{r B1 exercise}
 escuelas1 <- read_csv2(file = "/home/pablocal/git_repos/course_introR/sesion3/data/escuelas1.csv", locale = locale(encoding = "Latin2"))
@@ -92,7 +92,7 @@ escuelas1 %>%
 
 
 
-**B.2** Carga los ficheros `.sav` `cis_oct17_cols1.sav` y `cis_oct17_cols2.sav`. Haz las tansformaciones necesarias y combina los dos data frames en uno utilizando `bind_cols()`. ¿Por qué no funciona?
+**B.2** Carga los ficheros `.sav` `cis_oct17_cols1.sav` (`cols1`) y `cis_oct17_cols2.sav` (`cols2`). Haz las **tansformaciones necesarias** y **combina** los dos data frames en uno utilizando `bind_cols()`.
 
 ```{r B2}
 cols1 <- read_spss(file = "/home/pablocal/git_repos/course_introR/sesion3/data/cis_oct17_cols1.sav")
@@ -106,11 +106,10 @@ bind_cols(cols1, cols2)
 ```
 
 
+`r emo::ji("white_check_mark")` Los data frames tienen diferente número de filas. Dado que existe un identificador `id`, sería necesario unir los data frames utilizando esa clave.
 
-`r emo::ji("white_check_mark")` Los data frames tienen difeente número de filas. Dado que existe un identificador `id`, sería necesario unir los data frames utilizando esa clave.
 
-
-**B.3** Ahora utiliza una de las funciones para combinar columnas como `left_join()` o `right_join()`  para unir las columnas. Asigna el objeto al nombre `cis`. Determina cuále son las filas presentes en cols1, que no estaban en cols2, para lo que puedes utilizar la función `anti_join()`. ¿Existen filas presentes en cols2 que no estén presentes en cols2?
+**B.3** Ahora utiliza una de las funciones para combinar columnas como `left_join()` o `right_join()`. Asigna el objeto al nombre `cis`. Determina cuále son las filas presentes en **cols1**, que no estaban en **cols2**, para lo que puedes utilizar la función `anti_join()`. ¿Existen filas presentes en **cols2** que no estén presentes en **cols1**?
 
 ```{r B3}
 cis <- left_join(x = cols1, y = cols2, by = "id")
@@ -131,7 +130,7 @@ cis <- full_join(x = cols1, y = cols2, by = "id")
 
 ## C. Cambiar el formato de los datos 
 
-**C.1** Los datos `result_aut_partidos.RDS` están en formato largo. Carga los datos y conviértelos en formato ancho usando la función `spread()` de forma que cada columna corresponda a un partido diferente. Asigna el objeto resultante a `elec_wide`.
+**C.1** Los datos `result_aut_partidos.RDS` están en **formato largo**. Carga los datos y conviértelos en **formato ancho** usando la función `spread()` de forma que cada columna corresponda a un partido diferente. Asigna el objeto resultante a `elec_wide`.
 
 ```{r}
 elec_long <- read_rds("/home/pablocal/git_repos/course_introR/sesion3/data/results_aut_partidos.RDS")
@@ -139,14 +138,14 @@ elec_long <- read_rds("/home/pablocal/git_repos/course_introR/sesion3/data/resul
 elec_wide <- spread(data = elec_long, key = partido, value = votos)
 ```
 
-**C.2** Ahora transforma el objeto `cis` en formato largo, de forma que la primera columna corresponda con la variable `id`, la segunda sea una columna con e nombre de las variables llamada `var` y la tercera sean los valores `vals`. Para ello utiliza la función `gather()` ya signa el resultado al nombre `cis_long`. Ordena los resultados por la variable `id` y comprueba la estructura de los datos. ¿Qué tipo de objeto es la variable `value`?
+**C.2** Ahora transforma el objeto `cis` en **formato largo**, de forma que la primera columna corresponda con la variable `id`, la segunda sea una columna con el nombre de las variables llamada `var` y la tercera sean los valores (`vals`). Para ello utiliza la función `gather()` y asigna el resultado al nombre `cis_long`. Ordena los resultados por la variable `id` y comprueba la **estructura de los datos**. ¿Qué tipo de objeto es la variable `value`?
 
 ```{r}
 cis_long <- gather(data = cis, key = "var", value = "value", region:ocupa)
 arrange(cis_long, id)
 ```
 
-**C.3** A partir del data frame `cis_long` usa la función `spread()` para cambiar el formato a ancho de nuevo. Guarda el data frame resultante como `cis_wide`. Comprueba de qué tipo son las variables resultantes.
+**C.3** A partir del data frame `cis_long` usa la función `spread()` para cambiar el **formato a ancho de nuevo**. Guarda el data frame resultante como `cis_wide`. Comprueba de qué tipo son las variables resultantes.
 
 ```{r}
 cis_wide <- spread(data = cis_long, key = var, value = value)
@@ -155,9 +154,32 @@ glimpse(cis_wide)
 
 `r emo::ji("white_check_mark")` Las variables resultantes son todas de tipo `character`.
 
-## D. Repaso general a la manipulación de datos
 
-**D.1** Carga el data frame `autoesc_jun_2017.csv` y asignalo al nombre `auto` a continuación:
+## D. Funciones básicas
+
+**D.1** Crea una **función** (`to_factor`) que a partir de un vector lo transforme en factor e imprima los niveles del nuevo factor. Aplícalo a la variable `tamuni` del data frame `cis_wide` y comprueba el resultado.
+
+```{r}
+
+to_factor <- function(x){
+  
+ return_x <- as.factor(x)
+  
+  print(levels(return_x))
+  
+  return(return_x)
+}
+
+
+cis_wide$tamuni <- to_factor(cis_wide$tamuni)
+
+str(cis_wide$tamuni)
+```
+
+
+## E. Repaso general a la manipulación de datos
+
+**E.1** Carga el data frame `autoesc_jun_2017.csv` y asignalo al nombre `auto` a continuación:
 
 ```{r}
 auto <- read_csv(file = "/home/pablocal/git_repos/course_introR/sesion3/data/autoesc_jun_2017.csv", locale = locale(encoding = "Latin1"))
@@ -182,7 +204,7 @@ auto <- auto %>%
 ```
 
 
-3. Calcula el total de presentados (`total_pres`), que será la suma de aptos y no aptos.
+3. Calcula el **total de presentados** (`total_pres`) en cada autoescuela, que será la suma de aptos y no aptos.
 
 ```{r}
 auto <- mutate(auto, total_pres = aptos + no_aptos)
@@ -211,7 +233,7 @@ auto <- select(auto, NOMBRE_AUTOESCUELA, TIPO_EXAMEN, p_aptos_conv1, p_aptos_con
 ```
 
 
-7. Cambiar el formato del data frame de ancho a largo, de forma que las variables `p_aptos_conv*` queden en dos columnas, la primera `convocatoria`, y la segunda `p_aptos`.
+7. Cambia el formato del data frame de ancho a largo, de forma que las variables `p_aptos_conv*` queden en dos columnas, la primera `convocatoria`, y la segunda `p_aptos`.
 
 ```{r}
 auto_long <- gather(auto, key = "convocatoria", value = "p_aptos", starts_with("p_aptos"))

@@ -1,0 +1,2316 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Manipulación de datos, más allá de lo básico</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link href="libs/font-awesome/css/fontawesome-all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: left, middle, inverse, title-slide
+
+# Manipulación de datos, más allá de lo básico
+## Curso de introducción a <i class="fab  fa-r-project "></i>
+### Pablo Cabrera-Álvarez <br> <span style="font-size: 75%;"><a href="https://github.com/pablocal"><i class="fab  fa-github "></i></a> | <a href="https://twitter.com/pablocalv"><i class="fab  fa-twitter "></i></a> <span class="citation">@pablocalv</span> </span> <br>
+### <br><br>Julio 2019
+
+---
+
+
+
+# 🤓 Quiz
+
+
+
+---
+# 🤓 Quiz
+
+---
+class: inverse, middle, center
+
+# Frecuencias
+
+---
+# Frecuencias en `R`
+
+#### `table(x, y)`
+
+- En `R` existe una función base para realizar **tablas de frecuencias** y tablas cruzadas (`table()`):
+
+
+```r
+table(gss_cat$race)
+```
+
+```
+## 
+##          Other          Black          White Not applicable 
+##           1959           3129          16395              0
+```
+
+--
+
+- Sin embargo, ya existen paquetes con los que **producir tablas** de frecuencias como `sjmisc`.
+
+---
+# Frecuencias en `sjmisc`
+
+#### `frq(x, sort.frq, weights, show.na, out, title, file)`
+
+
+- La función `frq()` permite crear tablas de frecuencias a partir de uno o varios factores.
+
+
+```r
+frq(x = gss_cat$race)
+```
+
+```
+## 
+## x &lt;categorical&gt;
+## # total N=21483  valid N=21483  mean=2.67  sd=0.63
+## 
+##             val   frq raw.prc valid.prc cum.prc
+##           Other  1959    9.12      9.12    9.12
+##           Black  3129   14.57     14.57   23.68
+##           White 16395   76.32     76.32  100.00
+##  Not applicable     0    0.00      0.00  100.00
+##            &lt;NA&gt;     0    0.00        NA      NA
+```
+
+---
+# Frecuencias en `sjmisc`
+
+- La función `frq()` cuenta con argumentos de tipo **estadístico,** como la inclusión de pesos (`weights`). Sin embargo, la mayoría de argumentos tienen que ver con el **formato** de la tabla. El argumento `sort.frq` permite ordenar las categorías de forma ascendente (`"asc"`) o descendente (`"desc"`). El argumento `show.na` acepta `TRUE` y `FALSE` y permite eliminar la visualización de la categoría `NA`.
+
+
+```r
+frq(x = gss_cat$race, sort.frq = "desc", show.na = FALSE, title = "Raza en EE.UU")
+```
+
+```
+## 
+## Raza en EE.UU
+## # total N=21483  valid N=21483  mean=2.67  sd=0.63
+## 
+##             val   frq raw.prc valid.prc cum.prc
+##           White 16395   76.32     76.32   76.32
+##           Black  3129   14.57     14.57   90.88
+##           Other  1959    9.12      9.12  100.00
+##  Not applicable     0    0.00      0.00  100.00
+```
+
+---
+# Frecuencias en `sjmisc`
+
+- Además, la función `frq()` permite **guardar el output** en un formato distinto a `.txt` (por defecto), utilizando los argumentos `out` y `file`. En `out` se puede establecer que el output sea visualizado en el `"viewer"` o en el `"browser"`. El output se puede guardar en `file`.
+
+
+```r
+frq(x = gss_cat$race, sort.frq = "desc", show.na = FALSE, title = "Raza en EE.UU",
+    out = "viewer", file = "/_pics/")
+```
+
+&lt;table style="border-collapse:collapse; border:none;"&gt;
+&lt;caption style="font-weight: bold; text-align:left;"&gt;Raza en EE.UU&lt;/caption&gt;
+&lt;tr&gt;
+&lt;th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align:left;text-align:left; "&gt;val&lt;/th&gt;
+&lt;th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align: left;"&gt;frq&lt;/th&gt;
+&lt;th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align: right;"&gt;raw.prc&lt;/th&gt;
+&lt;th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align: right;"&gt;valid.prc&lt;/th&gt;
+&lt;th style="border-top: double; text-align:center; font-style:italic; font-weight:normal; padding:0.2cm; border-bottom:1px solid black; text-align: right;"&gt;cum.prc&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left;text-align:left; "&gt;White&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: left;"&gt;16395&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: right;"&gt;76.32&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: right;"&gt;76.32&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: right;"&gt;76.32&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left;text-align:left; "&gt;Black&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: left;"&gt;3129&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: right;"&gt;14.57&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: right;"&gt;14.57&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: right;"&gt;90.88&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left;text-align:left; "&gt;Other&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: left;"&gt;1959&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: right;"&gt;9.12&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: right;"&gt;9.12&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; text-align: right;"&gt;100&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:left;text-align:left; border-bottom: 1px solid; "&gt;Not applicable&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: 1px solid; text-align: left;"&gt;0&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: 1px solid; text-align: right;"&gt;0&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: 1px solid; text-align: right;"&gt;0&lt;/td&gt;
+&lt;td style=" padding:0.2cm; text-align:left; vertical-align:top; text-align:center; border-bottom: 1px solid; text-align: right;"&gt;100&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td colspan="6" style="font-style:italic; border-top:double black; text-align:right;"&gt;total N=21483 &amp;middot; valid N=21483 &amp;middot; x&amp;#772;=2.67 &amp;middot; &amp;sigma;=0.63
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+
+---
+# Frecuencias en *pipes*
+
+- Otra oportunidad que ofrece la función `frq()` es que puede ser utilizada dentro de *pipes*:
+
+
+```r
+gss_cat %&gt;% 
+  select(race, marital) %&gt;% 
+  frq()
+```
+
+```
+## 
+## race &lt;categorical&gt;
+## # total N=21483  valid N=21483  mean=2.67  sd=0.63
+## 
+##             val   frq raw.prc valid.prc cum.prc
+##           Other  1959    9.12      9.12    9.12
+##           Black  3129   14.57     14.57   23.68
+##           White 16395   76.32     76.32  100.00
+##  Not applicable     0    0.00      0.00  100.00
+##            &lt;NA&gt;     0    0.00        NA      NA
+## 
+## 
+## marital &lt;categorical&gt;
+## # total N=21483  valid N=21483  mean=4.48  sd=1.67
+## 
+##            val   frq raw.prc valid.prc cum.prc
+##      No answer    17    0.08      0.08    0.08
+##  Never married  5416   25.21     25.21   25.29
+##      Separated   743    3.46      3.46   28.75
+##       Divorced  3383   15.75     15.75   44.50
+##        Widowed  1807    8.41      8.41   52.91
+##        Married 10117   47.09     47.09  100.00
+##           &lt;NA&gt;     0    0.00        NA      NA
+```
+
+---
+# Frecuencias con `group_by()`
+
+- La función `frq()` se puede combinar con `group_by()`:
+
+
+```r
+gss_cat %&gt;% 
+  group_by(marital) %&gt;% 
+  frq(race)
+```
+
+```
+## 
+## race &lt;categorical&gt;
+## # grouped by: No answer
+## # total N=17  valid N=17  mean=2.65  sd=0.70
+## 
+##             val frq raw.prc valid.prc cum.prc
+##           Other   2   11.76     11.76   11.76
+##           Black   2   11.76     11.76   23.53
+##           White  13   76.47     76.47  100.00
+##  Not applicable   0    0.00      0.00  100.00
+##            &lt;NA&gt;   0    0.00        NA      NA
+## 
+## 
+## race &lt;categorical&gt;
+## # grouped by: Never married
+## # total N=5416  valid N=5416  mean=2.53  sd=0.70
+## 
+##             val  frq raw.prc valid.prc cum.prc
+##           Other  633   11.69     11.69   11.69
+##           Black 1305   24.10     24.10   35.78
+##           White 3478   64.22     64.22  100.00
+##  Not applicable    0    0.00      0.00  100.00
+##            &lt;NA&gt;    0    0.00        NA      NA
+## 
+## 
+## race &lt;categorical&gt;
+## # grouped by: Separated
+## # total N=743  valid N=743  mean=2.44  sd=0.74
+## 
+##             val frq raw.prc valid.prc cum.prc
+##           Other 110   14.80     14.80   14.80
+##           Black 196   26.38     26.38   41.18
+##           White 437   58.82     58.82  100.00
+##  Not applicable   0    0.00      0.00  100.00
+##            &lt;NA&gt;   0    0.00        NA      NA
+## 
+## 
+## race &lt;categorical&gt;
+## # grouped by: Divorced
+## # total N=3383  valid N=3383  mean=2.73  sd=0.57
+## 
+##             val  frq raw.prc valid.prc cum.prc
+##           Other  212    6.27      6.27    6.27
+##           Black  495   14.63     14.63   20.90
+##           White 2676   79.10     79.10  100.00
+##  Not applicable    0    0.00      0.00  100.00
+##            &lt;NA&gt;    0    0.00        NA      NA
+## 
+## 
+## race &lt;categorical&gt;
+## # grouped by: Widowed
+## # total N=1807  valid N=1807  mean=2.78  sd=0.50
+## 
+##             val  frq raw.prc valid.prc cum.prc
+##           Other   70    3.87      3.87    3.87
+##           Black  262   14.50     14.50   18.37
+##           White 1475   81.63     81.63  100.00
+##  Not applicable    0    0.00      0.00  100.00
+##            &lt;NA&gt;    0    0.00        NA      NA
+## 
+## 
+## race &lt;categorical&gt;
+## # grouped by: Married
+## # total N=10117  valid N=10117  mean=2.73  sd=0.62
+## 
+##             val  frq raw.prc valid.prc cum.prc
+##           Other  932    9.21      9.21    9.21
+##           Black  869    8.59      8.59   17.80
+##           White 8316   82.20     82.20  100.00
+##  Not applicable    0    0.00      0.00  100.00
+##            &lt;NA&gt;    0    0.00        NA      NA
+```
+
+---
+# Frecuencias con *labelled*
+
+- Otra característica de `frq()` es que funciona con objetos de tipo *labelled*:
+
+
+
+
+```r
+frq(x = cis$P1)
+```
+
+```
+## 
+## Valoración de la situación económica general de España (x) &lt;numeric&gt;
+## # total N=2487  valid N=2487  mean=3.60  sd=0.93
+## 
+##  val     label  frq raw.prc valid.prc cum.prc
+##    1 Muy buena    6    0.24      0.24    0.24
+##    2     Buena  185    7.44      7.44    7.68
+##    3   Regular 1060   42.62     42.62   50.30
+##    4      Mala  840   33.78     33.78   84.08
+##    5  Muy mala  376   15.12     15.12   99.20
+##    8      N.S.   19    0.76      0.76   99.96
+##    9      N.C.    1    0.04      0.04  100.00
+##   NA        NA    0    0.00        NA      NA
+```
+
+---
+class: inverse, middle, center
+
+# Descriptivos
+
+---
+# Descriptivos en `R` base
+
+#### `sd(x)` | `min(x)` | `max(x)`
+
+- Existen fórmulas para calcular los descriptivos en `R` base:
+
+
+```r
+desc &lt;- c(mean(gss_cat$age, na.rm = TRUE), sd(gss_cat$age, na.rm = TRUE), min(gss_cat$age, na.rm = TRUE), max(gss_cat$age, na.rm = TRUE))
+names(desc) &lt;- c("Media", "Desv. Típica", "Min.", "Max.")
+desc
+```
+
+```
+##        Media Desv. Típica         Min.         Max. 
+##     47.18008     17.28750     18.00000     89.00000
+```
+
+---
+# Descriptivos en `sjmisc`
+
+#### `descr(x, weights, out)`
+
+
+- Con la función `descr()` se puede realizar una tabla de **estadísticos descriptivos**:
+
+
+```r
+descr(x = gss_cat)
+```
+
+```
+## 
+## ## Basic descriptive statistics
+## 
+##      var        type   label     n NA.prc    mean    sd   se   md trimmed
+##     year     integer    year 21483   0.00 2006.50  4.45 0.03 2006 2006.38
+##  marital categorical marital 21483   0.00    4.48  1.67 0.01    5    4.61
+##      age     integer     age 21407   0.35   47.18 17.29 0.12   46   46.30
+##     race categorical    race 21483   0.00    2.67  0.63 0.00    3    2.83
+##  rincome categorical rincome 21483   0.00    8.93  5.51 0.04    6    8.78
+##  partyid categorical partyid 21483   0.00    7.14  2.10 0.01    7    7.23
+##    relig categorical   relig 21483   0.00   13.59  2.45 0.02   15   14.14
+##    denom categorical   denom 21483   0.00   21.21 10.74 0.07   25   22.39
+##  tvhours     integer tvhours 11337  47.23    2.98  2.59 0.02    2    2.58
+##           range  skew
+##  14 (2000-2014)  0.22
+##         5 (1-6) -0.51
+##      71 (18-89)  0.37
+##         2 (1-3) -1.73
+##       15 (1-16)  0.35
+##        9 (1-10) -0.31
+##       14 (1-15) -2.75
+##       29 (1-30) -0.79
+##       24 (0-24)  2.92
+```
+
+---
+# Descriptivos en `sjmisc`
+
+- También con esta función se pueden realizar diferentes tipos de **output**:
+
+
+```r
+descr(x = gss_cat, out = "browser")
+```
+
+---
+# Descriptivos con `group_by()`
+
+- La función `descr()` también se puede combinar con otras funciones tidyverse:
+
+
+```r
+gss_cat %&gt;% 
+  group_by(race) %&gt;% 
+  descr(age)
+```
+
+```
+## 
+## ## Basic descriptive statistics
+## 
+## 
+## Grouped by: Other
+## 
+##  var    type label    n NA.prc  mean    sd   se md trimmed      range skew
+##  age integer   age 1951   0.41 39.48 14.39 0.33 37   38.12 71 (18-89) 0.84
+## 
+## 
+## Grouped by: Black
+## 
+##  var    type label    n NA.prc mean    sd   se md trimmed      range skew
+##  age integer   age 3115   0.45 43.9 16.06 0.29 42   42.82 71 (18-89) 0.52
+## 
+## 
+## Grouped by: White
+## 
+##  var    type label     n NA.prc  mean   sd   se md trimmed      range skew
+##  age integer   age 16341   0.33 48.72 17.5 0.14 48   48.03 71 (18-89) 0.28
+```
+
+---
+class: inverse, middle, center
+
+# Tablas de contingencia
+
+---
+# Tablas en `R` base
+
+- La función `table()` de `R` base sirve para realizar tablas de contingencia:
+
+
+```r
+table(gss_cat$marital, gss_cat$race)
+```
+
+```
+##                
+##                 Other Black White Not applicable
+##   No answer         2     2    13              0
+##   Never married   633  1305  3478              0
+##   Separated       110   196   437              0
+##   Divorced        212   495  2676              0
+##   Widowed          70   262  1475              0
+##   Married         932   869  8316              0
+```
+
+---
+# Tabla con `sjmisc`
+
+#### `flat_table(data, ..., margin)`
+
+
+- En `sjmisc` existe una función para crear tablas cruzadas:
+
+
+```r
+flat_table(data = gss_cat, marital, race)
+```
+
+```
+##               race Other Black White Not applicable
+## marital                                            
+## No answer              2     2    13              0
+## Never married        633  1305  3478              0
+## Separated            110   196   437              0
+## Divorced             212   495  2676              0
+## Widowed               70   262  1475              0
+## Married              932   869  8316              0
+```
+
+
+---
+# Tabla con `sjmisc`
+
+- La tabla puede contener celdas como porcentajes de columna o de fila en el argumento `margin`: `c("counts", "cell", "row", "col")`
+
+
+```r
+flat_table(data = gss_cat, marital, race, margin = "col")
+```
+
+```
+##               race Other Black White Not applicable
+## marital                                            
+## No answer           0.10  0.06  0.08            NaN
+## Never married      32.31 41.71 21.21            NaN
+## Separated           5.62  6.26  2.67            NaN
+## Divorced           10.82 15.82 16.32            NaN
+## Widowed             3.57  8.37  9.00            NaN
+## Married            47.58 27.77 50.72            NaN
+```
+
+---
+# Tabla con `descr`
+
+#### `crosstab(dep, indep, weight, prop.r, prop.c, prop.t, missing.include, format, plot = FALSE)`
+
+- Otra alternativa es utilizar `descr::crosstab()` que permite realizar tablas de contingencia de aspecto similar a las que se hacen en `SPSS`:
+
+
+```r
+descr::crosstab(gss_cat$marital, gss_cat$race, plot = FALSE)
+```
+
+```
+##    Cell Contents 
+## |-------------------------|
+## |                   Count | 
+## |-------------------------|
+## 
+## ================================================
+##                    gss_cat$race
+## gss_cat$marital    Other   Black   White   Total
+## ------------------------------------------------
+## No answer              2       2      13      17
+## ------------------------------------------------
+## Never married        633    1305    3478    5416
+## ------------------------------------------------
+## Separated            110     196     437     743
+## ------------------------------------------------
+## Divorced             212     495    2676    3383
+## ------------------------------------------------
+## Widowed               70     262    1475    1807
+## ------------------------------------------------
+## Married              932     869    8316   1.012e+04
+## ------------------------------------------------
+## Total               1959    3129   1.64e+04   2.148e+04
+## ================================================
+```
+
+---
+# Tabla con `descr`
+
+- Se pueden pedir **diferentes proporciones** usando los argumentos `prop.`:
+
+
+```r
+descr::crosstab(gss_cat$marital, gss_cat$race,  prop.r = TRUE, plot = FALSE)
+```
+
+```
+##    Cell Contents 
+## |-------------------------|
+## |                   Count | 
+## |             Row Percent | 
+## |-------------------------|
+## 
+## ================================================
+##                    gss_cat$race
+## gss_cat$marital    Other   Black   White   Total
+## ------------------------------------------------
+## No answer             2       2      13      17 
+##                    11.8%   11.8%   76.5%    0.1%
+## ------------------------------------------------
+## Never married       633    1305    3478    5416 
+##                    11.7%   24.1%   64.2%   25.2%
+## ------------------------------------------------
+## Separated           110     196     437     743 
+##                    14.8%   26.4%   58.8%    3.5%
+## ------------------------------------------------
+## Divorced            212     495    2676    3383 
+##                     6.3%   14.6%   79.1%   15.7%
+## ------------------------------------------------
+## Widowed              70     262    1475    1807 
+##                     3.9%   14.5%   81.6%    8.4%
+## ------------------------------------------------
+## Married             932     869    8316   10117 
+##                     9.2%    8.6%   82.2%   47.1%
+## ------------------------------------------------
+## Total              1959    3129   16395   21483 
+## ================================================
+```
+
+---
+# Tabla con `descr`
+
+- Existe la opción de que, además de la tabla, se realicen test **chi cuadrado**:
+
+
+```r
+descr::crosstab(gss_cat$marital, gss_cat$race,  chisq = TRUE, plot = FALSE)
+```
+
+```
+## Warning in chisq.test(tab, correct = FALSE, ...): Chi-squared approximation
+## may be incorrect
+```
+
+```
+##    Cell Contents 
+## |-------------------------|
+## |                   Count | 
+## |-------------------------|
+## 
+## ================================================
+##                    gss_cat$race
+## gss_cat$marital    Other   Black   White   Total
+## ------------------------------------------------
+## No answer              2       2      13      17
+## ------------------------------------------------
+## Never married        633    1305    3478    5416
+## ------------------------------------------------
+## Separated            110     196     437     743
+## ------------------------------------------------
+## Divorced             212     495    2676    3383
+## ------------------------------------------------
+## Widowed               70     262    1475    1807
+## ------------------------------------------------
+## Married              932     869    8316   1.012e+04
+## ------------------------------------------------
+## Total               1959    3129   1.64e+04   2.148e+04
+## ================================================
+## 
+## Statistics for All Table Factors
+## 
+## Pearson's Chi-squared test 
+## ------------------------------------------------------------
+## Chi^2 = 997.2167      d.f. = 10      p &lt;2e-16 
+## 
+##         Minimum expected frequency: 1.550202 
+## Cells with Expected Frequency &lt; 5: 2 of 18 (11.11111%)
+```
+
+---
+class: inverse, middle, center
+
+# Un paquete integral de tablas: expss
+
+---
+# Tablas con exspss
+
+#### `apply_labels(...)`
+
+- El paquete `exspss` ofrece una serie de funciones que permiten realizar tablas personalizadas: frecuencias, contingencia y personalizadas
+
+- Necesidad de definir las etiquetas de los valores y las variables con `apply_labels()`
+
+--
+
+
+
+
+```r
+cis &lt;- apply_labels(cis,
+                    CCAA = "Comunidad autónoma",
+                    TAMUNI = "Tamaño hábitat",
+                    P1 = "Valoración economía",
+                    P2 = "Valoración economía retrospectiva",
+                    P29 = "Género",
+                    P30 = "Edad",
+                    ESTUDIOS = "Estudios")
+```
+
+---
+# Tablas de frecuencias
+
+#### `fre(x, weight, drop_unused_labels)`
+
+
+```r
+fre(x = cis$P1)
+```
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;Valoración economía&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Count&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Valid percent&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Percent&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Responses, %&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Cumulative responses, %&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;6&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;185&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;7.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;7.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;7.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;7.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1060&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;42.6&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;42.6&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;42.6&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;50.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;840&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;33.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;33.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;33.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;84.1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;376&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;15.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;15.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;15.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;99.2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;19&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;100.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;100.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;#Total&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2487&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;100&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;100&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;100&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;lt;NA&amp;gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;0&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;0.0&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Tablas de contingencia
+
+#### `cro(cell_vars, col_vars, row_vars, weight, total_label, total_row_position)`
+
+- Crear una tabla de contingencia sencilla de **recuentos** se puede hacer con `cro()`:
+
+
+```r
+cro(cell_vars = cis$P1, col_vars = cis$P29, total_label = "Total")
+```
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='3' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;113&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;72&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;545&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;515&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;382&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;458&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;151&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;225&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;10&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Tablas de contingencia
+
+#### `cro_cpct(cell_vars, col_vars, row_vars, weight, total_label, total_row_position)`
+
+- Crear una tabla de contingencia con **porcentajes de columna** se puede hacer con `cro_cpct()`:
+
+
+```r
+cro_cpct(cell_vars = cis$P1, col_vars = cis$P29, total_label = "Total")
+```
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='3' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;5.6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;45.3&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;40.1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;31.7&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;35.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;12.5&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;17.5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Tablas de contingencia
+
+#### `cro_rpct(cell_vars, col_vars, row_vars, weight, total_label, total_row_position)`
+
+- Crear una tabla de contingencia con **porcentajes de fila** se puede hacer con `cro_rpct()`:
+
+
+```r
+cro_rpct(cell_vars = cis$P1, col_vars = cis$P29, total_row_position =  "none")
+```
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='3' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;33.3&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;66.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;61.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;38.9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;51.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;48.6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;45.5&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;54.5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;40.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;59.8&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;52.6&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;47.4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;100.0&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Tablas personalizadas
+
+#### `tab_cells(vars)` | `tab_stat_cases()` | `tab_pivot()`
+
+Para construir una tabla personalizada hay que encadenar funciones de tipo `tab_()`. Los elementos imprescindibles para construir una tabla son:
+
+- El **data frame** necesario para construir la tabla
+
+- Las **variables en filas** se incluyen en la función `tab_cells()`
+
+- El **contenido de la tabla** (*por ej.* recuentos, porcentajes, estadísticos descriptivos) se establece en con una función del tipo `tab_stat_()`
+
+- La función `tab_pivot()` indica que la tabla debe ser creada
+
+--
+
+
+```r
+data %&gt;% 
+  tab_cells(var1) %&gt;% 
+  tab_stat_cases() %&gt;% 
+  tab_pivot()
+```
+
+---
+# Un ejemplo...
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1, P2) %&gt;% 
+  tab_stat_cases() %&gt;% 
+  tab_pivot()
+```
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;#Total&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='2' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;185&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1060&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;840&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;376&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;19&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2487&lt;/td&gt;
+&lt;/tr&gt; 
+&lt;tr&gt;&lt;td colspan='2' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía retrospectiva&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mejor&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;585&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Igual&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1267&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Peor&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;583&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;46&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;2487&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Añadir columnas
+
+#### `tab_cols(vars)`
+
+- Para **añadir columnas** solo es necesari incluir en el pipe la función `tab_cols()`:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1) %&gt;% 
+  tab_cols(P29) %&gt;% 
+  tab_stat_cases() %&gt;% 
+  tab_pivot()
+```
+
+---
+# Añadir columnas
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='3' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;113&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;72&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;545&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;515&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;382&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;458&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;151&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;225&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;10&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Añadir super filas
+
+#### `tab_rows(data)`
+
+- Existe la posibilidad de añadir **filas adicionales** con la función `tab_rows()`:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1) %&gt;% 
+  tab_cols(P29) %&gt;% 
+  tab_rows(P29) %&gt;% 
+  tab_stat_cases() %&gt;% 
+  tab_pivot()
+```
+
+---
+# Añadir super filas
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;&lt;th style='border-top: 2px solid grey;; border-bottom: hidden;'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='6' style='font-weight: 900;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Hombre&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;113&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;545&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;382&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;151&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;10&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mujer&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;72&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;515&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;458&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;225&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Añadir porcentajes de fila o columna
+
+#### `tab_stat_rpct(label)` | `tab_stat_cpct(label)`
+
+- Dos funciones usuales son las que sirven para calcular los **porcentajes de filas y columnas**:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1) %&gt;% 
+  tab_cols(P29) %&gt;% 
+  tab_stat_rpct() %&gt;% 
+  tab_pivot()
+```
+---
+# Añadir porcentajes de fila o columna
+
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='3' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;33.3&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;66.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;61.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;38.9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;51.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;48.6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;45.5&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;54.5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;40.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;59.8&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;52.6&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;47.4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;100.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Añadir estadísticos descriptivos
+
+#### `tab_stat_mean(label)` | `tab_stat_median(label)` | `tab_stat_se(label)` | `tab_stat_sum(label)`
+
+- También es posible añadir **estadísticos descriptivos** para variables de escala:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P30) %&gt;% 
+  tab_cols(P29) %&gt;% 
+  tab_stat_mean() %&gt;% 
+  tab_pivot()
+```
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='3' style='font-weight: 900;'&gt;&amp;nbsp;Edad&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mean&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;49.1&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;51.5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Añadir estadísticos personalizados
+
+#### `tab_stat_fun(..., method)`
+
+- La función `tab_stat_fun()` permite crear **combinaciones personalizadas** de contenido para la tabla:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P30) %&gt;% 
+  tab_cols(P29) %&gt;% 
+  tab_stat_fun(Mean = w_mean, "Std. dev." = w_sd, "Valid N" = w_n, method = list) %&gt;% 
+  tab_pivot()
+```
+---
+# Añadir estadísticos personalizados
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='7' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style=''&gt;&lt;/th&gt;
+&lt;th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;&lt;th style='; border-bottom: hidden;'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th colspan='3' style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mean&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Std. dev.&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Valid N&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mean&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Std. dev.&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Valid N&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;Edad&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;49.1&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;17.9&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;51.5&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;18&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Varios estadísticos
+
+- Existe la posibilidad de combinar varios `tab_stat_()`. Para ello se puede manipular la función `tab_pivot()` para decidir el posicionamiento en la tabla. Existen tres opciones:  `stat_position = c("outside_rows", "inside_rows", "outside_columns", "inside_columns")`:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1) %&gt;% 
+  tab_cols(P29) %&gt;% 
+  tab_stat_cases() %&gt;% 
+  tab_stat_cpct() %&gt;% 
+  tab_pivot()
+```
+
+---
+# Varios estadísticos
+
+Con la opción `"inside_rows"`:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1) %&gt;% 
+  tab_cols(P29) %&gt;% 
+  tab_stat_cases() %&gt;% 
+  tab_stat_cpct() %&gt;% 
+  tab_pivot(stat_position = "inside_rows")
+```
+
+
+---
+# Varios estadísticos
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='3' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;4.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;113.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;72.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;5.6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;545.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;515.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;45.3&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;40.1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;382.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;458.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;31.7&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;35.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;151.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;225.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;12.5&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;17.5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;10.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Varios estadísticos
+
+Con la opción `"outside_columns"`:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1) %&gt;% 
+  tab_cols(P29) %&gt;% 
+  tab_stat_cases() %&gt;% 
+  tab_stat_cpct() %&gt;% 
+  tab_pivot(stat_position = "outside_columns")
+```
+
+
+---
+# Varios estadísticos
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='4' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='5' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;113&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;72&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;5.6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;545&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;515&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;45.3&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;40.1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;382&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;458&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;31.7&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;35.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;151&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;225&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;12.5&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;17.5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;10&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Añadir etiquetas a los estadísticos
+
+- Utilizar el argumento `label` de las funciones de tipo `tab_stat_()`:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1) %&gt;% 
+  tab_cols(P29) %&gt;% 
+  tab_stat_cases(label = "Casos") %&gt;% 
+  tab_stat_cpct(label = "% Col.") %&gt;% 
+  tab_pivot(stat_position = "inside_rows")
+```
+
+---
+# Añadir etiquetas a los estadísticos
+
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='1' style='font-weight: 900; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;&lt;th style='border-top: 2px solid grey;; border-bottom: hidden;'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='5' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;4.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;113.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;72.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;5.6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;545.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;515.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;45.3&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;40.1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;382.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;458.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;31.7&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;35.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;151.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;225.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;12.5&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;17.5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;10.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Añadir una columna de totales
+
+- Se puede añadir una columna de totales con `total()`:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1) %&gt;% 
+  tab_cols(total(), P29) %&gt;% 
+  tab_stat_cases(label = "Casos") %&gt;% 
+  tab_stat_cpct(label = "% Col.") %&gt;% 
+  tab_pivot(stat_position = "inside_rows")
+```
+
+---
+# Añadir una columna de totales
+
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='1' style='font-weight: 900; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;&lt;th style='border-top: 2px solid grey;; border-bottom: hidden;'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;#Total&amp;nbsp;&lt;/th&gt;&lt;th style='border-top: 2px solid grey;; border-bottom: hidden;'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='7' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;6.0&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;4.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;185.0&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;113.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;72.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;7.4&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9.4&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;5.6&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1060.0&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;545.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;515.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;42.6&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;45.3&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;40.1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;840.0&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;382.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;458.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;33.8&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;31.7&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;35.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;376.0&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;151.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;225.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;15.1&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;12.5&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;17.5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;19.0&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;10.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.8&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.8&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.7&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1.0&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1.0&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.0&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;0.1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2487&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;% Col.&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;2487&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+# Añadir un título a la tabla
+
+#### `set_caption(caption)`
+
+- Con la función `set_caption()` se pueden incluir títulos:
+
+
+```r
+cis %&gt;% 
+  tab_cells(P1) %&gt;% 
+  tab_cols(total(), P29) %&gt;% 
+  tab_stat_cases(label = "Casos") %&gt;% 
+  tab_stat_cpct(label = "% Col.") %&gt;% 
+  tab_pivot(stat_position = "inside_rows")
+```
+
+---
+# Añadir un título a la tabla
+
+
+&lt;table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' &gt;
+&lt;thead&gt;
+&lt;tr&gt;&lt;td colspan='7' style='text-align: left;'&gt;
+Tabla 1. Valoración económica según género&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='border-top: 2px solid grey;'&gt;&lt;/th&gt;
+&lt;th colspan='1' style='font-weight: 900; border-top: 2px solid grey; text-align: center;'&gt;&lt;/th&gt;&lt;th style='border-top: 2px solid grey;; border-bottom: hidden;'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th colspan='1' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;#Total&amp;nbsp;&lt;/th&gt;&lt;th style='border-top: 2px solid grey;; border-bottom: hidden;'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th colspan='2' style='font-weight: 900; border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'&gt;&amp;nbsp;Género&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;th style='font-weight: 900; border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Hombre&amp;nbsp;&lt;/th&gt;
+&lt;th style='border-bottom: 1px solid grey; text-align: center;'&gt;&amp;nbsp;Mujer&amp;nbsp;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt; 
+&lt;tr&gt;&lt;td colspan='7' style='font-weight: 900;'&gt;&amp;nbsp;Valoración economía&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;6&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;2&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;4&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Buena&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;185&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;113&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;72&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Regular&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1060&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;545&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;515&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;840&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;382&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;458&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;Muy mala&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;376&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;151&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;225&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.S.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;19&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;10&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;9&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;N.C.&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1&lt;/td&gt;
+&lt;td style='' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;1&lt;/td&gt;
+&lt;td style='text-align: right;'&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;#Total cases&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: left;'&gt;&amp;nbsp;Casos&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;2487&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey;' colspan='1'&gt;&amp;nbsp;&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1204&lt;/td&gt;
+&lt;td style='border-bottom: 2px solid grey; text-align: right;'&gt;1283&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+class: inverse, middle, center
+
+# Exportar a MS Excel
+
+---
+# Exportar a Excel
+
+- Para **exportar** las tablas a **MS Excel** se puede utilizar el paquete `openxlsx`.  
+
+
+--
+
+- Antes de hacer la exportación es necesario **crear un libro de Excel**. 
+
+--
+      
+- **Escribir la tabla** en el libro de MS Excel y guardarlo
+
+---
+# Crear una tabla y asignar el objeto
+
+
+
+```r
+tabla_pers &lt;- cis %&gt;% 
+  tab_cells(P1, P2) %&gt;% 
+  tab_cols(total(), P29, TAMUNI) %&gt;% 
+  tab_stat_cases(label = "Casos") %&gt;% 
+  tab_stat_cpct(label = "% Col.") %&gt;% 
+  tab_pivot(stat_position = "inside_rows")
+```
+
+---
+# Crear un libro de trabajo y grabar la tabla
+
+#### `CreateWorkbook()` | `addWorksheet(wb, sheetname)` | `xl_write(obj, wb, sheet)` | `saveWorkbook(wb, file, overwrite)`
+
+- **Crear un libro** y una hoja de cálculo:
+
+
+```r
+wb &lt;- createWorkbook()
+sh &lt;- addWorksheet(wb = wb, sheetName = "Tables")
+```
+
+--
+
+- **Grabar** el objeto tabla:
+
+
+```r
+xl_write(obj = tabla_pers, wb = wb, sheet = sh)
+```
+
+--
+
+- Guardar el **libro de cáculo**
+
+
+```r
+saveWorkbook(wb = wb, file = "table1.xlsx", overwrite = TRUE)
+```
+
+```
+## Note: zip::zip() is deprecated, please use zip::zipr() instead
+```
+
+---
+# Output en MS Excel
+
+![](_pics/pic1.png)
+---
+class: inverse, middle, center
+
+# Curso de introducción a R
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "idea",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

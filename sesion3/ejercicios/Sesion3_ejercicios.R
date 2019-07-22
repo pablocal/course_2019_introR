@@ -1,5 +1,5 @@
 ###############################################################
-#######       Manipulación de datos con R - Ejercicios ########
+##### Manipulación de datos avnzada con R - Ejercicios ########
 ###############################################################
 
 rm(list = ls())
@@ -7,7 +7,7 @@ library(tidyverse)
 library(haven)
 
 
-# A. Cargar datos (read) -----------------------------------------------------
+# A. Agrupar casos y resumir variables -----------------------------------------------------
 
 ## A.1
 
@@ -25,12 +25,7 @@ library(haven)
 
 
 
-## A.5
-
-
-
-
-# B. Seleccionar variables ------------------------------------------------------
+# B. Combinar data frames ------------------------------------------------------
 
 ## B.1
 
@@ -48,7 +43,7 @@ library(haven)
 
 
 
-# C. Ordenar y filtrar ----------------------------------------------------
+# C. Cambiar el formato de los datos ----------------------------------------------------
 
 ## C.1
 
@@ -61,44 +56,13 @@ library(haven)
 ## C.3
 
 
-
-## C.4
-
-
 # D. Transformar variables --------------------------------------------------
 
 ## D.1
 
 
+# E. Repaso general a la manipulación de datos --------------------------------------------------
 
-## D.2
-
-
-
-## D.3
-
-
-
-
-## D.4
-
-
-
-
-
-## D.5
-
-
-
-
-
-## D.6
-
-
-
-
-
-
-## D.7
+## E.1 
 
 

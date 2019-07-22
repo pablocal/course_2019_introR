@@ -133,6 +133,10 @@ glimpse(gss)
 
 - De ancho a largo: **gather**
 
+--
+
+- Crear funciones
+
 ---
 class: inverse, middle, center
 
@@ -225,11 +229,11 @@ gss_cat %>%
 ---
 # Uso de las *pipes* en el código
 
-- Evitar *pipes* de más de diez líneas, en ese caso crear varios objetos     
+- Evitar *pipes* de **más de diez líneas**, en ese caso crear varios objetos     
 
 --
 
-- Utiliza *pipes* siempre que haya dos o más funciones, pero no en caso de que corresponda usar una única función:
+- Utiliza *pipes* siempre que haya **dos o más funciones**, pero no en caso de que corresponda usar una única función:
 
 ```{r, eval=FALSE}
 gss_cat %>% select(race, age) # mal
@@ -238,6 +242,10 @@ gss_cat %>% #bien
   select(race, age) %>% 
   filter(race == "White")
 ```
+
+--
+
+- Utiliza el atajo `Ctrl` + `Mayús` + `M` para insertar *pipes* `%>%`
 
 ---
 class: inverse, middle, center 
@@ -248,7 +256,7 @@ class: inverse, middle, center
 ---
 # Agrupar casos
 
-#### `group_by(.data, ...)` | 
+#### `group_by(.data, ...)` 
 
 - La función `group_by()` permite agrupar los casos según una o varias variables:
 
@@ -266,7 +274,7 @@ class: inverse, middle, center
 ---
 # Hacer estadísticos resumen
 
-#### summarise(.data, ...)
+#### `summarise(.data, ...)`
 
 - La función `summarise()` es útil para crear estadísticos **resumen**:
 
@@ -275,7 +283,8 @@ gss_cat %>%
 summarise(mean_age = mean(age, na.rm = TRUE))
 ```
 
---
+---
+# Hacer estadísticos resumen
 
 - También funciona con data frames **agrupados**:
 
@@ -332,19 +341,22 @@ gss_cat %>%
 
 - Lo solucionamos en tres pasos:
 
-  1. Con `table()` se obtienen las frecuencias
-  2. Con `which.max()` se selecciona la categoría con mayor frecuencia
-  3. Con `names()` se extrae el nombre del nivel del factor
-  
-  
-```{r}
-table(gss_cat$partyid) 
-```
+  1. Con `table()` se obtienen las **frecuencias**
+  2. Con `which.max()` se **selecciona la categoría** con mayor frecuencia
+  3. Con `names()` se extrae el **nombre del nivel** del factor
   
 ---
 # Una función extra: frecuencia más repetida
 
-- El siguiente código da la etiqueta y el nivel de la categoría con mayor frecuencia:
+- Empezamos con la **tabla**:
+
+```{r}
+table(gss_cat$partyid) 
+```
+  
+--
+
+- El siguiente código da **la etiqueta y el nivel de la categoría** con mayor frecuencia:
 
 ```{r}
 which.max(table(gss_cat$partyid)) 
@@ -352,7 +364,7 @@ which.max(table(gss_cat$partyid))
 
 --
 
-- Se aplica la función `names()` para obtener la etiqueta de la variable:
+- Se aplica la función `names()` para obtener la **etiqueta de la variable**:
 
 ```{r}
 names(which.max(table(gss_cat$partyid))) 
@@ -361,7 +373,7 @@ names(which.max(table(gss_cat$partyid)))
 ---
 # Un ejemplo de la aplicación
 
-- Para cada grupo de la variable `race` obtener el partido más frecuente con el que se identifican `party_id`:
+- Para cada grupo de la variable `race` **obtener el partido más frecuente** con el que se identifican `party_id`:
 
 
 ```{r}
@@ -374,7 +386,7 @@ gss_cat %>%
 ---
 # Crear una variable resumen a nivel individual
 
-- La función `group_by()` también funciona con `mutate()` para crear una variable resumen:
+- La función `group_by()` también funciona con `mutate()` para **crear una variable resumen** a nivel individual:
 
 ```{r}
 gss_cat %>% 
@@ -384,8 +396,6 @@ gss_cat %>%
   head()
 ```
 
-
-
 ---
 class: inverse, middle, center
 
@@ -394,6 +404,7 @@ class: inverse, middle, center
 ---
 # Combinar filas
 
+- Cargamos dos **data frames**:
 
 ```{r}
 rows_a <- gss_cat[1:3, c(1, 3:4)]
@@ -407,7 +418,7 @@ glimpse(rows_b)
 
 #### `bind_rows(..., id)`
 
-- La función `bind_rows()` permite combinar dos conjuntos de filas en un único objeto. La combinación se lelva  acabo a partir del nombre de las columnas o variables:
+- La función `bind_rows()` permite **combinar dos conjuntos** de filas en un único objeto. La combinación se lelva  acabo a partir del nombre de las columnas o variables:
 
 ```{r}
 bind_rows(rows_a, rows_b)
@@ -421,6 +432,7 @@ class: inverse, middle, center
 ---
 # Combinar variables 
 
+- Partimos de dos **conjuntos de datos**:
 
 ```{r}
 gss <- gss_cat %>% 
@@ -437,7 +449,7 @@ glimpse(cols_b)
 
 #### `bind_cols(...)`
 
-- La función `bind_cols()` realiza una combinación de dos data frames a partir de las columnas; la combinación es posicional por lo que es necesario que los casos (filas) estén ordenados apra que se realice correctamente:
+- La función `bind_cols()` realiza una **combinación de dos data frames** a partir de las columnas; la **combinación es posicional** por lo que es necesario que los casos (filas) estén ordenados apra que se realice correctamente:
 
 ```{r}
 bind_cols(cols_a, cols_b)
@@ -471,7 +483,7 @@ right_join(x = cols_a, y = cols_b, by = "id")
 
 #### `full_join(x, y, by)`
 
-- La función `full_join()` sirve para unir dos data frames en base a una o más variables clave:
+- La función `full_join()` sirve para **unir dos data frames** en base a una o más variables clave:
 
 ```{r}
 full_join(x = cols_a, y = cols_b, by = "id")
@@ -482,7 +494,7 @@ full_join(x = cols_a, y = cols_b, by = "id")
 
 #### `anti_join()`
 
-- En ocasiones es necesario tener un listado de aquellos casos que no se han combinado al no estar en ambos data frames. Para ello se puede utilizar la función `anti_join()`:
+- En ocasiones es necesario tener un **listado de aquellos casos que no se han combinado** al no estar en ambos data frames. Para ello se puede utilizar la función `anti_join()`:
 
 ```{r}
 anti_join(x = cols_a, y = cols_b, by = "id")
@@ -503,6 +515,8 @@ class: inverse, middle, center
 
 ---
 # Datos en formato largo
+
+- Datos en **formato largo**:
 
 ```{r, echo=FALSE}
 muni <- tibble(muni = c("Madrid", "Madrid", "Barcelona", "Barcelona"),
@@ -543,8 +557,10 @@ class: inverse, middle, center
 ---
 # De ancho a largo
 
+- Datos en formato **ancho**:
+
 ```{r}
-glimpse(iris)
+str(iris)
 head(iris, n = 5)
 ```
 
@@ -558,6 +574,85 @@ head(iris, n = 5)
 
 ```{r}
 gather(data = iris, key = "var", value = "value", Sepal.Length:Petal.Width)
+```
+
+---
+class: inverse, middle center
+
+# Intro a creación de funciones
+
+---
+# La estructura de una función
+
+#### `function(args)`
+
+```{r, eval=FALSE}
+mifuncion <- function(argumento1, argumento2, ...) {
+  cuerpo
+  resultado
+}
+```
+
+.pull-left[
+- El nombre de la función es `mifuncion`    
+
+- Para crear una función se utiliza la función `function(){}`    
+
+- Una función está compuesta por argumentos: `argumento1`    
+]
+
+.pull-right[
+- En el **cuerpo** de la función están las acciones    
+
+- El **resultado** es el output de la función
+]
+
+---
+# Argumentos de una función
+
+- Los **argumentos** de una función pueden tener valores predeterminados:
+
+```{r, eval=FALSE}
+mifuncion <- function(argumento1 =  TRUE, argumento2 = 10) {
+  cuerpo
+  resultado
+}
+```
+
+
+---
+# Retornar un objeto
+
+#### `return(x)`
+
+- Para retornar un objeto se utiliza la función `return()`:
+
+```{r, eval=FALSE}
+mifuncion <- function(datos) {
+
+  x <- datos*2
+  
+  return(x)
+
+}
+```
+
+---
+# Ejemplo:
+
+- Crear una función que **multiplique un vector por sí mismo**:
+
+```{r}
+mult_vector <- function(vector){
+  
+  vector_2 <- vector*vector
+  
+  return(vector_2)
+}
+
+nums <- c(2, 3, 5)
+
+mult_vector(nums)
 ```
 
 
