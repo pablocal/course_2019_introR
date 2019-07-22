@@ -135,12 +135,12 @@ glimpse(gss)
 
 --
 
-- Crear funciones
+- Crear **funciones**
 
 ---
 class: inverse, middle, center
 
-# Operar con *pipes* `%>%`
+# Operar con *pipes* %>% `r emo::ji("chains")`
 
 ---
 # Espíritu `tidyverse`
@@ -245,13 +245,32 @@ gss_cat %>% #bien
 
 --
 
-- Utiliza el atajo `Ctrl` + `Mayús` + `M` para insertar *pipes* `%>%`
+- Utiliza el atajo `Ctrl` + `Mayús` + `M` para insertar *pipes* `%>%` en `RStudio`
+
+---
+# `r emo::ji("nerd")` Quiz
+
+¿Se puede hacer un *pipe* que culmine en la función `table()`? ¿Cuál será el comportamiento?
+
+```{r, eval = FALSE}
+gss_cat %>% 
+  select(race, marital, partyid) %>% 
+  table()
+```
+
+---
+# `r emo::ji("nerd")` Quiz
+
+```{r, echo=FALSE}
+gss_cat %>% 
+  select(race, marital, partyid) %>% 
+  table()
+```
 
 ---
 class: inverse, middle, center 
 
-
-# Agrupar means group
+# Agrupar means group `r emo::ji("busts_in_silhouette")`
 
 ---
 # Agrupar casos
@@ -269,7 +288,7 @@ glimpse(gss_group)
 ---
 class: inverse, middle, center 
 
-# Resumir means summarise 
+# Resumir means summarise `r emo::ji("bookmark_tabs")`
 
 ---
 # Hacer estadísticos resumen
@@ -362,7 +381,9 @@ table(gss_cat$partyid)
 which.max(table(gss_cat$partyid)) 
 ```
 
---
+---
+# Una función extra: frecuencia más repetida
+
 
 - Se aplica la función `names()` para obtener la **etiqueta de la variable**:
 
@@ -399,7 +420,7 @@ gss_cat %>%
 ---
 class: inverse, middle, center
 
-# Combinar filas
+# Combinar filas `r emo::ji("arrow_heading_up")`
 
 ---
 # Combinar filas
@@ -418,7 +439,7 @@ glimpse(rows_b)
 
 #### `bind_rows(..., id)`
 
-- La función `bind_rows()` permite **combinar dos conjuntos** de filas en un único objeto. La combinación se lelva  acabo a partir del nombre de las columnas o variables:
+- La función `bind_rows()` permite **combinar dos data frames** de filas en un único objeto. La combinación se lelva  acabo a partir del nombre de las columnas o variables:
 
 ```{r}
 bind_rows(rows_a, rows_b)
@@ -427,12 +448,12 @@ bind_rows(rows_a, rows_b)
 ---
 class: inverse, middle, center
 
-# Combinar variables
+# Combinar variables `r emo::ji("leftwards_arrow_with_hook")`
 
 ---
 # Combinar variables 
 
-- Partimos de dos **conjuntos de datos**:
+- Partimos de dos **data frames**:
 
 ```{r}
 gss <- gss_cat %>% 
@@ -501,9 +522,22 @@ anti_join(x = cols_a, y = cols_b, by = "id")
 ```
 
 ---
+# `r emo::ji("nerd")` Quiz
+
+¿Cuál es la **diferencia** entre las siguientes líneas de código?
+
+```{r, eval=FALSE}
+left_join(x, y, by = c("region", "id"))
+```
+
+```{r, eval=FALSE}
+right_join(y, x, by = c("region", "id"))
+```
+
+---
 class: inverse, middle, center
 
-# A formato ancho
+# A formato ancho `r emo::ji("arrow_heading_up")`
 
 ---
 # Cambiar la forma de los datos
@@ -544,7 +578,7 @@ spread(data = muni, key = item, value = valor_mill)
 ---
 class: inverse, middle, center
 
-# A formato largo
+# A formato largo `r emo::ji("arrow_heading_down")`
 
 ---
 # Cambiar la forma de los datos
@@ -579,7 +613,7 @@ gather(data = iris, key = "var", value = "value", Sepal.Length:Petal.Width)
 ---
 class: inverse, middle center
 
-# Intro a creación de funciones
+# Intro a creación de funciones `r emo::ji("robot")`
 
 ---
 # La estructura de una función
