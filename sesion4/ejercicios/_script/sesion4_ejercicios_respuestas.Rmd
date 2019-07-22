@@ -1,5 +1,5 @@
 ---
-title: "Manipulación de datos, más allá de lo básico"
+title: "¿Todo esto para una tabla?"
 subtitle: "Ejercicios resueltos"
 output: html_document
 ---
@@ -20,20 +20,13 @@ En los ejercicios de la tercera sesión vamos a trabajar sobre la manipulación 
 
 3. En la carpeta **data** encontrarás los ficheros de datos que vas a utilizar en esta práctica.
 
-## A. Agrupar casos y resumir variables
+## A. Tablas de frecuencia y descriptivos
 
-**A.1** Carga el archivo `cis_oct17.sav` que se encuentra en la carpeta `data`. Recuerda hacer la transformación de los **objetos de labelled a factores** con `as_factor()`. Crea un nuevo data frame agrupado, en el que la variable de **agrupación** sea `idv` y genera un resumen que sea la media de la variable `edad`. Imprime el objeto final. ¿Cuál es el problema?
+**A.1** Carga el archivo de datos `datos_access.mdb`
 
 ```{r A1, echo=TRUE}
-cis <- read_spss(file = "/home/pablocal/git_repos/course_introR/sesion3/data/cis_oct17.sav")
-cis <- as_factor(cis)
-
-cis %>% 
-  group_by(idv) %>% 
-  summarise(mean_edad = mean(edad, na.rm = T))
-
+data <- Hmisc::mdb.get(file = "E:/Rproj/course_IntroToR/sesion4/data/datos_access.mdb", tables = TRUE)
 ```
-
 
 `r emo::ji("white_check_mark")` La variable edad fue convertida a factor y por lo tanto no funciona con la función `mean()`.
 
@@ -76,7 +69,7 @@ head(cis[sample(rownames(cis), 5), c("region", "tamuni", "idv", "idv_cat", "idv_
 ```
 
   
-## B. Combinar data frames 
+## B. Tablas de contingencia
 
 
 **B.1** Carga dos ficheros, el primero es `escuelas1.csv` y el segundo es `escuelas2.xlsx`. Estos ficheros contienen casos (filas) del mismo conjunto, **combínalas** para crear un archivo único. Comprueba el resultado. 
