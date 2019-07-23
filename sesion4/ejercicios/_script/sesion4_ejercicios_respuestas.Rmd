@@ -7,11 +7,15 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(haven)
+library(sjmisc)
+library(descr)
+library(expss)
+library(openxlsx)
 ```
 
 ## Introducción
 
-En los ejercicios de la tercera sesión vamos a trabajar sobre la manipulación avanzada de datos en `R`. Antes de empezar:
+En los ejercicios de la cuarta sesión vamos a trabajar sobre la creación de tablas en `R`. Antes de empezar:
 
 1. **Abre el script** `sesion3_ejercicios.R`. **Limpia** el espacio de datos ejecutando `rm(list = ls())`. Con este comando eliminarás del espacio de trabajo todos los datos (objetos) que estén disponibles evitando posibles confusiones^[Puedes usar el atajo `Ctrl + Enter` para ejecutar una línea de código en `RStudio`].   
 
@@ -22,227 +26,169 @@ En los ejercicios de la tercera sesión vamos a trabajar sobre la manipulación 
 
 ## A. Tablas de frecuencia y descriptivos
 
-**A.1** Carga el archivo de datos `datos_access.mdb`
+**A.1** Carga el archivo de datos `cis_oct17.sav` y haz la conversión necesaria a **factores**. Posteriormente utiliza la función `table()` para generar **tablas de frecuencias** de las variables `pol_pros`, `idv`, `sexo`. Repite las frecuencias utilizando la función `frq()`.
 
 ```{r A1, echo=TRUE}
-data <- Hmisc::mdb.get(file = "E:/Rproj/course_IntroToR/sesion4/data/datos_access.mdb", tables = TRUE)
+cis <- read_spss(file = "~/git_repos/course_introR/sesion4/data/cis_oct17.sav") 
+cis <- as_factor(cis)
+
+table(cis$pol_pros)
+table(cis$idv)
+table(cis$sexo)
+
+cis %>% 
+frq(pol_pros, idv, sexo)
 ```
 
-`r emo::ji("white_check_mark")` La variable edad fue convertida a factor y por lo tanto no funciona con la función `mean()`.
 
-**A.2** Convierte la variable `edad` a **numérica** y crea la **agrupación** por `idv`. Realiza todas las transformaciones dentro del mismo `pipe`.
+**A.2** Exporta las tablas que has generado con `frq()` en **A.1** a un **archivo externo** de tipo HTML empleando los argumentos `out` y `file`. Haz que **no se muestren** los valores perdidos `NA` y que las tablas estén organizadas de forma **descendente** según la frecuencia absoluta. Abre el archivo HTML que has generado.
 
 
 ```{r A2}
 cis %>% 
-  mutate(edad = as.numeric(edad)) %>% 
-  group_by(idv) %>% 
-  summarise(mean_edad = mean(edad, na.rm = TRUE))
+frq(pol_pros, idv, sexo, sort.frq = "desc", out = "viewer", show.na = FALSE, file = "tablas.html" )
 ```
 
-**A.3** Crea una **variable a nivel individual** que sea la media de `valora_gob` para cada estrato resultante de la combinación de `region` y `tamuni`. Guarda la nueva variable como `valora_gob_estrato`. Ten en cuenta que antes de agrupar tendrás que preparar la variable, especificando los valores perdidos y determinando el tipo de variable.
+**A.3** Genera **tablas de frecuencias** de las variables `idv` y `pol_pros` **segmentadas** por la variable `sexo`.
 
 ```{r A3}
-table(cis$valora_gob)
-
-cis <- cis %>% 
-  mutate(valora_gob = na_if(valora_gob, "N.S."),
-         valora_gob = na_if(valora_gob, "N.C."),
-         valora_gob_numeric = as.numeric(valora_gob)) %>% 
-  group_by(region, tamuni) %>% 
-  mutate(valora_gob_estrato = mean(valora_gob_numeric, na.rm = TRUE))
-
-head(cis[1:10, c("region", "tamuni", "valora_gob_numeric", "valora_gob_estrato")])
+cis %>% 
+  group_by(sexo) %>% 
+  frq(idv, pol_pros)
 ```
 
-**A.4** Añade dos variables al data frame `cis` agrupado por `region` y `tamuni`. La primera será `idv_cat`, que se refiere a la **categoría más frecuente** de la variable `idv` en cada estrato. Además crea la variable `idv_por`, que será el **porcentaje de la categoría más frecuente** en el estrato.
 
-```{r}
+**A.4** Adapta las variables `edad` y `valora_gob` para ser **incluidas en una tabla de estadísticos descriptivos**. Crea una tabla de estadísticos descriptivos para estas dos variables segmentada por la variable `sexo`. Alamacena el objeto con el nombre `descriptivos` y extrae la **media de edad de los hombres** y la **media de edad de las mujeres**. Resta la media de edad de los hombres a la de las mujeres.
+
+```{r A4}
 cis <- cis %>% 
-  group_by(region, tamuni) %>% 
-  mutate(
-    idv_cat = names(which.max(table(idv))),
-    idv_por = max(table(idv))/sum(table(idv))*100
-  )
+  mutate(edad = as.numeric(as.character(edad)),
+         edad = ifelse(edad > 97, NA, edad),
+         valora_gob = na_if(valora_gob, "N.S."),
+         valora_gob = na_if(valora_gob, "N.C.")
+         )
 
-head(cis[sample(rownames(cis), 5), c("region", "tamuni", "idv", "idv_cat", "idv_por")], n = 4)
+descriptivos <- cis %>% 
+  group_by(sexo) %>% 
+  sjmisc::descr(edad, valora_gob)
+         
+descriptivos[[1]]$mean[1] - descriptivos[[2]]$mean[1] 
 ```
 
-  
 ## B. Tablas de contingencia
 
-
-**B.1** Carga dos ficheros, el primero es `escuelas1.csv` y el segundo es `escuelas2.xlsx`. Estos ficheros contienen casos (filas) del mismo conjunto, **combínalas** para crear un archivo único. Comprueba el resultado. 
+**B.1** Utiliza la función sel paquete base `table()` para crear una **tabla de contingencia** de `pol_pros` y `sexo`. Realiza la misma tabla utilizando la función `flat_table()` pero en vez de las frecuencias incluye los porcentajes de columna.
 
 ```{r B1 exercise}
-escuelas1 <- read_csv2(file = "/home/pablocal/git_repos/course_introR/sesion3/data/escuelas1.csv", locale = locale(encoding = "Latin2"))
-escuelas2 <- readxl::read_xlsx(path = "/home/pablocal/git_repos/course_introR/sesion3/data/escuelas2.xlsx")
+table(cis$pol_pros, cis$sexo)
 
-escuelas1 %>% 
-  rename(nota = notas) %>% 
-  bind_rows(escuelas2)
+flat_table(cis, pol_pros, sexo, margin = "col")
 ```
 
 
-
-**B.2** Carga los ficheros `.sav` `cis_oct17_cols1.sav` (`cols1`) y `cis_oct17_cols2.sav` (`cols2`). Haz las **tansformaciones necesarias** y **combina** los dos data frames en uno utilizando `bind_cols()`.
+**B.2** Utiliza la función `crosstab` del paquete `descr` para crear **la tabla de contingencia** del ejercicio anterior (`pol_pros` y `sexo`). La tabla debe contener las `frecuencias` y los `porcentajes de columna`. No olvides descartar el gráfico con la opción `plot = FALSE`.
 
 ```{r B2}
-cols1 <- read_spss(file = "/home/pablocal/git_repos/course_introR/sesion3/data/cis_oct17_cols1.sav")
-cols2 <- read_spss(file = "/home/pablocal/git_repos/course_introR/sesion3/data/cis_oct17_cols2.sav")
-cols1 <- as_factor(cols1)
-cols2 <- as_factor(cols2)
+crosstab(dep = cis$pol_pros, indep = cis$sexo , prop.c = TRUE, plot = FALSE)
 ```
+
+
+**B.3** Añade a la tabla que has realizado anteriormente el **porcentaje de filas** y un test **chi-cuadrado**.
 
 ```{r, eval=FALSE}
-bind_cols(cols1, cols2)
+crosstab(dep = cis$pol_pros, indep = cis$sexo , prop.c = TRUE, prop.r = TRUE, chisq = TRUE, plot = FALSE)
 ```
 
 
-`r emo::ji("white_check_mark")` Los data frames tienen diferente número de filas. Dado que existe un identificador `id`, sería necesario unir los data frames utilizando esa clave.
+## C. Frecuencias y tablas de contingencia con `expss` 
 
-
-**B.3** Ahora utiliza una de las funciones para combinar columnas como `left_join()` o `right_join()`. Asigna el objeto al nombre `cis`. Determina cuále son las filas presentes en **cols1**, que no estaban en **cols2**, para lo que puedes utilizar la función `anti_join()`. ¿Existen filas presentes en **cols2** que no estén presentes en **cols1**?
-
-```{r B3}
-cis <- left_join(x = cols1, y = cols2, by = "id")
-
-unmatched_cols2 <- anti_join(x = cols1, y = cols2, by = "id")
-head(x = unmatched_cols2, n = 5)
-
-unmatched_cols1 <- anti_join(x = cols2, y = cols1, by = "id")
-head(x = unmatched_cols1, n = 5)
-```
-
-**B.4** Realiza una unión completa de `cols1`y `cols2`. ¿Cuántos casos hay en total?
-
-```{r B5}
-cis <- full_join(x = cols1, y = cols2, by = "id")
-```
-
-
-## C. Cambiar el formato de los datos 
-
-**C.1** Los datos `result_aut_partidos.RDS` están en **formato largo**. Carga los datos y conviértelos en **formato ancho** usando la función `spread()` de forma que cada columna corresponda a un partido diferente. Asigna el objeto resultante a `elec_wide`.
+**C.1** Utiliza la función `fre()` del paquete `expss` para crear **tablas de frecuencias** de las variables `pol_pros`, `idv` y `sexo`.
 
 ```{r}
-elec_long <- read_rds("/home/pablocal/git_repos/course_introR/sesion3/data/results_aut_partidos.RDS")
-
-elec_wide <- spread(data = elec_long, key = partido, value = votos)
+fre(cis$pol_pros)
+fre(cis$sexo)
+fre(cis$idv)
 ```
 
-**C.2** Ahora transforma el objeto `cis` en **formato largo**, de forma que la primera columna corresponda con la variable `id`, la segunda sea una columna con el nombre de las variables llamada `var` y la tercera sean los valores (`vals`). Para ello utiliza la función `gather()` y asigna el resultado al nombre `cis_long`. Ordena los resultados por la variable `id` y comprueba la **estructura de los datos**. ¿Qué tipo de objeto es la variable `value`?
+**C.2** Crea una **tabla de contingencia** de casos que cruce las variables `pol_pros` y `sexo` usando la función `cro()` del paquete `expss`. Cambia la etiqueta del total con el argumento `total_label` a `"Totales"`.
 
 ```{r}
-cis_long <- gather(data = cis, key = "var", value = "value", region:ocupa)
-arrange(cis_long, id)
+cro(cell_vars = cis$pol_pros, col_vars = cis$sexo, total_label = "Totales")
 ```
 
-**C.3** A partir del data frame `cis_long` usa la función `spread()` para cambiar el **formato a ancho de nuevo**. Guarda el data frame resultante como `cis_wide`. Comprueba de qué tipo son las variables resultantes.
+
+**C.3** Reproduce la tabla del ejercicio anterior pero en vez de las frecuencias muestra los **porcentajes de columna**. Incluye una columna de total, para ello haz una lista de los elementos que quieres inclir en `col_vars` utilizando la función `total()` para designar la columna de totales.
 
 ```{r}
-cis_wide <- spread(data = cis_long, key = var, value = value)
-glimpse(cis_wide)
+cro_cpct(cell_vars = cis$pol_pros, col_vars = list(total(), cis$sexo))
 ```
 
-`r emo::ji("white_check_mark")` Las variables resultantes son todas de tipo `character`.
-
-
-## D. Funciones básicas
-
-**D.1** Crea una **función** (`to_factor`) que a partir de un vector lo transforme en factor e imprima los niveles del nuevo factor. Aplícalo a la variable `tamuni` del data frame `cis_wide` y comprueba el resultado.
+**C.4** Utiliza la función `cro_mean_sd_n()` para realizar una tabla resumen de la variable `edad` para los valores de `pol_pros`.
 
 ```{r}
+cro_mean_sd_n(cell_vars = cis$edad, col_vars = cis$pol_pros)
+```
 
-to_factor <- function(x){
+
+## D. Tablas personalizadas con `exspss`
+
+**D.1** Crea una **tabla personalizada** que incluya las variables `pol_pros` y `idv` en filas. Las variables de columna serán `sexo` y `edad` en 3 grupos `18-34`, `35-64` y `65 o más`. El contenido de la tabla serán las frecuencias cruzadas.
+
+```{r}
+cis <- cis %>% 
+  mutate(edad_grp = case_when(
+    edad <= 34 ~ "18-34",
+    between(edad, 35, 64) ~ "35-64",
+    edad >= 65 ~ "65 o más"
+  ))
+
+cis %>% 
+  tab_cells(pol_pros, idv) %>% 
+  tab_cols(sexo, edad_grp) %>%
+  tab_stat_cases() %>% 
+  tab_pivot()
   
- return_x <- as.factor(x)
-  
-  print(levels(return_x))
-  
-  return(return_x)
-}
-
-
-cis_wide$tamuni <- to_factor(cis_wide$tamuni)
-
-str(cis_wide$tamuni)
 ```
 
-
-## E. Repaso general a la manipulación de datos
-
-**E.1** Carga el data frame `autoesc_jun_2017.csv` y asignalo al nombre `auto` a continuación:
+**D.2** Ahora añade a la tabla anterior el **porcentaje de columna** y una columna de totales. Utiliza el argumento `stat_position = "inside_rows"` de la función `tab_pivot()`. 
 
 ```{r}
-auto <- read_csv(file = "/home/pablocal/git_repos/course_introR/sesion3/data/autoesc_jun_2017.csv", locale = locale(encoding = "Latin1"))
+cis %>% 
+  tab_cells(pol_pros, idv) %>% 
+  tab_cols(total(), sexo, edad_grp) %>%
+  tab_stat_cases() %>% 
+  tab_stat_cpct() %>% 
+  tab_pivot(stat_position = "inside_rows")
 ```
 
 
-1. Seleccionar los **casos** que **corresponden al permiso B** en la variable `NOMBRE_PERMISO`. Explora los datos y fíjate en la relación entre la variable `NOMBRE_AUTOESCUELA` y `TIPO_EXAMEN`
+**D.3** Ahora vas a **añadir etiquetas** a la tabla que has generado en el ejercicio anterior. Por un lado vas a etiquetar las filas según se trate de los `"Casos"` o el `"% columna"`. Además, la etiqueta de los totales debe figurar como `"Totales"`.
 
 ```{r}
-table(auto$NOMBRE_PERMISO)
-auto <- filter(auto, NOMBRE_PERMISO == "B")
-head(auto, 10)
+cis %>% 
+  tab_cells(pol_pros, idv) %>% 
+  tab_cols(total(), sexo, edad_grp) %>%
+  tab_stat_cases(label = "Casos" , total_label = "Totales (casos)" ) %>% 
+  tab_stat_cpct(label = "% columna", total_label = "Totales (% columna)") %>% 
+  tab_pivot(stat_position = "inside_rows")
 ```
 
-2. Agrupar por autoescuela (`NOMBRE_AUTOESCUELA`) y `TIPO_EXAMEN`. Calcular para cada autoescuela el **total** de NUM_APTOS (`aptos`), NUM_NO_APTOS (`no_aptos`), NUM_APTOS_1conv (`aptos_1`), NUM_APTOS_2conv (`aptos_2`).
+
+**D.4** Utilizando el paquete `openxlsx` **exporta la tabla a MS Excel**. Recuerda que en primer lugar tienes que crear un libro (`createWorkbook()`), después añadir un hoja (`addWorksheet()`) y posteriormente escribir la tabla (`xlwrite()`). Por último guarda el libro utilizando la función `saveWorkbook()`.
+
 
 ```{r}
-auto <- auto %>% 
-  group_by(NOMBRE_AUTOESCUELA, TIPO_EXAMEN) %>% 
-  summarise(aptos = sum(NUM_APTOS), no_aptos = sum(NUM_NO_APTOS), 
-            aptos_1 = sum(NUM_APTOS_1conv), aptos_2 = sum(NUM_APTOS_2conv))
+tabla <- cis %>% 
+  tab_cells(pol_pros, idv) %>% 
+  tab_cols(total(), sexo, edad_grp) %>%
+  tab_stat_cases(label = "Casos" , total_label = "Totales (casos)" ) %>% 
+  tab_stat_cpct(label = "% columna", total_label = "Totales (% columna)") %>% 
+  tab_pivot(stat_position = "inside_rows")
+
+wb <- createWorkbook()
+sh <- addWorksheet(wb = wb, sheetName = "Tables")
+xl_write(obj = tabla, wb = wb, sheet = sh)
+
+saveWorkbook(wb = wb, file = "table1.xlsx", overwrite = TRUE)
 ```
-
-
-3. Calcula el **total de presentados** (`total_pres`) en cada autoescuela, que será la suma de aptos y no aptos.
-
-```{r}
-auto <- mutate(auto, total_pres = aptos + no_aptos)
-```
-
-4. Cambia las etiquetas de la variable `TIPO_EXAMEN` de forma que `PRUEBA CONDUCCIÓN Y CIRCULACIÓN` sea `Práctico` y `PRUEBA TEÓRICA` sea `Teórico`.
-
-```{r}
-auto <- mutate(auto, TIPO_EXAMEN = recode(TIPO_EXAMEN, "PRUEBA CONDUCCIÓN Y CIRCULACIÓN" = "Práctico", 
-                                          "PRUEBA TEÓRICA" = "Teórico"))
-```
-
-
-5. Calcula el porcentaje de aptos a la primera (`p_aptos_conv1`) y aptos a la segunda en cada autoescuela (`p_aptos_conv2`) sobre el total de aptos
-
-```{r}
-auto <- mutate(auto, p_aptos_conv1 = aptos_1/aptos*100,
-               p_aptos_conv2 = aptos_2/aptos*100)
-```
-
-
-6. Selecciona las variables `NOMBRE_AUTOESCUELA`, `TIPO_EXAMEN`, `p_aptos_conv1` y `p_aptos_conv2`
-
-```{r}
-auto <- select(auto, NOMBRE_AUTOESCUELA, TIPO_EXAMEN, p_aptos_conv1, p_aptos_conv2)
-```
-
-
-7. Cambia el formato del data frame de ancho a largo, de forma que las variables `p_aptos_conv*` queden en dos columnas, la primera `convocatoria`, y la segunda `p_aptos`.
-
-```{r}
-auto_long <- gather(auto, key = "convocatoria", value = "p_aptos", starts_with("p_aptos"))
-```
-
-8. Ordena los datos según `NOMBRE_AUTOESCUELA`, `TIPO_EXAMEN` y `convocatoria`
-
-```{r}
-auto_long <- arrange(auto_long, NOMBRE_AUTOESCUELA, TIPO_EXAMEN, convocatoria)
-```
-
-
-9. Explora el **data frame** final
-
-```{r}
-head(auto_long, 10)
-```
-
 

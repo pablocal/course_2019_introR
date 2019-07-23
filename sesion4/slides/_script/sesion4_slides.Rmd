@@ -1,5 +1,5 @@
 ---
-title: '¿Y tood esto para una tabla?'
+title: '¿Todo esto para una tabla?'
 subtitle: 'Curso de introducción a `r icon::fa("r-project")`'
 author: ''
 institute: 'Pablo Cabrera-Álvarez <br> <span style = "font-size: 75%;">[`r icon::fa("github")`](https://github.com/pablocal) | [`r icon::fa("twitter")`](https://twitter.com/pablocalv) @pablocalv </span> <br>'
@@ -35,10 +35,27 @@ mono_accent_inverse(
 ```
 # `r emo::ji("nerd")` Quiz
 
+¿Cómo transformar la variable `age` en tres grupos (`age_group`) y crear una variable que sea la media de edad para cada grupo de `age_group`? 
 
+```{r}
+glimpse(gss_cat)
+```
 
 ---
 # `r emo::ji("nerd")` Quiz
+
+```{r}
+gss_cat %>% 
+  mutate(age_group = case_when(
+    between(age, min(age), 29) ~ "18-29",
+    between(age, 30, 64) ~ "30-64",
+    TRUE ~ "65+" )) %>%
+  group_by(age_group) %>%
+  mutate(mean_age = mean(age, na.rm = TRUE)) %>% 
+  select(age, age_group, mean_age) %>% 
+  head()
+  
+```
 
 ---
 class: inverse, middle, center
@@ -69,16 +86,16 @@ table(gss_cat$race)
 - La función `frq()` permite crear tablas de frecuencias a partir de uno o varios factores.
 
 ```{r}
-frq(x = gss_cat$race)
+frq(x = gss_cat, race)
 ```
 
 ---
 # Frecuencias en `sjmisc`
 
-- La función `frq()` cuenta con argumentos de tipo **estadístico,** como la inclusión de pesos (`weights`). Sin embargo, la mayoría de argumentos tienen que ver con el **formato** de la tabla. El argumento `sort.frq` permite ordenar las categorías de forma ascendente (`"asc"`) o descendente (`"desc"`). El argumento `show.na` acepta `TRUE` y `FALSE` y permite eliminar la visualización de la categoría `NA`.
+- La función `frq()` cuenta con argumentos de tipo **estadístico**, como la inclusión de pesos (`weights`) y otros para **formatear** la tabla.
 
 ```{r}
-frq(x = gss_cat$race, sort.frq = "desc", show.na = FALSE, title = "Raza en EE.UU")
+frq(x = gss_cat, race, sort.frq = "desc", show.na = FALSE, title = "Raza en EE.UU")
 ```
 
 ---
@@ -87,8 +104,8 @@ frq(x = gss_cat$race, sort.frq = "desc", show.na = FALSE, title = "Raza en EE.UU
 - Además, la función `frq()` permite **guardar el output** en un formato distinto a `.txt` (por defecto), utilizando los argumentos `out` y `file`. En `out` se puede establecer que el output sea visualizado en el `"viewer"` o en el `"browser"`. El output se puede guardar en `file`.
 
 ```{r}
-frq(x = gss_cat$race, sort.frq = "desc", show.na = FALSE, title = "Raza en EE.UU",
-    out = "viewer", file = "/_pics/")
+frq(x = gss_cat, race, sort.frq = "desc", show.na = FALSE, title = "Raza en EE.UU",
+    out = "viewer", file = "tablas1.html")
 ```
 
 ---
@@ -96,7 +113,16 @@ frq(x = gss_cat$race, sort.frq = "desc", show.na = FALSE, title = "Raza en EE.UU
 
 - Otra oportunidad que ofrece la función `frq()` es que puede ser utilizada dentro de *pipes*:
 
-```{r}
+```{r, eval=FALSE}
+gss_cat %>% 
+  select(race, marital) %>% 
+  frq()
+```
+
+---
+# Frecuencias en *pipes*
+
+```{r, echo=FALSE}
 gss_cat %>% 
   select(race, marital) %>% 
   frq()
@@ -123,7 +149,7 @@ cis <- read_spss("_data/oct17.sav")
 ```
 
 ```{r}
-frq(x = cis$P1)
+frq(x = cis, P1)
 ```
 
 ---
@@ -170,7 +196,16 @@ descr(x = gss_cat, out = "browser")
 
 - La función `descr()` también se puede combinar con otras funciones tidyverse:
 
-```{r}
+```{r, eval=FALSE}
+gss_cat %>% 
+  group_by(race) %>% 
+  descr(age)
+```
+
+---
+# Descriptivos con `group_by()`
+
+```{r, echo=FALSE}
 gss_cat %>% 
   group_by(race) %>% 
   descr(age)
@@ -219,7 +254,14 @@ flat_table(data = gss_cat, marital, race, margin = "col")
 
 - Otra alternativa es utilizar `descr::crosstab()` que permite realizar tablas de contingencia de aspecto similar a las que se hacen en `SPSS`:
 
-```{r}
+```{r, eval=FALSE}
+descr::crosstab(gss_cat$marital, gss_cat$race, plot = FALSE)
+```
+
+---
+# Tabla con `descr`
+
+```{r, echo=FALSE}
 descr::crosstab(gss_cat$marital, gss_cat$race, plot = FALSE)
 ```
 
@@ -228,16 +270,32 @@ descr::crosstab(gss_cat$marital, gss_cat$race, plot = FALSE)
 
 - Se pueden pedir **diferentes proporciones** usando los argumentos `prop.`:
 
-```{r}
+```{r, eval=FALSE}
 descr::crosstab(gss_cat$marital, gss_cat$race,  prop.r = TRUE, plot = FALSE)
 ```
 
 ---
 # Tabla con `descr`
 
+```{r, echo=FALSE}
+descr::crosstab(gss_cat$marital, gss_cat$race,  prop.r = TRUE, plot = FALSE)
+```
+
+
+---
+# Tabla con `descr`
+
 - Existe la opción de que, además de la tabla, se realicen test **chi cuadrado**:
 
-```{r}
+```{r, eval=FALSE}
+descr::crosstab(gss_cat$marital, gss_cat$race,  chisq = TRUE, plot = FALSE)
+```
+
+
+---
+# Tabla con `descr`
+
+```{r, echo=FALSE}
 descr::crosstab(gss_cat$marital, gss_cat$race,  chisq = TRUE, plot = FALSE)
 ```
 
@@ -273,6 +331,10 @@ cis <- apply_labels(cis,
                     P30 = "Edad",
                     ESTUDIOS = "Estudios")
 ```
+---
+class: inverse, middle, center
+
+# Frecuencias
 
 ---
 # Tablas de frecuencias
@@ -284,13 +346,25 @@ fre(x = cis$P1)
 ```
 
 ---
+class: inverse, middle, center
+
+# Tablas de contingencia
+
+---
 # Tablas de contingencia
 
 #### `cro(cell_vars, col_vars, row_vars, weight, total_label, total_row_position)`
 
 - Crear una tabla de contingencia sencilla de **recuentos** se puede hacer con `cro()`:
 
-```{r}
+```{r, eval=FALSE}
+cro(cell_vars = cis$P1, col_vars = cis$P29, total_label = "Total")
+```
+
+---
+# Tablas de contingencia
+
+```{r, echo=FALSE}
 cro(cell_vars = cis$P1, col_vars = cis$P29, total_label = "Total")
 ```
 
@@ -301,7 +375,14 @@ cro(cell_vars = cis$P1, col_vars = cis$P29, total_label = "Total")
 
 - Crear una tabla de contingencia con **porcentajes de columna** se puede hacer con `cro_cpct()`:
 
-```{r}
+```{r, eval=FALSE}
+cro_cpct(cell_vars = cis$P1, col_vars = cis$P29, total_label = "Total")
+```
+
+---
+# Tablas de contingencia
+
+```{r, echo=FALSE}
 cro_cpct(cell_vars = cis$P1, col_vars = cis$P29, total_label = "Total")
 ```
 
@@ -312,24 +393,35 @@ cro_cpct(cell_vars = cis$P1, col_vars = cis$P29, total_label = "Total")
 
 - Crear una tabla de contingencia con **porcentajes de fila** se puede hacer con `cro_rpct()`:
 
-```{r}
+```{r, eval=FALSE}
 cro_rpct(cell_vars = cis$P1, col_vars = cis$P29, total_row_position =  "none")
 ```
 
 ---
+# Tablas de contingencia
+
+```{r, echo=FALSE}
+cro_rpct(cell_vars = cis$P1, col_vars = cis$P29, total_row_position =  "none")
+```
+---
+class: inverse, middle, center
+
+# Tablas personalizadas 
+
+---
 # Tablas personalizadas
 
-#### `tab_cells(vars)` | `tab_stat_cases()` | `tab_pivot()`
+#### `tab_cells(...)` | `tab_stat_cases(total_label, total_row_position, label)` | `tab_pivot()`
 
-Para construir una tabla personalizada hay que encadenar funciones de tipo `tab_()`. Los elementos imprescindibles para construir una tabla son:
+Para construir una tabla personalizada hay que encadenar funciones de tipo `tab_()`. Los **elementos imprescindibles** para construir una tabla son:
 
-- El **data frame** necesario para construir la tabla
+- El **data frame** necesario para construir la tabla.
 
-- Las **variables en filas** se incluyen en la función `tab_cells()`
+- Las **variables en filas** se incluyen en la función `tab_cells()`.
 
-- El **contenido de la tabla** (*por ej.* recuentos, porcentajes, estadísticos descriptivos) se establece en con una función del tipo `tab_stat_()`
+- El **contenido de la tabla** (*por ej.* recuentos, porcentajes, estadísticos descriptivos) se establece en con una función del tipo `tab_stat_()`.
 
-- La función `tab_pivot()` indica que la tabla debe ser creada
+- La función `tab_pivot()` para crear la tabla.
 
 --
 
@@ -343,7 +435,17 @@ data %>%
 ---
 # Un ejemplo...
 
-```{r}
+```{r, eval=FALSE}
+cis %>% 
+  tab_cells(P1, P2) %>% 
+  tab_stat_cases() %>% 
+  tab_pivot()
+```
+
+---
+# Un ejemplo...
+
+```{r, echo=FALSE}
 cis %>% 
   tab_cells(P1, P2) %>% 
   tab_stat_cases() %>% 
@@ -604,8 +706,8 @@ cis %>%
   tab_cells(P1) %>% 
   tab_cols(total(), P29) %>% 
   tab_stat_cases(label = "Casos") %>% 
-  tab_stat_cpct(label = "% Col.") %>% 
-  tab_pivot(stat_position = "inside_rows")
+  tab_pivot(stat_position = "inside_rows") %>% 
+  set_caption("Tabla 1. Valoración económica según género")
 ```
 
 ---

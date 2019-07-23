@@ -1,13 +1,23 @@
 ###############################################################
-##### Manipulación de datos avnzada con R - Ejercicios ########
+##### Generar tablas en R - Ejercicios                 ########
 ###############################################################
 
 rm(list = ls())
+
+# install.packages("sjmisc")
+# install.packages("descr")
+# install.packages("expss")
+# install.packages("openxlsx")
+
 library(tidyverse)
 library(haven)
+library(sjmisc)
+library(descr)
+library(expss)
+library(openxlsx)
 
 
-# A. Agrupar casos y resumir variables -----------------------------------------------------
+# A. Tablas de frecuecnias y descriptivos -----------------------------------------------------
 
 ## A.1
 
@@ -25,7 +35,7 @@ library(haven)
 
 
 
-# B. Combinar data frames ------------------------------------------------------
+# B. Tablas de contingencia ------------------------------------------------------
 
 ## B.1
 
@@ -39,11 +49,7 @@ library(haven)
 
 
 
-## B.4
-
-
-
-# C. Cambiar el formato de los datos ----------------------------------------------------
+# C. Frecuencias y tablas de contingencia con expss ----------------------------------------------------
 
 ## C.1
 
@@ -56,13 +62,36 @@ library(haven)
 ## C.3
 
 
-# D. Transformar variables --------------------------------------------------
+
+
+## C.4
+
+
+
+
+# D. Tablas personalizadas con expss --------------------------------------------------
 
 ## D.1
 
 
-# E. Repaso general a la manipulación de datos --------------------------------------------------
 
-## E.1 
+
+
+## D.2
+
+
+
+
+
+
+## D.3
+
+
+
+
+
+## D.4
+
+
 
 
